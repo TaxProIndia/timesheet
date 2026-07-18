@@ -42,9 +42,6 @@
 
         #printOnlyHeader { display: none; }
 
-        /* =========================================================
-           🖨️ MEDIA PRINT CLEAN ENGINE CONFIGURATION
-           ========================================================= */
         @media print {
             body { background: white; color: black; padding: 0; margin: 0; }
             .brand-header, .secure-auth-card, .navigation-tabs, .status-msg, button, .print-btn, .download-btn, .button-group-row, #dailyTrackerBox {
@@ -86,13 +83,11 @@
         <h3 style="margin: 0 0 10px 0; font-size: 13px; color: #2d3748;">🔒 Secure User Verification</h3>
         <div class="row">
             <div class="field">
-                <!-- AUTOMATION TRIGGER ON SELECT CHANGE -->
                 <select id="globalEmployeeName" onchange="resetDataViews(); runBackgroundTracker();">
                     <option value="">-- Loading Employee List... --</option>
                 </select>
             </div>
             <div class="field">
-                <!-- AUTOMATION TRIGGER ON 4-DIGIT PIN INPUT -->
                 <input type="password" id="globalPin" placeholder="Enter Your 4-Digit PIN" oninput="resetDataViews(); if(this.value.length >= 4){ runBackgroundTracker(); }">
             </div>
         </div>
@@ -107,7 +102,7 @@
     <!-- TAB CONTEXT 1: TIME LOG PUNCH SHEET -->
     <div id="timecard-page" class="portal-page active">
         
-        <!-- 📊 NEW ELEMENT: DYNAMIC COLOR-CHANGING PROGRESS WIDGET CARD -->
+        <!-- 📊 DAILY WORKLOAD TRACKER WIDGET -->
         <div id="dailyTrackerBox" style="background-color: #e6fffa; border: 1px solid #b2f5ea; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: none;">
             <h4 style="margin: 0 0 8px 0; color: #234e52; font-size: 14px;">📊 Your Daily Workload Tracker (Target: 8 Hours)</h4>
             <div style="display: flex; justify-content: space-between; font-size: 13px; color: #2d3748;">
@@ -123,7 +118,6 @@
         <form id="punchForm">
             <div class="row">
                 <div class="field">
-                    <!-- RECALCULATES ON LIVE CALENDAR SELECTION CHANGE -->
                     <label>Date (DD/MM/YYYY)</label>
                     <input type="date" id="date" onchange="updateDailyTrackerUI();" required>
                 </div>
@@ -172,10 +166,23 @@
                 </div>
             </div>
 
+            <!-- 🛠️ UPDATED ACTUAL TIME SPENT: HEADINGS IN LABELS, 0-23 HOURS, 0-59 MINUTES -->
             <div class="row">
                 <div class="field">
-                    <label>Actual Time Spent (HH:MM)</label>
-                    <input type="time" id="timeSpent" value="00:00" required>
+                    <div style="display: flex; gap: 15px;">
+                        <div style="flex: 1;">
+                            <label>Actual Time Spent (Hours)</label>
+                            <select id="durationHours" required>
+                                <!-- Programmatically populated from 0 to 23 via JS script below -->
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Actual Time Spent (Minutes)</label>
+                            <select id="durationMinutes" required>
+                                <!-- Programmatically populated from 0 to 59 via JS script below -->
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="field">
                     <label>Priority Focus</label>
@@ -251,6 +258,26 @@
     document.getElementById('date').value = new Date().toISOString().split('T')[0];
 
     window.onload = function() {
+        // Build Hours list options (0 to 23) cleanly inside plain dropdown values
+        const hrsDropdown = document.getElementById('durationHours');
+        for (let h = 0; h <= 23; h++) {
+            let opt = document.createElement('option');
+            let valStr = h < 10 ? '0' + h : '' + h;
+            opt.value = valStr;
+            opt.innerText = h;
+            hrsDropdown.appendChild(opt);
+        }
+
+        // Build Minutes list options (0 to 59) cleanly inside plain dropdown values
+        const minsDropdown = document.getElementById('durationMinutes');
+        for (let m = 0; m <= 59; m++) {
+            let opt = document.createElement('option');
+            let valStr = m < 10 ? '0' + m : '' + m;
+            opt.value = valStr;
+            opt.innerText = m < 10 ? '0' + m : m;
+            minsDropdown.appendChild(opt);
+        }
+
         if (WEB_APP_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
             loadInitializationData();
         }
@@ -313,9 +340,6 @@
         });
     }
 
-    // =========================================================================
-    // 📊 BACKGROUND PROCESSING LAYER FOR SUMMING DAILY LOGGING TARGETMETRICS
-    // =========================================================================
     function runBackgroundTracker() {
         const creds = getCredentials();
         if (!creds.name || !creds.pin || creds.pin.length < 4) {
@@ -339,14 +363,12 @@
         
         if (!selectedDateVal) return;
         
-        // Hide tracker completely if credentials aren't properly declared
         const creds = getCredentials();
         if (!creds.name || !creds.pin || creds.pin.length < 4) {
             trackerBox.style.display = "none";
             return;
         }
 
-        // Generate matching key string for previous consecutive date loop matchers
         let d = new Date(selectedDateVal);
         d.setDate(d.getDate() - 1);
         let prevDateVal = d.toISOString().split('T')[0];
@@ -365,23 +387,20 @@
             });
         }
 
-        // Map live text strings to visual tracker panel container elements
         document.getElementById('trackerDateLabel').innerText = normalizeToDMY(selectedDateVal);
         document.getElementById('trackerSelectedHours').innerText = selectedTotal.toFixed(2);
         document.getElementById('trackerPrevHours').innerText = prevTotal.toFixed(2);
         
-        // Calculate slider length metrics mapping out of target workload caps
         let percentage = (selectedTotal / 8) * 100;
         if (percentage > 100) percentage = 100;
         document.getElementById('trackerProgressBar').style.width = percentage + "%";
         
-        // Dynamic status color themes depending on quota clearance
         if (selectedTotal >= 8) {
-            document.getElementById('trackerProgressBar').style.backgroundColor = "#2b6cb0"; // Complete Royal Blue
+            document.getElementById('trackerProgressBar').style.backgroundColor = "#2b6cb0"; 
             trackerBox.style.backgroundColor = "#ebf8ff";
             trackerBox.style.borderColor = "#bee3f8";
         } else {
-            document.getElementById('trackerProgressBar').style.backgroundColor = "#319795"; // In-progress Deep Teal
+            document.getElementById('trackerProgressBar').style.backgroundColor = "#319795"; 
             trackerBox.style.backgroundColor = "#e6fffa";
             trackerBox.style.borderColor = "#b2f5ea";
         }
@@ -425,6 +444,7 @@
         cachedAssignmentsData = [];
     }
 
+    // Capture credentials helper
     function getCredentials() {
         return {
             name: document.getElementById('globalEmployeeName').value,
@@ -435,7 +455,10 @@
     function submitPunch() {
         const creds = getCredentials();
         const statusDiv = document.getElementById('punchStatus');
-        const timeSpent = document.getElementById('timeSpent').value;
+        
+        const hrsSelected = document.getElementById('durationHours').value;
+        const minsSelected = document.getElementById('durationMinutes').value;
+        const timeSpentStr = hrsSelected + ":" + minsSelected;
         
         if(!creds.name || !creds.pin) {
             statusDiv.style.color = "red";
@@ -443,9 +466,9 @@
             return;
         }
 
-        if(timeSpent === "00:00" || !timeSpent) {
+        if(timeSpentStr === "00:00") {
             statusDiv.style.color = "red";
-            statusDiv.innerText = "🛑 Entry Blocked: Time spent cannot be 00:00. Please enter the duration spent.";
+            statusDiv.innerText = "🛑 Entry Blocked: Time spent cannot be 0 Hours and 00 Mins.";
             return;
         }
 
@@ -464,7 +487,7 @@
             status: document.getElementById('status').value,
             billingType: document.getElementById('billingType').value,
             priority: document.getElementById('priority').value,
-            timeSpent: timeSpent
+            timeSpent: timeSpentStr
         });
 
         fetch(`${WEB_APP_URL}?${params.toString()}`)
@@ -474,11 +497,11 @@
                 statusDiv.style.color = "green";
                 statusDiv.innerText = "✓ Identity Verified. Activity metrics logged successfully.";
                 document.getElementById('description').value = "";
-                document.getElementById('timeSpent').value = "00:00";
+                document.getElementById('durationHours').value = "00";
+                document.getElementById('durationMinutes').value = "00";
                 document.getElementById('subTaskCategory').innerHTML = '<option value="">-- Select Main Task First --</option>';
                 document.getElementById('taskCategory').value = "";
                 
-                // INSTANTLY RUN BACKGROUND ENGINE RECALCULATION POST-PUNCH
                 runBackgroundTracker();
             } else {
                 statusDiv.style.color = "red";
@@ -581,7 +604,6 @@
                 table.style.display = "table";
                 actionRow.style.display = "flex"; 
                 
-                // KEEPS THE LOG TRACKER COMPLETELY SYNCED IN BACKEND OVERLAYS
                 updateDailyTrackerUI();
             } else {
                 statusDiv.style.color = "red";
