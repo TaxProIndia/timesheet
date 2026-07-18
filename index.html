@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxPro & Associates - Daily Activity Tracking Portal</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 650px; background: white; padding: 25px; margin: 0 auto 20px auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.08); }
+        .brand-header { text-align: center; margin-bottom: 20px; background-color: #1a365d; color: white; padding: 20px; border-radius: 6px; }
+        .firm-logo { max-width: 140px; height: auto; margin-bottom: 8px; display: inline-block; }
+        .brand-header h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px; }
+        .brand-header p { margin: 5px 0 0 0; font-size: 14px; color: #cbd5e1; font-weight: 600; }
+        h2 { color: #1a365d; margin-top: 0; font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+        label { display: block; margin: 12px 0 5px 0; font-weight: 600; font-size: 13px; color: #4a5568; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        .secure-auth-card { background-color: #edf2f7; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
+        .navigation-tabs { display: flex; gap: 8px; margin-bottom: 20px; justify-content: center; }
+        .tab-btn { background-color: #e2e8f0; color: #4a5568; border: none; padding: 10px 16px; font-size: 14px; font-weight: 600; border-radius: 4px; cursor: pointer; flex: 1; transition: all 0.2s; }
+        .tab-btn.active { background-color: #1a365d; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+        .portal-page { display: none; }
+        .portal-page.active { display: block; }
+        
+        /* Interactive Actions Buttons styling */
+        button.action-submit { background-color: #1a365d; color: white; border: none; padding: 12px 20px; font-size: 15px; font-weight: 600; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 15px; }
+        button.action-submit:hover { background-color: #2c5282; }
+        button.print-btn { background-color: #4a5568; color: white; border: none; padding: 10px 15px; font-size: 14px; font-weight: 600; border-radius: 4px; cursor: pointer; flex: 1; transition: all 0.2s; }
+        button.print-btn:hover { background-color: #2d3748; }
+        button.download-btn { background-color: #107c41; color: white; border: none; padding: 10px 15px; font-size: 14px; font-weight: 600; border-radius: 4px; cursor: pointer; flex: 1; transition: all 0.2s; }
+        button.download-btn:hover { background-color: #0b592e; }
+        .button-group-row { display: flex; gap: 12px; margin-top: 15px; }
+        
+        .row { display: flex; gap: 15px; }
+        .row .field { flex: 1; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; background: white; font-size: 13px; }
+        th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; }
+        th { background-color: #f7fafc; color: #2d3748; font-weight: 600; }
+        .status-msg { margin-top: 12px; font-weight: bold; text-align: center; font-size: 14px; }
+        .task-badge { display: inline-block; padding: 3px 8px; font-size: 11px; font-weight: 700; border-radius: 3px; text-transform: uppercase; }
+        .priority-High { background-color: #fed7d7; color: #9b2c2c; }
+        .priority-Medium { background-color: #feebc8; color: #9c4221; }
+        .priority-Low { background-color: #e6fffa; color: #234e52; }
+
+        #printOnlyHeader { display: none; }
+
+        /* =========================================================
+           🖨️ MEDIA PRINT CLEAN ENGINE CONFIGURATION
+           ========================================================= */
+        @media print {
+            body { background: white; color: black; padding: 0; margin: 0; }
+            .brand-header, .secure-auth-card, .navigation-tabs, .status-msg, button, .print-btn, .download-btn, .button-group-row {
+                display: none !important;
+            }
+            .container { box-shadow: none !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
+            
+            /* DYNAMIC TARGETING: Hides all sections, but forces the active clicked tab to print */
+            .portal-page { display: none !important; }
+            .portal-page.active { display: block !important; }
+            
+            #printOnlyHeader { display: block !important; margin-bottom: 25px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+            .print-metadata-row { display: flex; justify-content: space-between; font-size: 14px; margin-top: 8px; }
+            h2 { font-size: 18px !important; color: black !important; border: none !important; padding: 0 !important; margin-top: 15px !important; }
+            table { width: 100% !important; margin-top: 10px !important; font-size: 12px !important; page-break-inside: auto; }
+            tr { page-break-inside: avoid; page-break-after: auto; }
+            th { background-color: #f1f5f9 !important; color: black !important; border: 1px solid #000 !important; font-weight: bold !important; }
+            td { border: 1px solid #000 !important; color: black !important; padding: 8px !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- REUSEABLE PRINT TITLE BLOCK FOR ALL VIEWS -->
+    <div id="printOnlyHeader">
+        <h1 style="margin: 0; font-size: 26px; color: #1a365d;">TaxPro & Associates</h1>
+        <div class="print-metadata-row">
+            <div><strong>Employee Name:</strong> <span id="lblPrintEmployee">--</span></div>
+            <div><strong>Generated On:</strong> <span id="lblPrintTimestamp">--</span></div>
+        </div>
+    </div>
+
+    <!-- CORE FIRM BRANDING -->
+    <div class="brand-header">
+        <img src="logo.png" alt="TaxPro Logo" class="firm-logo" onerror="this.style.display='none';">
+        <h1>TaxPro & Associates</h1>
+        <p>Daily Activity Tracking Portal</p>
+    </div>
+
+    <!-- SECURE MASTER AUTHENTICATION CARD -->
+    <div class="secure-auth-card">
+        <h3 style="margin: 0 0 10px 0; font-size: 13px; color: #2d3748;">🔒 Secure User Verification</h3>
+        <div class="row">
+            <div class="field">
+                <select id="globalEmployeeName" onchange="resetDataViews()">
+                    <option value="">-- Loading Employee List... --</option>
+                </select>
+            </div>
+            <div class="field">
+                <input type="password" id="globalPin" placeholder="Enter Your 4-Digit PIN" oninput="resetDataViews()">
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation-tabs">
+        <button class="tab-btn active" onclick="switchTab('timecard-page')">📝 Log Time</button>
+        <button class="tab-btn" onclick="switchTab('assignments-page'); fetchAssignedTasks();">🎯 My Tasks</button>
+        <button class="tab-btn" onclick="switchTab('history-page'); fetchEmployeeHistory();">🔍 History Logs</button>
+    </div>
+
+    <!-- TAB CONTEXT 1: TIME LOG PUNCH SHEET -->
+    <div id="timecard-page" class="portal-page active">
+        <h2>Activity Timesheet</h2>
+        <form id="punchForm">
+            <div class="row">
+                <div class="field">
+                    <label>Date (DD/MM/YYYY)</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="field">
+                    <label>Client</label>
+                    <select id="clientName" required>
+                        <option value="">-- Loading Client Dropdown... --</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- CASCADE DROPDOWN LAYER -->
+            <div class="row">
+                <div class="field">
+                    <label>Task</label>
+                    <select id="taskCategory" onchange="handleTaskChange()" required>
+                        <option value="">-- Loading Tasks... --</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Sub-Task</label>
+                    <select id="subTaskCategory" required>
+                        <option value="">-- Select Main Task First --</option>
+                    </select>
+                </div>
+            </div>
+
+            <label>Remarks</label>
+            <textarea id="description" rows="3" placeholder="Provide details regarding the work completed..." required></textarea>
+
+            <div class="row">
+                <div class="field">
+                    <label>Current Status</label>
+                    <select id="status" required>
+                        <option value="In progress">In progress</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Data pending from Client">Data pending from Client</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Billing Code</label>
+                    <select id="billingType" required>
+                        <option value="Billable">Billable</option>
+                        <option value="Non-Billable">Non-Billable</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Actual Time Spent (HH:MM)</label>
+                    <input type="time" id="timeSpent" value="00:00" required>
+                </div>
+                <div class="field">
+                    <label>Priority Focus</label>
+                    <select id="priority" required>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="button" class="action-submit" onclick="submitPunch()">Submit</button>
+            <div id="punchStatus" class="status-msg"></div>
+        </form>
+    </div>
+
+    <!-- TAB CONTEXT 2: WEEKLY ASSIGNMENTS WITH EXCEL/PDF UTILITIES -->
+    <div id="assignments-page" class="portal-page">
+        <h2>🎯 Your Active Weekly Assignments</h2>
+        <div id="taskStatus" class="status-msg"></div>
+        <table id="tasksTable" style="display:none;">
+            <thead>
+                <tr>
+                    <th>Client Name</th>
+                    <th>Task Details</th>
+                    <th>Priority</th>
+                    <th>Target Deadline</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        
+        <!-- NEW ASSIGNMENTS CONTROL ROW -->
+        <div class="button-group-row" id="taskActionRow" style="display:none;">
+            <button type="button" class="print-btn" onclick="executeBrandedPrint()">🖨️ Print Tasks / Save PDF</button>
+            <button type="button" class="download-btn" onclick="exportAssignmentsToExcel()">📊 Download to Excel</button>
+        </div>
+    </div>
+
+    <!-- TAB CONTEXT 3: ARCHIVE SEARCH ENTRIES WITH ACTION GRID -->
+    <div id="history-page" class="portal-page">
+        <h2>🔍 Your Personal Performance History Log</h2>
+        <div id="historyStatus" class="status-msg"></div>
+        <table id="historyTable" style="display:none;">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Client Account</th>
+                    <th>Category (Sub-Task)</th>
+                    <th>Current Status</th>
+                    <th>Time Logged</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        
+        <div class="button-group-row" id="historyActionRow" style="display:none;">
+            <button type="button" class="print-btn" onclick="executeBrandedPrint()">🖨️ Print Log / Save PDF</button>
+            <button type="button" class="download-btn" onclick="exportHistoryToExcel()">📊 Download to Excel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // =========================================================================
+    // INJECTION ARRAY: PASTE YOUR ACTIVE DEPLOYMENT URL STRING BELOW
+    // =========================================================================
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwE-J2wSml0l--CjVDEl3k54Gn1cU9G7V1eWUV8BsPzzEICgLT0aV3HWxPVop9dM3twAA/exec";
+
+    let globalTaskMap = {}; 
+    let cachedHistoryData = []; 
+    let cachedAssignmentsData = []; // Dedicated memory tracker for allocations
+
+    document.getElementById('date').value = new Date().toISOString().split('T')[0];
+
+    window.onload = function() {
+        if (WEB_APP_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
+            loadInitializationData();
+        }
+    };
+
+    function normalizeToDMY(dateString) {
+        if (!dateString) return "";
+        let clean = dateString.trim().split("T")[0].split(" ")[0];
+        if (/^\d{4}[-\/]\d{2}[-\/]\d{2}$/.test(clean)) {
+            let separator = clean.includes("-") ? "-" : "/";
+            let parts = clean.split(separator);
+            return parts[2] + "/" + parts[1] + "/" + parts[0];
+        }
+        if (/^\d{2}-\d{2}-\d{4}$/.test(clean)) {
+            return clean.replace(/-/g, "/");
+        }
+        return clean; 
+    }
+
+    function loadInitializationData() {
+        const empDropdown = document.getElementById('globalEmployeeName');
+        const clientDropdown = document.getElementById('clientName');
+        const taskDropdown = document.getElementById('taskCategory');
+
+        fetch(`${WEB_APP_URL}?action=fetchInitializationData`)
+        .then(res => res.json())
+        .then(res => {
+            if (res.status === "SUCCESS") {
+                empDropdown.innerHTML = '<option value="">-- Select Your Name --</option>';
+                res.employees.forEach(emp => {
+                    const opt = document.createElement('option');
+                    opt.value = emp; opt.innerText = emp;
+                    empDropdown.appendChild(opt);
+                });
+
+                clientDropdown.innerHTML = '<option value="">-- Select Client --</option>';
+                res.clients.forEach(client => {
+                    const opt = document.createElement('option');
+                    opt.value = client; opt.innerText = client;
+                    clientDropdown.appendChild(opt);
+                });
+
+                globalTaskMap = res.taskMap;
+                taskDropdown.innerHTML = '<option value="">-- Select Task --</option>';
+                for (let mainTask in globalTaskMap) {
+                    const opt = document.createElement('option');
+                    opt.value = mainTask; opt.innerText = mainTask;
+                    taskDropdown.appendChild(opt);
+                }
+            } else {
+                empDropdown.innerHTML = '<option value="">⚠️ Profile map broken</option>';
+                clientDropdown.innerHTML = '<option value="">⚠️ Account map broken</option>';
+                taskDropdown.innerHTML = '<option value="">⚠️ Service stream broken</option>';
+            }
+        })
+        .catch(() => {
+            empDropdown.innerHTML = '<option value="">⚠️ System Core Offline</option>';
+            clientDropdown.innerHTML = '<option value="">⚠️ System Core Offline</option>';
+            taskDropdown.innerHTML = '<option value="">⚠️ System Core Offline</option>';
+        });
+    }
+
+    function handleTaskChange() {
+        const mainTaskSelected = document.getElementById('taskCategory').value;
+        const subDropdown = document.getElementById('subTaskCategory');
+        subDropdown.innerHTML = '<option value="">-- Select Sub-Task --</option>';
+        
+        if (mainTaskSelected && globalTaskMap[mainTaskSelected]) {
+            globalTaskMap[mainTaskSelected].forEach(subTask => {
+                const opt = document.createElement('option');
+                opt.value = subTask; opt.innerText = subTask;
+                subDropdown.appendChild(opt);
+            });
+        } else {
+            subDropdown.innerHTML = '<option value="">-- Select Main Task First --</option>';
+        }
+    }
+
+    function switchTab(pageId) {
+        document.querySelectorAll('.portal-page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    function resetDataViews() {
+        document.getElementById('punchStatus').innerText = "";
+        document.getElementById('taskStatus').innerText = "";
+        document.getElementById('historyStatus').innerText = "";
+        document.getElementById('tasksTable').style.display = "none";
+        document.getElementById('historyTable').style.display = "none";
+        document.getElementById('historyActionRow').style.display = "none";
+        document.getElementById('taskActionRow').style.display = "none";
+        cachedHistoryData = [];
+        cachedAssignmentsData = [];
+    }
+
+    function getCredentials() {
+        return {
+            name: document.getElementById('globalEmployeeName').value,
+            pin: document.getElementById('globalPin').value
+        };
+    }
+
+    function submitPunch() {
+        const creds = getCredentials();
+        const statusDiv = document.getElementById('punchStatus');
+        const timeSpent = document.getElementById('timeSpent').value;
+        
+        if(!creds.name || !creds.pin) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Validation Lock: You must verify your name and enter your PIN at the top.";
+            return;
+        }
+
+        if(timeSpent === "00:00" || !timeSpent) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "🛑 Entry Blocked: Time spent cannot be 00:00. Please enter the duration spent.";
+            return;
+        }
+
+        statusDiv.style.color = "orange";
+        statusDiv.innerText = "Verifying operational security clearance...";
+
+        const params = new URLSearchParams({
+            action: "submitPunch",
+            date: document.getElementById('date').value,
+            employeeName: creds.name,
+            pin: creds.pin,
+            clientName: document.getElementById('clientName').value,
+            taskCategory: document.getElementById('taskCategory').value,
+            subTask: document.getElementById('subTaskCategory').value, 
+            description: document.getElementById('description').value,
+            status: document.getElementById('status').value,
+            billingType: document.getElementById('billingType').value,
+            priority: document.getElementById('priority').value,
+            timeSpent: timeSpent
+        });
+
+        fetch(`${WEB_APP_URL}?${params.toString()}`)
+        .then(res => res.json())
+        .then(res => {
+            if(res.status === "SUCCESS") {
+                statusDiv.style.color = "green";
+                statusDiv.innerText = "✓ Identity Verified. Activity metrics logged successfully.";
+                document.getElementById('description').value = "";
+                document.getElementById('timeSpent').value = "00:00";
+                document.getElementById('subTaskCategory').innerHTML = '<option value="">-- Select Main Task First --</option>';
+                document.getElementById('taskCategory').value = "";
+            } else {
+                statusDiv.style.color = "red";
+                statusDiv.innerText = "🛑 Access Terminated: " + res.message;
+            }
+        }).catch(() => {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Network transmission error. Verify cloud endpoint.";
+        });
+    }
+
+    function fetchAssignedTasks() {
+        const creds = getCredentials();
+        const statusDiv = document.getElementById('taskStatus');
+        const table = document.getElementById('tasksTable');
+        const tbody = table.querySelector('tbody');
+        const actionRow = document.getElementById('taskActionRow');
+        
+        if(!creds.name || !creds.pin) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Access Blocked: Provide a Name and matching PIN in the Security panel above.";
+            return;
+        }
+
+        statusDiv.style.color = "orange";
+        statusDiv.innerText = "Scanning active assignment lists...";
+        tbody.innerHTML = "";
+        actionRow.style.display = "none";
+        cachedAssignmentsData = [];
+
+        fetch(`${WEB_APP_URL}?action=fetchAssignedTasks&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}`)
+        .then(res => res.json())
+        .then(res => {
+            if(res.status === "SUCCESS") {
+                statusDiv.innerText = "";
+                if(res.data.length === 0) {
+                    statusDiv.style.color = "blue";
+                    statusDiv.innerText = "No open task allocations assigned to your name this week.";
+                    return;
+                }
+                
+                cachedAssignmentsData = res.data; // Store to allocations runtime registry
+
+                res.data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    const cleanDeadline = normalizeToDMY(row.deadline);
+                    tr.innerHTML = `<td><strong>${row.client}</strong></td><td>${row.description}</td><td><span class="task-badge priority-${row.priority}">${row.priority}</span></td><td>${cleanDeadline}</td>`;
+                    tbody.appendChild(tr);
+                });
+                table.style.display = "table";
+                actionRow.style.display = "flex"; 
+            } else {
+                statusDiv.style.color = "red";
+                statusDiv.innerText = "🛑 Authentication Failed: " + res.message;
+            }
+        }).catch(() => {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Query aborted. Backend pipeline failure.";
+        });
+    }
+
+    function fetchEmployeeHistory() {
+        const creds = getCredentials();
+        const statusDiv = document.getElementById('historyStatus');
+        const table = document.getElementById('historyTable');
+        const tbody = table.querySelector('tbody');
+        const actionRow = document.getElementById('historyActionRow');
+        
+        if(!creds.name || !creds.pin) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Access Blocked: Provide a Name and matching PIN in the Security panel above.";
+            return;
+        }
+
+        statusDiv.style.color = "orange";
+        statusDiv.innerText = "Fetching logged tracking records...";
+        tbody.innerHTML = "";
+        actionRow.style.display = "none";
+        cachedHistoryData = [];
+
+        fetch(`${WEB_APP_URL}?action=fetchHistory&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}`)
+        .then(res => res.json())
+        .then(res => {
+            if(res.status === "SUCCESS") {
+                statusDiv.innerText = "";
+                if(res.data.length === 0) {
+                    statusDiv.style.color = "blue";
+                    statusDiv.innerText = "No historical log records found.";
+                    return;
+                }
+                
+                cachedHistoryData = res.data; 
+
+                res.data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    const cleanDate = normalizeToDMY(row.date);
+                    tr.innerHTML = `<td>${cleanDate}</td><td>${row.client}</td><td>${row.task}</td><td><em>${row.status}</em></td><td><strong>${row.hours} hrs</strong></td>`;
+                    tbody.appendChild(tr);
+                });
+                table.style.display = "table";
+                actionRow.style.display = "flex"; 
+            } else {
+                statusDiv.style.color = "red";
+                statusDiv.innerText = "🛑 Authentication Failed: " + res.message;
+            }
+        }).catch(() => {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Query aborted. Ledger engine offline.";
+        });
+    }
+
+    function executeBrandedPrint() {
+        const empName = document.getElementById('globalEmployeeName').value;
+        const currentTimestamp = new Date().toLocaleString('en-US', {
+            dateStyle: 'medium',
+            timeStyle: 'short'
+        });
+
+        document.getElementById('lblPrintEmployee').innerText = empName;
+        document.getElementById('lblPrintTimestamp').innerText = currentTimestamp;
+        window.print();
+    }
+
+    function exportHistoryToExcel() {
+        const empName = document.getElementById('globalEmployeeName').value;
+        if (!cachedHistoryData || cachedHistoryData.length === 0) return;
+
+        let csvContent = "\uFEFF"; 
+        csvContent += "Date,Client Account,Category (Sub-Task),Current Status,Actual Time Spent (Decimal Hours)\n";
+
+        cachedHistoryData.forEach(row => {
+            const excelCleanDate = normalizeToDMY(row.date);
+            const cellDate = `"${excelCleanDate.replace(/"/g, '""')}"`;
+            const cellClient = `"${row.client.replace(/"/g, '""')}"`;
+            const cellTask = `"${row.task.replace(/"/g, '""')}"`;
+            const cellStatus = `"${row.status.replace(/"/g, '""')}"`;
+            const cellHours = `"${row.hours.replace(/"/g, '""')}"`;
+
+            csvContent += `${cellDate},${cellClient},${cellTask},${cellStatus},${cellHours}\n`;
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const todayStr = new Date().toISOString().split('T')[0];
+        const filename = `TaxPro_Log_${empName.replace(/\s+/g, '_')}_${todayStr}.csv`;
+        
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // =========================================================================
+    // 📊 NATIVE EXCEL EXPORT ENGINE FOR CURRENT ASSIGNED WEEKLY ALLOCATIONS
+    // =========================================================================
+    function exportAssignmentsToExcel() {
+        const empName = document.getElementById('globalEmployeeName').value;
+        if (!cachedAssignmentsData || cachedAssignmentsData.length === 0) return;
+
+        let csvContent = "\uFEFF"; 
+        csvContent += "Client Name,Task Details,Priority,Target Deadline\n";
+
+        cachedAssignmentsData.forEach(row => {
+            const excelCleanDeadline = normalizeToDMY(row.deadline);
+            const cellClient = `"${row.client.replace(/"/g, '""')}"`;
+            const cellDesc = `"${row.description.replace(/"/g, '""')}"`;
+            const cellPriority = `"${row.priority.replace(/"/g, '""')}"`;
+            const cellDeadline = `"${excelCleanDeadline.replace(/"/g, '""')}"`;
+
+            csvContent += `${cellClient},${cellDesc},${cellPriority},${cellDeadline}\n`;
+        });
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const todayStr = new Date().toISOString().split('T')[0];
+        const filename = `TaxPro_Assignments_${empName.replace(/\s+/g, '_')}_${todayStr}.csv`;
+        
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+</body>
+</html>
