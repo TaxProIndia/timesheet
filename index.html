@@ -71,14 +71,14 @@
         </div>
     </div>
 
-    <!-- CORE FIRM BRANDING -->
+    <!-- BRAND HEADER -->
     <div class="brand-header">
         <img src="logo.png" alt="TaxPro Logo" class="firm-logo" onerror="this.style.display='none';">
         <h1>TaxPro & Associates</h1>
         <p>Daily Activity Tracking Portal</p>
     </div>
 
-    <!-- SECURE MASTER AUTHENTICATION CARD -->
+    <!-- SECURE AUTH CARD -->
     <div class="secure-auth-card">
         <h3 style="margin: 0 0 10px 0; font-size: 13px; color: #2d3748;">🔒 Secure User Verification</h3>
         <div class="row">
@@ -99,10 +99,8 @@
         <button class="tab-btn" onclick="switchTab('history-page'); fetchEmployeeHistory();">🔍 History Logs</button>
     </div>
 
-    <!-- TAB CONTEXT 1: TIME LOG PUNCH SHEET -->
+    <!-- TAB 1: LOG TIME -->
     <div id="timecard-page" class="portal-page active">
-        
-        <!-- 📊 DAILY WORKLOAD TRACKER WIDGET -->
         <div id="dailyTrackerBox" style="background-color: #e6fffa; border: 1px solid #b2f5ea; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: none;">
             <h4 style="margin: 0 0 8px 0; color: #234e52; font-size: 14px;">📊 Your Daily Workload Tracker (Target: 8 Hours)</h4>
             <div style="display: flex; justify-content: space-between; font-size: 13px; color: #2d3748;">
@@ -129,7 +127,6 @@
                 </div>
             </div>
 
-            <!-- CASCADE DROPDOWN LAYER -->
             <div class="row">
                 <div class="field">
                     <label>Task</label>
@@ -166,21 +163,16 @@
                 </div>
             </div>
 
-            <!-- 🛠️ UPDATED ACTUAL TIME SPENT: HEADINGS IN LABELS, 0-23 HOURS, 0-59 MINUTES -->
             <div class="row">
                 <div class="field">
                     <div style="display: flex; gap: 15px;">
                         <div style="flex: 1;">
                             <label>Actual Time Spent (Hours)</label>
-                            <select id="durationHours" required>
-                                <!-- Programmatically populated from 0 to 23 via JS script below -->
-                            </select>
+                            <select id="durationHours" required></select>
                         </div>
                         <div style="flex: 1;">
                             <label>Actual Time Spent (Minutes)</label>
-                            <select id="durationMinutes" required>
-                                <!-- Programmatically populated from 0 to 59 via JS script below -->
-                            </select>
+                            <select id="durationMinutes" required></select>
                         </div>
                     </div>
                 </div>
@@ -199,7 +191,7 @@
         </form>
     </div>
 
-    <!-- TAB CONTEXT 2: WEEKLY ASSIGNMENTS -->
+    <!-- TAB 2: MY TASKS -->
     <div id="assignments-page" class="portal-page">
         <h2>🎯 Your Active Weekly Assignments</h2>
         <div id="taskStatus" class="status-msg"></div>
@@ -210,6 +202,7 @@
                     <th>Task Details</th>
                     <th>Priority</th>
                     <th>Target Deadline</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -221,7 +214,7 @@
         </div>
     </div>
 
-    <!-- TAB CONTEXT 3: ARCHIVE SEARCH ENTRIES WITH ACTION GRID -->
+    <!-- TAB 3: HISTORY LOGS -->
     <div id="history-page" class="portal-page">
         <h2>🔍 Your Personal Performance History Log</h2>
         <div id="historyStatus" class="status-msg"></div>
@@ -246,9 +239,7 @@
 </div>
 
 <script>
-    // =========================================================================
-    // INJECTION ARRAY: PASTE YOUR ACTIVE DEPLOYMENT URL STRING BELOW
-    // =========================================================================
+    // PASTE YOUR DEPLOYED WEB APP URL HERE
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwE-J2wSml0l--CjVDEl3k54Gn1cU9G7V1eWUV8BsPzzEICgLT0aV3HWxPVop9dM3twAA/exec";
 
     let globalTaskMap = {}; 
@@ -258,7 +249,6 @@
     document.getElementById('date').value = new Date().toISOString().split('T')[0];
 
     window.onload = function() {
-        // Build Hours list options (0 to 23) cleanly inside plain dropdown values
         const hrsDropdown = document.getElementById('durationHours');
         for (let h = 0; h <= 23; h++) {
             let opt = document.createElement('option');
@@ -268,7 +258,6 @@
             hrsDropdown.appendChild(opt);
         }
 
-        // Build Minutes list options (0 to 59) cleanly inside plain dropdown values
         const minsDropdown = document.getElementById('durationMinutes');
         for (let m = 0; m <= 59; m++) {
             let opt = document.createElement('option');
@@ -444,7 +433,6 @@
         cachedAssignmentsData = [];
     }
 
-    // Capture credentials helper
     function getCredentials() {
         return {
             name: document.getElementById('globalEmployeeName').value,
@@ -548,7 +536,14 @@
                 res.data.forEach(row => {
                     const tr = document.createElement('tr');
                     const cleanDeadline = normalizeToDMY(row.deadline);
-                    tr.innerHTML = `<td><strong>${row.client}</strong></td><td>${row.description}</td><td><span class="task-badge priority-${row.priority}">${row.priority}</span></td><td>${cleanDeadline}</td>`;
+                    tr.innerHTML = `
+                        <td><strong>${row.client}</strong></td>
+                        <td>${row.description}</td>
+                        <td><span class="task-badge priority-${row.priority}">${row.priority}</span></td>
+                        <td>${cleanDeadline}</td>
+                        <td>
+                            <button type="button" style="background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;" onclick="markTaskFulfilled(${row.rowIndex}, this)">✓ Mark Done</button>
+                        </td>`;
                     tbody.appendChild(tr);
                 });
                 table.style.display = "table";
@@ -560,6 +555,33 @@
         }).catch(() => {
             statusDiv.style.color = "red";
             statusDiv.innerText = "Query aborted. Backend pipeline failure.";
+        });
+    }
+
+    // FUNCTION TO HIGHLIGHT TASK ROW ON GOOGLE SHEET LIGHT GREEN ONLY (UPDATES BUTTON TO 'FULFILLED')
+    function markTaskFulfilled(rowIndex, btnElement) {
+        const creds = getCredentials();
+        if(!confirm("Are you sure you want to mark this task as fulfilled?")) return;
+        
+        btnElement.disabled = true;
+        btnElement.innerText = "Saving...";
+
+        fetch(`${WEB_APP_URL}?action=markTaskCompleted&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}&rowIndex=${rowIndex}`)
+        .then(res => res.json())
+        .then(res => {
+            if(res.status === "SUCCESS") {
+                const rowElem = btnElement.closest('tr');
+                rowElem.style.backgroundColor = "#d4edda"; 
+                btnElement.parentElement.innerHTML = "<span style='color: #155724; font-weight: bold;'>✓ Fulfilled</span>";
+            } else {
+                alert("Failed to update task: " + res.message);
+                btnElement.disabled = false;
+                btnElement.innerText = "✓ Mark Done";
+            }
+        }).catch(() => {
+            alert("Network transmission error.");
+            btnElement.disabled = false;
+            btnElement.innerText = "✓ Mark Done";
         });
     }
 
