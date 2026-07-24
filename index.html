@@ -6,7 +6,7 @@
     <title>TaxPro & Associates - Daily Activity Tracking Portal</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 650px; background: white; padding: 25px; margin: 0 auto 20px auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.08); }
+        .container { max-width: 750px; background: white; padding: 25px; margin: 0 auto 20px auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.08); }
         .brand-header { text-align: center; margin-bottom: 20px; background-color: #1a365d; color: white; padding: 20px; border-radius: 6px; }
         .firm-logo { max-width: 140px; height: auto; margin-bottom: 8px; display: inline-block; }
         .brand-header h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px; }
@@ -224,6 +224,7 @@
                     <th>Date</th>
                     <th>Client Account</th>
                     <th>Category (Sub-Task)</th>
+                    <th>Remarks</th>
                     <th>Current Status</th>
                     <th>Time Logged</th>
                 </tr>
@@ -536,14 +537,23 @@
                 res.data.forEach(row => {
                     const tr = document.createElement('tr');
                     const cleanDeadline = normalizeToDMY(row.deadline);
+                    const isFulfilled = String(row.status).trim().toLowerCase() === "fulfilled";
+
+                    // DYNAMICALLY RENDER BUTTON OR FULFILLED TEXT ON LOAD
+                    let actionCellHtml = "";
+                    if (isFulfilled) {
+                        tr.style.backgroundColor = "#d4edda"; // Light Green row
+                        actionCellHtml = `<span style="color: #155724; font-weight: bold;">✓ Fulfilled</span>`;
+                    } else {
+                        actionCellHtml = `<button type="button" style="background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;" onclick="markTaskFulfilled(${row.rowIndex}, this)">✓ Mark Done</button>`;
+                    }
+
                     tr.innerHTML = `
                         <td><strong>${row.client}</strong></td>
                         <td>${row.description}</td>
                         <td><span class="task-badge priority-${row.priority}">${row.priority}</span></td>
                         <td>${cleanDeadline}</td>
-                        <td>
-                            <button type="button" style="background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;" onclick="markTaskFulfilled(${row.rowIndex}, this)">✓ Mark Done</button>
-                        </td>`;
+                        <td>${actionCellHtml}</td>`;
                     tbody.appendChild(tr);
                 });
                 table.style.display = "table";
@@ -558,7 +568,6 @@
         });
     }
 
-    // FUNCTION TO HIGHLIGHT TASK ROW ON GOOGLE SHEET LIGHT GREEN ONLY (UPDATES BUTTON TO 'FULFILLED')
     function markTaskFulfilled(rowIndex, btnElement) {
         const creds = getCredentials();
         if(!confirm("Are you sure you want to mark this task as fulfilled?")) return;
@@ -620,7 +629,7 @@
                 res.data.forEach(row => {
                     const tr = document.createElement('tr');
                     const cleanDate = normalizeToDMY(row.date);
-                    tr.innerHTML = `<td>${cleanDate}</td><td>${row.client}</td><td>${row.task}</td><td><em>${row.status}</em></td><td><strong>${row.hours} hrs</strong></td>`;
+                    tr.innerHTML = `<td>${cleanDate}</td><td>${row.client}</td><td>${row.task}</td><td>${row.remarks || '-'}</td><td><em>${row.status}</em></td><td><strong>${row.hours} hrs</strong></td>`;
                     tbody.appendChild(tr);
                 });
                 table.style.display = "table";
@@ -654,17 +663,18 @@
         if (!cachedHistoryData || cachedHistoryData.length === 0) return;
 
         let csvContent = "\uFEFF"; 
-        csvContent += "Date,Client Account,Category (Sub-Task),Current Status,Actual Time Spent (Decimal Hours)\n";
+        csvContent += "Date,Client Account,Category (Sub-Task),Remarks,Current Status,Actual Time Spent (Decimal Hours)\n";
 
         cachedHistoryData.forEach(row => {
             const excelCleanDate = normalizeToDMY(row.date);
             const cellDate = `"${excelCleanDate.replace(/"/g, '""')}"`;
             const cellClient = `"${row.client.replace(/"/g, '""')}"`;
             const cellTask = `"${row.task.replace(/"/g, '""')}"`;
+            const cellRemarks = `"${(row.remarks || '').replace(/"/g, '""')}"`;
             const cellStatus = `"${row.status.replace(/"/g, '""')}"`;
             const cellHours = `"${row.hours.replace(/"/g, '""')}"`;
 
-            csvContent += `${cellDate},${cellClient},${cellTask},${cellStatus},${cellHours}\n`;
+            csvContent += `${cellDate},${cellClient},${cellTask},${cellRemarks},${cellStatus},${cellHours}\n`;
         });
 
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
