@@ -3,30 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaxPro & Associates - Daily Activity Tracking Portal</title>
+    <title>TaxPro & Associates - Enterprise Workflow Portal</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 750px; background: white; padding: 25px; margin: 0 auto 20px auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.08); }
+        .container { max-width: 900px; background: white; padding: 25px; margin: 0 auto 20px auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.08); }
         .brand-header { text-align: center; margin-bottom: 20px; background-color: #1a365d; color: white; padding: 20px; border-radius: 6px; }
         .firm-logo { max-width: 140px; height: auto; margin-bottom: 8px; display: inline-block; }
         .brand-header h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px; }
         .brand-header p { margin: 5px 0 0 0; font-size: 14px; color: #cbd5e1; font-weight: 600; }
+        
+        /* TOP LEVEL MODULE SWITCHER */
+        .module-nav { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 3px solid #cbd5e1; padding-bottom: 10px; }
+        .module-btn { background-color: #edf2f7; color: #1a365d; border: 2px solid #cbd5e1; padding: 12px 20px; font-size: 15px; font-weight: 700; border-radius: 6px; cursor: pointer; flex: 1; transition: all 0.2s; text-align: center; }
+        .module-btn.active { background-color: #1a365d; color: white; border-color: #1a365d; box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
+
+        /* INNER SUB TABS */
+        .navigation-tabs { display: flex; gap: 8px; margin-bottom: 20px; justify-content: center; }
+        .tab-btn { background-color: #e2e8f0; color: #4a5568; border: none; padding: 10px 16px; font-size: 14px; font-weight: 600; border-radius: 4px; cursor: pointer; flex: 1; transition: all 0.2s; }
+        .tab-btn.active { background-color: #2c5282; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+
+        .portal-module { display: none; }
+        .portal-module.active { display: block; }
+        .portal-page { display: none; }
+        .portal-page.active { display: block; }
+
         h2 { color: #1a365d; margin-top: 0; font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
         label { display: block; margin: 12px 0 5px 0; font-weight: 600; font-size: 13px; color: #4a5568; }
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
         .secure-auth-card { background-color: #edf2f7; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
-        .navigation-tabs { display: flex; gap: 8px; margin-bottom: 20px; justify-content: center; }
-        .tab-btn { background-color: #e2e8f0; color: #4a5568; border: none; padding: 10px 16px; font-size: 14px; font-weight: 600; border-radius: 4px; cursor: pointer; flex: 1; transition: all 0.2s; }
-        .tab-btn.active { background-color: #1a365d; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
-        .portal-page { display: none; }
-        .portal-page.active { display: block; }
         
         button.action-submit { background-color: #1a365d; color: white; border: none; padding: 12px 20px; font-size: 15px; font-weight: 600; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 15px; }
         button.action-submit:hover { background-color: #2c5282; }
-        button.print-btn { background-color: #4a5568; color: white; border: none; padding: 10px 15px; font-size: 14px; font-weight: 600; border-radius: 4px; cursor: pointer; flex: 1; transition: all 0.2s; }
-        button.print-btn:hover { background-color: #2d3748; }
-        button.download-btn { background-color: #107c41; color: white; border: none; padding: 10px 15px; font-size: 14px; font-weight: 600; border-radius: 4px; cursor: pointer; flex: 1; transition: all 0.2s; }
-        button.download-btn:hover { background-color: #0b592e; }
+        button.print-btn { background-color: #4a5568; color: white; border: none; padding: 10px 15px; font-size: 14px; font-weight: 600; border-radius: 4px; cursor: pointer; flex: 1; }
+        button.download-btn { background-color: #107c41; color: white; border: none; padding: 10px 15px; font-size: 14px; font-weight: 600; border-radius: 4px; cursor: pointer; flex: 1; }
         .button-group-row { display: flex; gap: 12px; margin-top: 15px; }
         
         .row { display: flex; gap: 15px; }
@@ -40,202 +49,383 @@
         .priority-Medium { background-color: #feebc8; color: #9c4221; }
         .priority-Low { background-color: #e6fffa; color: #234e52; }
 
-        #printOnlyHeader { display: none; }
+        /* NARROWED SUMMARY TABLE STYLES */
+        .summary-table-box { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 15px; margin: 15px auto 0 auto; max-width: 520px; }
+        .summary-table-box table { margin-top: 0; font-size: 12px; }
+        .summary-table-box th { text-align: center; background-color: #edf2f7; padding: 6px 10px; }
+        .summary-table-box td { text-align: center; font-weight: 600; padding: 6px 10px; }
+
+        /* ALPHABET FILTER STYLES */
+        .alphabet-filter-container { margin: 15px 0; }
+        .alphabet-bar { display: flex; flex-wrap: wrap; gap: 4px; min-height: 32px; }
+        .alpha-btn { background-color: #edf2f7; color: #2d3748; border: 1px solid #cbd5e1; padding: 5px 8px; font-size: 12px; font-weight: 700; border-radius: 4px; cursor: pointer; min-width: 28px; text-align: center; transition: all 0.15s; }
+        .alpha-btn:hover { background-color: #cbd5e1; }
+        .alpha-btn.active { background-color: #1a365d; color: white; border-color: #1a365d; }
+
+        /* MODAL POPUP STYLES */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.55); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; border-radius: 8px; width: 92%; max-width: 550px; padding: 22px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; position: relative; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px; }
+        .modal-header h3 { margin: 0; color: #1a365d; font-size: 18px; }
+        .modal-close { background: none; border: none; font-size: 26px; font-weight: bold; cursor: pointer; color: #a0aec0; }
+        .modal-close:hover { color: #2d3748; }
+
+        #gstPrintArea { display: none; }
 
         @media print {
             body { background: white; color: black; padding: 0; margin: 0; }
-            .brand-header, .secure-auth-card, .navigation-tabs, .status-msg, button, .print-btn, .download-btn, .button-group-row, #dailyTrackerBox {
+            .brand-header, .secure-auth-card, .module-nav, .navigation-tabs, .status-msg, button, .button-group-row, #dailyTrackerBox, .alphabet-filter-container, .modal-overlay, .summary-table-box, #gst-view-pending, #gst-view-filed {
                 display: none !important;
             }
             .container { box-shadow: none !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
-            .portal-page { display: none !important; }
-            .portal-page.active { display: block !important; }
-            #printOnlyHeader { display: block !important; margin-bottom: 25px; border-bottom: 2px solid #000; padding-bottom: 10px; }
-            .print-metadata-row { display: flex; justify-content: space-between; font-size: 14px; margin-top: 8px; }
-            h2 { font-size: 18px !important; color: black !important; border: none !important; padding: 0 !important; margin-top: 15px !important; }
-            table { width: 100% !important; margin-top: 10px !important; font-size: 12px !important; page-break-inside: auto; }
-            tr { page-break-inside: avoid; page-break-after: auto; }
-            th { background-color: #f1f5f9 !important; color: black !important; border: 1px solid #000 !important; font-weight: bold !important; }
-            td { border: 1px solid #000 !important; color: black !important; padding: 8px !important; }
+            #gstPrintArea { display: block !important; }
+            #gstPrintArea table { width: 100% !important; border-collapse: collapse !important; font-size: 11px !important; }
+            #gstPrintArea th, #gstPrintArea td { border: 1px solid #000 !important; padding: 6px !important; color: black !important; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="printOnlyHeader">
-        <h1 style="margin: 0; font-size: 26px; color: #1a365d;">TaxPro & Associates</h1>
-        <div class="print-metadata-row">
-            <div><strong>Employee Name:</strong> <span id="lblPrintEmployee">--</span></div>
-            <div><strong>Generated On:</strong> <span id="lblPrintTimestamp">--</span></div>
-        </div>
-    </div>
-
     <!-- BRAND HEADER -->
     <div class="brand-header">
         <img src="logo.png" alt="TaxPro Logo" class="firm-logo" onerror="this.style.display='none';">
         <h1>TaxPro & Associates</h1>
-        <p>Daily Activity Tracking Portal</p>
+        <p>Enterprise Management & Compliance Suite</p>
     </div>
 
-    <!-- SECURE AUTH CARD -->
-    <div class="secure-auth-card">
-        <h3 style="margin: 0 0 10px 0; font-size: 13px; color: #2d3748;">🔒 Secure User Verification</h3>
-        <div class="row">
-            <div class="field">
-                <select id="globalEmployeeName" onchange="resetDataViews(); runBackgroundTracker();">
-                    <option value="">-- Loading Employee List... --</option>
-                </select>
-            </div>
-            <div class="field">
-                <input type="password" id="globalPin" placeholder="Enter Your 4-Digit PIN" oninput="resetDataViews(); if(this.value.length >= 4){ runBackgroundTracker(); }">
-            </div>
-        </div>
+    <!-- MAIN TOP NAVIGATION BAR -->
+    <div class="module-nav">
+        <button class="module-btn active" id="btn-mod-timesheet" onclick="switchModule('module-timesheet')">📊 Timesheet Management</button>
+        <button class="module-btn" id="btn-mod-gst" onclick="switchModule('module-gst')">📑 GST Compliance Tracker</button>
     </div>
 
-    <div class="navigation-tabs">
-        <button class="tab-btn active" onclick="switchTab('timecard-page')">📝 Log Time</button>
-        <button class="tab-btn" onclick="switchTab('assignments-page'); fetchAssignedTasks();">🎯 My Tasks</button>
-        <button class="tab-btn" onclick="switchTab('history-page'); fetchEmployeeHistory();">🔍 History Logs</button>
-    </div>
-
-    <!-- TAB 1: LOG TIME -->
-    <div id="timecard-page" class="portal-page active">
-        <div id="dailyTrackerBox" style="background-color: #e6fffa; border: 1px solid #b2f5ea; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: none;">
-            <h4 style="margin: 0 0 8px 0; color: #234e52; font-size: 14px;">📊 Your Daily Workload Tracker (Target: 8 Hours)</h4>
-            <div style="display: flex; justify-content: space-between; font-size: 13px; color: #2d3748;">
-                <div><strong>Selected Date (<span id="trackerDateLabel">--</span>):</strong> <span id="trackerSelectedHours" style="font-weight: bold;">0.00</span> / 8.00 hrs</div>
-                <div><strong>Previous Day Summary:</strong> <span id="trackerPrevHours" style="font-weight: bold;">0.00</span> / 8.00 hrs</div>
-            </div>
-            <div style="background-color: #cbd5e1; height: 8px; border-radius: 4px; margin-top: 10px; overflow: hidden;">
-                <div id="trackerProgressBar" style="background-color: #319795; width: 0%; height: 100%; transition: width 0.4s ease;"></div>
+    <!-- MODULE 1: TIMESHEET MANAGEMENT -->
+    <div id="module-timesheet" class="portal-module active">
+        <!-- SECURE AUTH CARD FOR TIMESHEET -->
+        <div class="secure-auth-card">
+            <h3 style="margin: 0 0 10px 0; font-size: 13px; color: #2d3748;">🔒 Secure User Verification</h3>
+            <div class="row">
+                <div class="field">
+                    <select id="globalEmployeeName" onchange="resetDataViews(); runBackgroundTracker();">
+                        <option value="">-- Loading Employee List... --</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <input type="password" id="globalPin" placeholder="Enter Your 4-Digit PIN" oninput="resetDataViews(); if(this.value.length >= 4){ runBackgroundTracker(); }">
+                </div>
             </div>
         </div>
 
-        <h2>Activity Timesheet</h2>
-        <form id="punchForm">
-            <div class="row">
-                <div class="field">
-                    <label>Date (DD/MM/YYYY)</label>
-                    <input type="date" id="date" onchange="updateDailyTrackerUI();" required>
+        <div class="navigation-tabs">
+            <button class="tab-btn active" onclick="switchTab('timecard-page')">📝 Log Time</button>
+            <button class="tab-btn" onclick="switchTab('assignments-page'); fetchAssignedTasks();">🎯 My Tasks</button>
+            <button class="tab-btn" onclick="switchTab('history-page'); fetchEmployeeHistory();">🔍 History Logs</button>
+        </div>
+
+        <!-- SUB TAB 1: LOG TIME -->
+        <div id="timecard-page" class="portal-page active">
+            <div id="dailyTrackerBox" style="background-color: #e6fffa; border: 1px solid #b2f5ea; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: none;">
+                <h4 style="margin: 0 0 8px 0; color: #234e52; font-size: 14px;">📊 Your Daily Workload Tracker (Target: 8 Hours)</h4>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; color: #2d3748;">
+                    <div><strong>Selected Date (<span id="trackerDateLabel">--</span>):</strong> <span id="trackerSelectedHours" style="font-weight: bold;">0.00</span> / 8.00 hrs</div>
+                    <div><strong>Previous Day Summary:</strong> <span id="trackerPrevHours" style="font-weight: bold;">0.00</span> / 8.00 hrs</div>
                 </div>
-                <div class="field">
-                    <label>Client</label>
-                    <select id="clientName" required>
-                        <option value="">-- Loading Client Dropdown... --</option>
-                    </select>
+                <div style="background-color: #cbd5e1; height: 8px; border-radius: 4px; margin-top: 10px; overflow: hidden;">
+                    <div id="trackerProgressBar" style="background-color: #319795; width: 0%; height: 100%; transition: width 0.4s ease;"></div>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="field">
-                    <label>Task</label>
-                    <select id="taskCategory" onchange="handleTaskChange()" required>
-                        <option value="">-- Loading Tasks... --</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>Sub-Task</label>
-                    <select id="subTaskCategory" required>
-                        <option value="">-- Select Main Task First --</option>
-                    </select>
-                </div>
-            </div>
-
-            <label>Remarks</label>
-            <textarea id="description" rows="3" placeholder="Provide details regarding the work completed..." required></textarea>
-
-            <div class="row">
-                <div class="field">
-                    <label>Current Status</label>
-                    <select id="status" required>
-                        <option value="In progress">In progress</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Data pending from Client">Data pending from Client</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>Billing Code</label>
-                    <select id="billingType" required>
-                        <option value="Billable">Billable</option>
-                        <option value="Non-Billable">Non-Billable</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="field">
-                    <div style="display: flex; gap: 15px;">
-                        <div style="flex: 1;">
-                            <label>Actual Time Spent (Hours)</label>
-                            <select id="durationHours" required></select>
-                        </div>
-                        <div style="flex: 1;">
-                            <label>Actual Time Spent (Minutes)</label>
-                            <select id="durationMinutes" required></select>
-                        </div>
+            <h2>Activity Timesheet</h2>
+            <form id="punchForm">
+                <div class="row">
+                    <div class="field">
+                        <label>Date (DD/MM/YYYY)</label>
+                        <input type="date" id="date" onchange="updateDailyTrackerUI();" required>
+                    </div>
+                    <div class="field">
+                        <label>Client</label>
+                        <select id="clientName" required><option value="">-- Loading Clients... --</option></select>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="field">
+                        <label>Task</label>
+                        <select id="taskCategory" onchange="handleTaskChange()" required><option value="">-- Loading Tasks... --</option></select>
+                    </div>
+                    <div class="field">
+                        <label>Sub-Task</label>
+                        <select id="subTaskCategory" required><option value="">-- Select Main Task First --</option></select>
+                    </div>
+                </div>
+
+                <label>Remarks</label>
+                <textarea id="description" rows="3" placeholder="Provide details regarding work completed..." required></textarea>
+
+                <div class="row">
+                    <div class="field">
+                        <label>Current Status</label>
+                        <select id="status" required>
+                            <option value="In progress">In progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Data pending from Client">Data pending from Client</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Billing Code</label>
+                        <select id="billingType" required>
+                            <option value="Billable">Billable</option>
+                            <option value="Non-Billable">Non-Billable</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="field">
+                        <div style="display: flex; gap: 15px;">
+                            <div style="flex: 1;"><label>Hours</label><select id="durationHours" required></select></div>
+                            <div style="flex: 1;"><label>Minutes</label><select id="durationMinutes" required></select></div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Priority Focus</label>
+                        <select id="priority" required>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="button" class="action-submit" onclick="submitPunch()">Submit Log</button>
+                <div id="punchStatus" class="status-msg"></div>
+            </form>
+        </div>
+
+        <!-- SUB TAB 2: MY TASKS -->
+        <div id="assignments-page" class="portal-page">
+            <h2>🎯 Your Active Weekly Assignments</h2>
+            <div id="taskStatus" class="status-msg"></div>
+            <table id="tasksTable" style="display:none;">
+                <thead>
+                    <tr><th>Client Name</th><th>Task Details</th><th>Priority</th><th>Target Deadline</th><th>Action</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="button-group-row" id="taskActionRow" style="display:none;">
+                <button type="button" class="print-btn" onclick="executeTimesheetPrint()">🖨️ Print Tasks</button>
+                <button type="button" class="download-btn" onclick="exportAssignmentsToExcel()">📊 Download to Excel</button>
+            </div>
+        </div>
+
+        <!-- SUB TAB 3: HISTORY LOGS -->
+        <div id="history-page" class="portal-page">
+            <h2>🔍 Your Personal Performance History Log</h2>
+            <div id="historyStatus" class="status-msg"></div>
+            <table id="historyTable" style="display:none;">
+                <thead>
+                    <tr><th>Date</th><th>Client Account</th><th>Category (Sub-Task)</th><th>Remarks</th><th>Status</th><th>Logged</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="button-group-row" id="historyActionRow" style="display:none;">
+                <button type="button" class="print-btn" onclick="executeTimesheetPrint()">🖨️ Print Log</button>
+                <button type="button" class="download-btn" onclick="exportHistoryToExcel()">📊 Download to Excel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODULE 2: GST COMPLIANCE TRACKER -->
+    <div id="module-gst" class="portal-module">
+        <h2>📑 GST Returns Compliance Portal</h2>
+        
+        <!-- GST CONTROLS -->
+        <div class="secure-auth-card">
+            <div class="row">
                 <div class="field">
-                    <label>Priority Focus</label>
-                    <select id="priority" required>
-                        <option value="Medium">Medium</option>
-                        <option value="High">High</option>
-                        <option value="Low">Low</option>
+                    <label>Select Return Type</label>
+                    <select id="gstReturnType" onchange="toggleGstFormFields(); fetchPendingGST();">
+                        <option value="GSTR1">GSTR-1</option>
+                        <option value="GSTR3B">GSTR-3B</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Select Month</label>
+                    <select id="gstMonth" onchange="fetchPendingGST();">
+                        <option value="Apr">April (Apr)</option>
+                        <option value="May">May</option>
+                        <option value="Jun">June (Jun)</option>
+                        <option value="Jul">July (Jul)</option>
+                        <option value="Aug">August (Aug)</option>
+                        <option value="Sep">September (Sep)</option>
+                        <option value="Oct">October (Oct)</option>
+                        <option value="Nov">November (Nov)</option>
+                        <option value="Dec">December (Dec)</option>
+                        <option value="Jan">January (Jan)</option>
+                        <option value="Feb">February (Feb)</option>
+                        <option value="Mar">March (Mar)</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Select Filing Frequency</label>
+                    <select id="gstFrequencyFilter" onchange="buildAlphabetBar(); renderPendingGSTTable(); renderFiledGSTTable();">
+                        <option value="ALL">All Returns</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Quarterly">Quarterly</option>
+                        <option value="Composition">Composition</option>
                     </select>
                 </div>
             </div>
 
-            <button type="button" class="action-submit" onclick="submitPunch()">Submit</button>
-            <div id="punchStatus" class="status-msg"></div>
+            <!-- NARROWED SUMMARY TABLE -->
+            <div class="summary-table-box">
+                <h4 style="margin: 0 0 8px 0; color: #1a365d; font-size: 13px; text-align: center;">📊 Return Filing Summary Breakdown</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Filing Frequency</th>
+                            <th style="color:#c53030;">⏳ Pending</th>
+                            <th style="color:#276749;">✓ Filed</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Monthly</td><td id="cnt-month-pending">0</td><td id="cnt-month-filed">0</td><td id="cnt-month-total">0</td></tr>
+                        <tr><td>Quarterly</td><td id="cnt-quart-pending">0</td><td id="cnt-quart-filed">0</td><td id="cnt-quart-total">0</td></tr>
+                        <tr><td>Composition</td><td id="cnt-comp-pending">0</td><td id="cnt-comp-filed">0</td><td id="cnt-comp-total">0</td></tr>
+                        <tr style="background-color:#f7fafc; font-weight:bold;"><td>Total</td><td id="cnt-tot-pending" style="color:#c53030;">0</td><td id="cnt-tot-filed" style="color:#276749;">0</td><td id="cnt-tot-grand">0</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- GST INNER SUB TABS SWITCHER -->
+        <div class="navigation-tabs">
+            <button class="tab-btn active" id="btn-gst-sub-pending" onclick="switchGstView('pending')">⏳ Pending Returns Queue</button>
+            <button class="tab-btn" id="btn-gst-sub-filed" onclick="switchGstView('filed')">✓ Filed Returns Register</button>
+        </div>
+
+        <!-- GST VIEW 1: PENDING RETURNS QUEUE -->
+        <div id="gst-view-pending">
+            <div class="alphabet-filter-container">
+                <label style="margin-bottom:6px;">Filter Pending Clients by Initial:</label>
+                <div class="alphabet-bar" id="alphabetBar"></div>
+            </div>
+
+            <h3>⏳ Pending Returns List</h3>
+            <div id="gstTableStatus" class="status-msg"></div>
+            <table id="gstPendingTable" style="display:none;">
+                <thead>
+                    <tr>
+                        <th>GSTIN</th>
+                        <th>Client Name</th>
+                        <th>Frequency</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <div class="button-group-row" id="gstPendingActionRow" style="display:none;">
+                <button type="button" class="print-btn" onclick="executeGstPrint('pending')">🖨️ Print Pending (PDF)</button>
+                <button type="button" class="download-btn" onclick="exportPendingGSTToExcel()">📊 Download Pending (Excel)</button>
+            </div>
+        </div>
+
+        <!-- GST VIEW 2: FILED RETURNS REGISTER -->
+        <div id="gst-view-filed" style="display:none;">
+            <h3>✓ Completed / Filed Returns Register</h3>
+            <div id="gstFiledTableStatus" class="status-msg"></div>
+            <table id="gstFiledTable" style="display:none;">
+                <thead>
+                    <tr id="gstFiledTableHeader"></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <div class="button-group-row" id="gstFiledActionRow" style="display:none;">
+                <button type="button" class="print-btn" onclick="executeGstPrint('filed')">🖨️ Print Filed List (PDF)</button>
+                <button type="button" class="download-btn" style="background-color: #2b6cb0;" onclick="exportFiledGSTToExcel()">📊 Download Filed List (Excel)</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PRINTABLE CONTAINER FOR GST PDF EXPORTS -->
+<div id="gstPrintArea"></div>
+
+<!-- POPUP MODAL FOR GST FILING ENTRY -->
+<div id="gstModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeGstModal();">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>📌 File Return Entry</h3>
+            <button type="button" class="modal-close" onclick="closeGstModal()">&times;</button>
+        </div>
+        <form id="gstPunchForm">
+            <input type="hidden" id="gstTargetRowIndex">
+            <div class="row">
+                <div class="field">
+                    <label>GSTIN</label>
+                    <input type="text" id="gstinField" readonly style="background-color:#e2e8f0;">
+                </div>
+                <div class="field">
+                    <label>Client Name</label>
+                    <input type="text" id="gstClientNameField" readonly style="background-color:#e2e8f0;">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Filing Date</label>
+                    <input type="date" id="gstFilingDate" required>
+                </div>
+                <div class="field">
+                    <label>ARN Number (15-Digit Alphanumeric)</label>
+                    <input type="text" id="gstArnNumber" placeholder="e.g. AA270424000000X" maxlength="15" style="text-transform:uppercase;" required>
+                </div>
+            </div>
+
+            <!-- DYNAMIC GSTR-3B FIELDS -->
+            <div id="gstr3bSpecificFields" style="display:none;">
+                <div class="row">
+                    <div class="field">
+                        <label>Reco Sheet Updated</label>
+                        <select id="gstRecoUpdated">
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="N/A">N/A</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Mismatch Shared</label>
+                        <select id="gstMismatchShared">
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="N/A">N/A</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="field">
+                        <label>Tax Position</label>
+                        <select id="gstTaxType">
+                            <option value="Payable">Payable</option>
+                            <option value="Carry Forward">Carry Forward</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Tax Amount (₹)</label>
+                        <input type="number" step="0.01" id="gstTaxAmount" placeholder="0.00">
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="action-submit" onclick="submitGstFiling()">✓ Submit Filing Punch</button>
+            <div id="gstSubmitStatus" class="status-msg"></div>
         </form>
-    </div>
-
-    <!-- TAB 2: MY TASKS -->
-    <div id="assignments-page" class="portal-page">
-        <h2>🎯 Your Active Weekly Assignments</h2>
-        <div id="taskStatus" class="status-msg"></div>
-        <table id="tasksTable" style="display:none;">
-            <thead>
-                <tr>
-                    <th>Client Name</th>
-                    <th>Task Details</th>
-                    <th>Priority</th>
-                    <th>Target Deadline</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        
-        <div class="button-group-row" id="taskActionRow" style="display:none;">
-            <button type="button" class="print-btn" onclick="executeBrandedPrint()">🖨️ Print Tasks / Save PDF</button>
-            <button type="button" class="download-btn" onclick="exportAssignmentsToExcel()">📊 Download to Excel</button>
-        </div>
-    </div>
-
-    <!-- TAB 3: HISTORY LOGS -->
-    <div id="history-page" class="portal-page">
-        <h2>🔍 Your Personal Performance History Log</h2>
-        <div id="historyStatus" class="status-msg"></div>
-        <table id="historyTable" style="display:none;">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Client Account</th>
-                    <th>Category (Sub-Task)</th>
-                    <th>Remarks</th>
-                    <th>Current Status</th>
-                    <th>Time Logged</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        
-        <div class="button-group-row" id="historyActionRow" style="display:none;">
-            <button type="button" class="print-btn" onclick="executeBrandedPrint()">🖨️ Print Log / Save PDF</button>
-            <button type="button" class="download-btn" onclick="exportHistoryToExcel()">📊 Download to Excel</button>
-        </div>
     </div>
 </div>
 
@@ -246,15 +436,18 @@
     let globalTaskMap = {}; 
     let cachedHistoryData = []; 
     let cachedAssignmentsData = []; 
+    let cachedPendingGstData = [];
+    let cachedFiledGstData = [];
+    let selectedAlphabet = "ALL";
 
     document.getElementById('date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('gstFilingDate').value = new Date().toISOString().split('T')[0];
 
     window.onload = function() {
         const hrsDropdown = document.getElementById('durationHours');
         for (let h = 0; h <= 23; h++) {
             let opt = document.createElement('option');
-            let valStr = h < 10 ? '0' + h : '' + h;
-            opt.value = valStr;
+            opt.value = h < 10 ? '0' + h : '' + h;
             opt.innerText = h;
             hrsDropdown.appendChild(opt);
         }
@@ -262,8 +455,7 @@
         const minsDropdown = document.getElementById('durationMinutes');
         for (let m = 0; m <= 59; m++) {
             let opt = document.createElement('option');
-            let valStr = m < 10 ? '0' + m : '' + m;
-            opt.value = valStr;
+            opt.value = m < 10 ? '0' + m : '' + m;
             opt.innerText = m < 10 ? '0' + m : m;
             minsDropdown.appendChild(opt);
         }
@@ -273,18 +465,53 @@
         }
     };
 
+    function classifyFrequency(freq) {
+        const f = String(freq || "").toLowerCase().trim();
+        if (f.includes("quarter")) return "Quarterly";
+        if (f.includes("comp")) return "Composition";
+        return "Monthly";
+    }
+
+    // TOP-LEVEL MODULE SWITCHER
+    function switchModule(moduleId) {
+        document.querySelectorAll('.portal-module').forEach(m => m.classList.remove('active'));
+        document.querySelectorAll('.module-btn').forEach(b => b.classList.remove('active'));
+        
+        document.getElementById(moduleId).classList.add('active');
+        if (moduleId === 'module-timesheet') {
+            document.getElementById('btn-mod-timesheet').classList.add('active');
+        } else {
+            document.getElementById('btn-mod-gst').classList.add('active');
+            toggleGstFormFields();
+            fetchPendingGST();
+        }
+    }
+
+    // TIMESHEET INNER TAB SWITCHER
+    function switchTab(pageId) {
+        document.querySelectorAll('.portal-page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    // GST INNER VIEW SWITCHER
+    function switchGstView(viewType) {
+        document.getElementById('gst-view-pending').style.display = (viewType === 'pending') ? 'block' : 'none';
+        document.getElementById('gst-view-filed').style.display = (viewType === 'filed') ? 'block' : 'none';
+        
+        document.getElementById('btn-gst-sub-pending').classList.toggle('active', viewType === 'pending');
+        document.getElementById('btn-gst-sub-filed').classList.toggle('active', viewType === 'filed');
+    }
+
     function normalizeToDMY(dateString) {
         if (!dateString) return "";
         let clean = dateString.trim().split("T")[0].split(" ")[0];
         if (/^\d{4}[-\/]\d{2}[-\/]\d{2}$/.test(clean)) {
-            let separator = clean.includes("-") ? "-" : "/";
-            let parts = clean.split(separator);
+            let parts = clean.split(clean.includes("-") ? "-" : "/");
             return parts[2] + "/" + parts[1] + "/" + parts[0];
         }
-        if (/^\d{2}-\d{2}-\d{4}$/.test(clean)) {
-            return clean.replace(/-/g, "/");
-        }
-        return clean; 
+        return clean.replace(/-/g, "/"); 
     }
 
     function loadInitializationData() {
@@ -317,26 +544,464 @@
                     opt.value = mainTask; opt.innerText = mainTask;
                     taskDropdown.appendChild(opt);
                 }
-            } else {
-                empDropdown.innerHTML = '<option value="">⚠️ Profile map broken</option>';
-                clientDropdown.innerHTML = '<option value="">⚠️ Account map broken</option>';
-                taskDropdown.innerHTML = '<option value="">⚠️ Service stream broken</option>';
             }
-        })
-        .catch(() => {
-            empDropdown.innerHTML = '<option value="">⚠️ System Core Offline</option>';
-            clientDropdown.innerHTML = '<option value="">⚠️ System Core Offline</option>';
-            taskDropdown.innerHTML = '<option value="">⚠️ System Core Offline</option>';
+        }).catch(() => {});
+    }
+
+    // -------------------------------------------------------------------
+    // GST MODULE FRONTEND LOGIC
+    // -------------------------------------------------------------------
+    function toggleGstFormFields() {
+        const returnType = document.getElementById('gstReturnType').value;
+        const gstr3bBox = document.getElementById('gstr3bSpecificFields');
+        gstr3bBox.style.display = (returnType === "GSTR3B") ? "block" : "none";
+    }
+
+    function fetchPendingGST() {
+        const returnType = document.getElementById('gstReturnType').value;
+        const month = document.getElementById('gstMonth').value;
+        const statusDiv = document.getElementById('gstTableStatus');
+        const filedStatusDiv = document.getElementById('gstFiledTableStatus');
+
+        statusDiv.style.color = "orange";
+        statusDiv.innerText = `Scanning GST returns ledger for ${returnType} (${month})...`;
+        filedStatusDiv.innerText = "";
+
+        fetch(`${WEB_APP_URL}?action=fetchPendingGST&returnType=${returnType}&month=${month}`)
+        .then(res => res.json())
+        .then(res => {
+            if (res.status === "SUCCESS") {
+                cachedPendingGstData = res.pending || [];
+                cachedFiledGstData = res.filed || [];
+
+                updateGstSummaryTable();
+                buildAlphabetBar();
+                renderPendingGSTTable();
+                renderFiledGSTTable();
+            } else {
+                statusDiv.style.color = "red";
+                statusDiv.innerText = "Error loading GST data: " + res.message;
+            }
+        }).catch(() => {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Network pipeline error.";
         });
     }
 
+    function updateGstSummaryTable() {
+        let counts = {
+            monthly: { pending: 0, filed: 0 },
+            quarterly: { pending: 0, filed: 0 },
+            composition: { pending: 0, filed: 0 }
+        };
+
+        cachedPendingGstData.forEach(item => {
+            const cat = classifyFrequency(item.frequency).toLowerCase();
+            if (counts[cat]) counts[cat].pending++;
+        });
+
+        cachedFiledGstData.forEach(item => {
+            const cat = classifyFrequency(item.frequency).toLowerCase();
+            if (counts[cat]) counts[cat].filed++;
+        });
+
+        const mP = counts.monthly.pending, mF = counts.monthly.filed;
+        const qP = counts.quarterly.pending, qF = counts.quarterly.filed;
+        const cP = counts.composition.pending, cF = counts.composition.filed;
+
+        document.getElementById('cnt-month-pending').innerText = mP;
+        document.getElementById('cnt-month-filed').innerText = mF;
+        document.getElementById('cnt-month-total').innerText = mP + mF;
+
+        document.getElementById('cnt-quart-pending').innerText = qP;
+        document.getElementById('cnt-quart-filed').innerText = qF;
+        document.getElementById('cnt-quart-total').innerText = qP + qF;
+
+        document.getElementById('cnt-comp-pending').innerText = cP;
+        document.getElementById('cnt-comp-filed').innerText = cF;
+        document.getElementById('cnt-comp-total').innerText = cP + cF;
+
+        const totP = mP + qP + cP;
+        const totF = mF + qF + cF;
+        document.getElementById('cnt-tot-pending').innerText = totP;
+        document.getElementById('cnt-tot-filed').innerText = totF;
+        document.getElementById('cnt-tot-grand').innerText = totP + totF;
+    }
+
+    function buildAlphabetBar() {
+        const bar = document.getElementById('alphabetBar');
+        bar.innerHTML = "";
+
+        const freqFilter = document.getElementById('gstFrequencyFilter').value;
+
+        if (!cachedPendingGstData || cachedPendingGstData.length === 0) return;
+
+        let freqFilteredList = cachedPendingGstData;
+        if (freqFilter !== "ALL") {
+            freqFilteredList = cachedPendingGstData.filter(item => classifyFrequency(item.frequency) === freqFilter);
+        }
+
+        if (freqFilteredList.length === 0) return;
+
+        const lettersSet = new Set();
+        freqFilteredList.forEach(item => {
+            if (item.clientName) {
+                const firstChar = item.clientName.trim().charAt(0).toUpperCase();
+                if (/^[A-Z]$/.test(firstChar)) {
+                    lettersSet.add(firstChar);
+                }
+            }
+        });
+
+        const availableLetters = ["ALL", ...Array.from(lettersSet).sort()];
+
+        if (!availableLetters.includes(selectedAlphabet)) {
+            selectedAlphabet = "ALL";
+        }
+
+        availableLetters.forEach(lettr => {
+            const btn = document.createElement('button');
+            btn.type = "button";
+            btn.className = "alpha-btn" + (lettr === selectedAlphabet ? " active" : "");
+            btn.innerText = lettr;
+            btn.onclick = function() {
+                document.querySelectorAll('.alpha-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedAlphabet = lettr;
+                renderPendingGSTTable();
+            };
+            bar.appendChild(btn);
+        });
+    }
+
+    function renderPendingGSTTable() {
+        const returnType = document.getElementById('gstReturnType').value;
+        const month = document.getElementById('gstMonth').value;
+        const freqFilter = document.getElementById('gstFrequencyFilter').value;
+        const statusDiv = document.getElementById('gstTableStatus');
+        const table = document.getElementById('gstPendingTable');
+        const tbody = table.querySelector('tbody');
+        const actionRow = document.getElementById('gstPendingActionRow');
+
+        tbody.innerHTML = "";
+
+        if (!cachedPendingGstData || cachedPendingGstData.length === 0) {
+            statusDiv.style.color = "blue";
+            statusDiv.innerText = `🎉 Outstanding! All ${returnType} returns for ${month} are fully filed.`;
+            table.style.display = "none";
+            actionRow.style.display = "none";
+            return;
+        }
+
+        let freqFilteredList = cachedPendingGstData;
+        if (freqFilter !== "ALL") {
+            freqFilteredList = cachedPendingGstData.filter(item => classifyFrequency(item.frequency) === freqFilter);
+        }
+
+        let filteredList = freqFilteredList;
+        if (selectedAlphabet !== "ALL") {
+            filteredList = freqFilteredList.filter(item => {
+                const firstChar = item.clientName.trim().charAt(0).toUpperCase();
+                return firstChar === selectedAlphabet;
+            });
+        }
+
+        if (filteredList.length === 0) {
+            statusDiv.style.color = "blue";
+            statusDiv.innerText = `No pending ${freqFilter !== 'ALL' ? freqFilter + ' ' : ''}returns found for ${month}${selectedAlphabet !== 'ALL' ? " starting with '" + selectedAlphabet + "'" : ''}.`;
+            table.style.display = "none";
+            actionRow.style.display = freqFilteredList.length > 0 ? "flex" : "none";
+            return;
+        }
+
+        statusDiv.innerText = "";
+        filteredList.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${item.gstin}</strong></td>
+                <td>${item.clientName}</td>
+                <td>${item.frequency}</td>
+                <td><span style="color:#c53030; font-weight:bold;">${item.status}</span></td>
+                <td>
+                    <button type="button" style="background-color:#1a365d; color:white; border:none; padding:5px 12px; border-radius:3px; cursor:pointer;" 
+                    onclick="openGstModal(${item.rowIndex}, '${item.gstin}', '${item.clientName.replace(/'/g, "\\'")}')">Select</button>
+                </td>`;
+            tbody.appendChild(tr);
+        });
+
+        table.style.display = "table";
+        actionRow.style.display = "flex";
+    }
+
+    function renderFiledGSTTable() {
+        const returnType = document.getElementById('gstReturnType').value;
+        const month = document.getElementById('gstMonth').value;
+        const freqFilter = document.getElementById('gstFrequencyFilter').value;
+        const statusDiv = document.getElementById('gstFiledTableStatus');
+        const table = document.getElementById('gstFiledTable');
+        const headerRow = document.getElementById('gstFiledTableHeader');
+        const tbody = table.querySelector('tbody');
+        const actionRow = document.getElementById('gstFiledActionRow');
+
+        tbody.innerHTML = "";
+
+        if (!cachedFiledGstData || cachedFiledGstData.length === 0) {
+            statusDiv.style.color = "blue";
+            statusDiv.innerText = `No filed returns logged for ${returnType} (${month}) yet.`;
+            table.style.display = "none";
+            actionRow.style.display = "none";
+            return;
+        }
+
+        let filteredList = cachedFiledGstData;
+        if (freqFilter !== "ALL") {
+            filteredList = cachedFiledGstData.filter(item => classifyFrequency(item.frequency) === freqFilter);
+        }
+
+        if (filteredList.length === 0) {
+            statusDiv.style.color = "blue";
+            statusDiv.innerText = `No filed ${freqFilter} returns logged for ${returnType} (${month}).`;
+            table.style.display = "none";
+            actionRow.style.display = "none";
+            return;
+        }
+
+        statusDiv.innerText = "";
+        if (returnType === "GSTR1") {
+            headerRow.innerHTML = `<th>GSTIN</th><th>Client Name</th><th>Frequency</th><th>Status</th><th>Filing Date</th><th>ARN Number</th>`;
+            filteredList.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${item.gstin}</strong></td>
+                    <td>${item.clientName}</td>
+                    <td>${item.frequency}</td>
+                    <td><span style="color:#276749; font-weight:bold;">${item.status}</span></td>
+                    <td>${item.filingDate}</td>
+                    <td><code>${item.arn}</code></td>`;
+                tbody.appendChild(tr);
+            });
+        } else {
+            headerRow.innerHTML = `<th>GSTIN</th><th>Client Name</th><th>Frequency</th><th>Reco</th><th>Mismatch</th><th>Tax Position</th><th>Tax Amt</th><th>Date</th><th>ARN</th>`;
+            filteredList.forEach(item => {
+                const tr = document.createElement('tr');
+                const isPayable = item.taxType === "Payable";
+                const taxColor = isPayable ? "#c53030" : "#276749";
+                tr.innerHTML = `
+                    <td><strong>${item.gstin}</strong></td>
+                    <td>${item.clientName}</td>
+                    <td>${item.frequency}</td>
+                    <td>${item.recoUpdated || '-'}</td>
+                    <td>${item.mismatchShared || '-'}</td>
+                    <td><span style="color:${taxColor}; font-weight:bold;">${item.taxType || '-'}</span></td>
+                    <td><strong>₹${item.taxAmount || '0.00'}</strong></td>
+                    <td>${item.filingDate}</td>
+                    <td><code>${item.arn}</code></td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        table.style.display = "table";
+        actionRow.style.display = "flex";
+    }
+
+    function openGstModal(rowIndex, gstin, clientName) {
+        document.getElementById('gstTargetRowIndex').value = rowIndex;
+        document.getElementById('gstinField').value = gstin;
+        document.getElementById('gstClientNameField').value = clientName;
+        document.getElementById('gstArnNumber').value = "";
+        document.getElementById('gstSubmitStatus').innerText = "";
+        
+        toggleGstFormFields();
+        document.getElementById('gstModalOverlay').style.display = "flex";
+    }
+
+    function closeGstModal() {
+        document.getElementById('gstModalOverlay').style.display = "none";
+    }
+
+    function submitGstFiling() {
+        const returnType = document.getElementById('gstReturnType').value;
+        const month = document.getElementById('gstMonth').value;
+        const rowIndex = document.getElementById('gstTargetRowIndex').value;
+        const filingDate = document.getElementById('gstFilingDate').value;
+        const arnNumber = document.getElementById('gstArnNumber').value.trim().toUpperCase();
+        const statusDiv = document.getElementById('gstSubmitStatus');
+
+        // STRICT 15-CHAR ALPHANUMERIC REGEX CHECK
+        const arnRegex = /^[A-Z0-9]{15}$/;
+        if (!arnRegex.test(arnNumber)) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "🛑 Invalid ARN: Must be exactly 15 alphanumeric characters (e.g. AA270424000000X).";
+            return;
+        }
+
+        statusDiv.style.color = "orange";
+        statusDiv.innerText = "Punching filing record into active ledger...";
+
+        const params = new URLSearchParams({
+            action: "submitFilingData",
+            returnType: returnType,
+            month: month,
+            rowIndex: rowIndex,
+            filingDate: filingDate,
+            arnNumber: arnNumber,
+            recoUpdated: document.getElementById('gstRecoUpdated').value,
+            mismatchShared: document.getElementById('gstMismatchShared').value,
+            taxType: document.getElementById('gstTaxType').value,
+            taxAmount: document.getElementById('gstTaxAmount').value
+        });
+
+        fetch(`${WEB_APP_URL}?${params.toString()}`)
+        .then(res => res.json())
+        .then(res => {
+            if (res.status === "SUCCESS") {
+                statusDiv.style.color = "green";
+                statusDiv.innerText = "✓ Filed successfully!";
+                setTimeout(() => {
+                    closeGstModal();
+                    fetchPendingGST();
+                }, 1000);
+            } else {
+                statusDiv.style.color = "red";
+                statusDiv.innerText = "Error: " + res.message;
+            }
+        }).catch(() => {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Network transmission failed.";
+        });
+    }
+
+    function executeGstPrint(type) {
+        const returnType = document.getElementById('gstReturnType').value;
+        const month = document.getElementById('gstMonth').value;
+        const freqFilter = document.getElementById('gstFrequencyFilter').value;
+        const printArea = document.getElementById('gstPrintArea');
+        
+        let html = "";
+        if (type === 'pending') {
+            let list = cachedPendingGstData;
+            if (freqFilter !== "ALL") {
+                list = cachedPendingGstData.filter(r => classifyFrequency(r.frequency) === freqFilter);
+            }
+            if (!list || list.length === 0) {
+                alert("No pending returns to print."); return;
+            }
+            html = `
+                <h2 style="text-align:center; margin-bottom:15px;">GST Pending Returns (${returnType} - ${month}${freqFilter !== 'ALL' ? ' - ' + freqFilter : ''})</h2>
+                <table>
+                    <thead>
+                        <tr><th>GSTIN</th><th>Client Name</th><th>Trade Name</th><th>Frequency</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        ${list.map(r => `
+                            <tr><td>${r.gstin}</td><td>${r.clientName}</td><td>${r.tradeName || '-'}</td><td>${r.frequency}</td><td>${r.status}</td></tr>
+                        `).join('')}
+                    </tbody>
+                </table>`;
+        } else {
+            let list = cachedFiledGstData;
+            if (freqFilter !== "ALL") {
+                list = cachedFiledGstData.filter(r => classifyFrequency(r.frequency) === freqFilter);
+            }
+            if (!list || list.length === 0) {
+                alert("No filed returns to print."); return;
+            }
+            if (returnType === "GSTR1") {
+                html = `
+                    <h2 style="text-align:center; margin-bottom:15px;">GST Filed Returns (${returnType} - ${month}${freqFilter !== 'ALL' ? ' - ' + freqFilter : ''})</h2>
+                    <table>
+                        <thead>
+                            <tr><th>GSTIN</th><th>Client Name</th><th>Frequency</th><th>Filing Date</th><th>ARN Number</th></tr>
+                        </thead>
+                        <tbody>
+                            ${list.map(r => `
+                                <tr><td>${r.gstin}</td><td>${r.clientName}</td><td>${r.frequency}</td><td>${r.filingDate}</td><td>${r.arn}</td></tr>
+                            `).join('')}
+                        </tbody>
+                    </table>`;
+            } else {
+                html = `
+                    <h2 style="text-align:center; margin-bottom:15px;">GST Filed Returns (${returnType} - ${month}${freqFilter !== 'ALL' ? ' - ' + freqFilter : ''})</h2>
+                    <table>
+                        <thead>
+                            <tr><th>GSTIN</th><th>Client Name</th><th>Frequency</th><th>Reco</th><th>Mismatch</th><th>Tax Position</th><th>Tax Amount</th><th>Filing Date</th><th>ARN</th></tr>
+                        </thead>
+                        <tbody>
+                            ${list.map(r => `
+                                <tr><td>${r.gstin}</td><td>${r.clientName}</td><td>${r.frequency}</td><td>${r.recoUpdated}</td><td>${r.mismatchShared}</td><td>${r.taxType}</td><td>₹${r.taxAmount}</td><td>${r.filingDate}</td><td>${r.arn}</td></tr>
+                            `).join('')}
+                        </tbody>
+                    </table>`;
+            }
+        }
+
+        printArea.innerHTML = html;
+        window.print();
+    }
+
+    function exportPendingGSTToExcel() {
+        const returnType = document.getElementById('gstReturnType').value;
+        const month = document.getElementById('gstMonth').value;
+        const freqFilter = document.getElementById('gstFrequencyFilter').value;
+        if (!cachedPendingGstData || cachedPendingGstData.length === 0) return;
+
+        let list = cachedPendingGstData;
+        if (freqFilter !== "ALL") {
+            list = cachedPendingGstData.filter(r => classifyFrequency(r.frequency) === freqFilter);
+        }
+
+        if (list.length === 0) {
+            alert("No pending returns matching the filter to download."); return;
+        }
+
+        let csv = "\uFEFFGSTIN,Client Name,Trade Name,Filing Frequency,Status\n";
+        list.forEach(r => {
+            csv += `"${r.gstin}","${r.clientName}","${r.tradeName}","${r.frequency}","${r.status}"\n`;
+        });
+        downloadCsv(csv, `GST_Pending_${returnType}_${month}_${freqFilter}_${new Date().toISOString().split('T')[0]}.csv`);
+    }
+
+    function exportFiledGSTToExcel() {
+        const returnType = document.getElementById('gstReturnType').value;
+        const month = document.getElementById('gstMonth').value;
+        const freqFilter = document.getElementById('gstFrequencyFilter').value;
+        if (!cachedFiledGstData || cachedFiledGstData.length === 0) {
+            alert("No filed returns records available to download for this month."); return;
+        }
+
+        let list = cachedFiledGstData;
+        if (freqFilter !== "ALL") {
+            list = cachedFiledGstData.filter(r => classifyFrequency(r.frequency) === freqFilter);
+        }
+
+        if (list.length === 0) {
+            alert("No filed returns matching the selected frequency filter."); return;
+        }
+
+        let csv = "";
+        if (returnType === "GSTR1") {
+            csv = "\uFEFFGSTIN,Client Name,Trade Name,Filing Frequency,Status,Filing Date,ARN Number\n";
+            list.forEach(r => {
+                csv += `"${r.gstin}","${r.clientName}","${r.tradeName}","${r.frequency}","${r.status}","${r.filingDate}","'${r.arn}"\n`;
+            });
+        } else {
+            csv = "\uFEFFGSTIN,Client Name,Trade Name,Filing Frequency,Status,Reco Sheet Updated,Mismatch Shared,Tax Position,Tax Amount,Filing Date,ARN Number\n";
+            list.forEach(r => {
+                csv += `"${r.gstin}","${r.clientName}","${r.tradeName}","${r.frequency}","${r.status}","${r.recoUpdated}","${r.mismatchShared}","${r.taxType}","${r.taxAmount}","${r.filingDate}","'${r.arn}"\n`;
+            });
+        }
+        downloadCsv(csv, `GST_Filed_${returnType}_${month}_${freqFilter}_${new Date().toISOString().split('T')[0]}.csv`);
+    }
+
+    // -------------------------------------------------------------------
+    // TIMESHEET MODULE FRONTEND LOGIC
+    // -------------------------------------------------------------------
     function runBackgroundTracker() {
         const creds = getCredentials();
         if (!creds.name || !creds.pin || creds.pin.length < 4) {
             document.getElementById('dailyTrackerBox').style.display = "none";
             return;
         }
-        
         fetch(`${WEB_APP_URL}?action=fetchHistory&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}`)
         .then(res => res.json())
         .then(res => {
@@ -350,7 +1015,6 @@
     function updateDailyTrackerUI() {
         const trackerBox = document.getElementById('dailyTrackerBox');
         const selectedDateVal = document.getElementById('date').value; 
-        
         if (!selectedDateVal) return;
         
         const creds = getCredentials();
@@ -363,17 +1027,12 @@
         d.setDate(d.getDate() - 1);
         let prevDateVal = d.toISOString().split('T')[0];
 
-        let selectedTotal = 0;
-        let prevTotal = 0;
-
+        let selectedTotal = 0, prevTotal = 0;
         if (cachedHistoryData && cachedHistoryData.length > 0) {
             cachedHistoryData.forEach(row => {
                 let cleanRowDate = row.date.trim().split("T")[0].split(" ")[0];
-                if (cleanRowDate === selectedDateVal) {
-                    selectedTotal += parseFloat(row.hours) || 0;
-                } else if (cleanRowDate === prevDateVal) {
-                    prevTotal += parseFloat(row.hours) || 0;
-                }
+                if (cleanRowDate === selectedDateVal) selectedTotal += parseFloat(row.hours) || 0;
+                else if (cleanRowDate === prevDateVal) prevTotal += parseFloat(row.hours) || 0;
             });
         }
 
@@ -381,20 +1040,8 @@
         document.getElementById('trackerSelectedHours').innerText = selectedTotal.toFixed(2);
         document.getElementById('trackerPrevHours').innerText = prevTotal.toFixed(2);
         
-        let percentage = (selectedTotal / 8) * 100;
-        if (percentage > 100) percentage = 100;
+        let percentage = Math.min((selectedTotal / 8) * 100, 100);
         document.getElementById('trackerProgressBar').style.width = percentage + "%";
-        
-        if (selectedTotal >= 8) {
-            document.getElementById('trackerProgressBar').style.backgroundColor = "#2b6cb0"; 
-            trackerBox.style.backgroundColor = "#ebf8ff";
-            trackerBox.style.borderColor = "#bee3f8";
-        } else {
-            document.getElementById('trackerProgressBar').style.backgroundColor = "#319795"; 
-            trackerBox.style.backgroundColor = "#e6fffa";
-            trackerBox.style.borderColor = "#b2f5ea";
-        }
-
         trackerBox.style.display = "block";
     }
 
@@ -402,23 +1049,13 @@
         const mainTaskSelected = document.getElementById('taskCategory').value;
         const subDropdown = document.getElementById('subTaskCategory');
         subDropdown.innerHTML = '<option value="">-- Select Sub-Task --</option>';
-        
         if (mainTaskSelected && globalTaskMap[mainTaskSelected]) {
             globalTaskMap[mainTaskSelected].forEach(subTask => {
                 const opt = document.createElement('option');
                 opt.value = subTask; opt.innerText = subTask;
                 subDropdown.appendChild(opt);
             });
-        } else {
-            subDropdown.innerHTML = '<option value="">-- Select Main Task First --</option>';
         }
-    }
-
-    function switchTab(pageId) {
-        document.querySelectorAll('.portal-page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        event.currentTarget.classList.add('active');
     }
 
     function resetDataViews() {
@@ -430,8 +1067,7 @@
         document.getElementById('historyActionRow').style.display = "none";
         document.getElementById('taskActionRow').style.display = "none";
         document.getElementById('dailyTrackerBox').style.display = "none";
-        cachedHistoryData = [];
-        cachedAssignmentsData = [];
+        cachedHistoryData = []; cachedAssignmentsData = [];
     }
 
     function getCredentials() {
@@ -444,25 +1080,21 @@
     function submitPunch() {
         const creds = getCredentials();
         const statusDiv = document.getElementById('punchStatus');
+        const timeSpentStr = document.getElementById('durationHours').value + ":" + document.getElementById('durationMinutes').value;
         
-        const hrsSelected = document.getElementById('durationHours').value;
-        const minsSelected = document.getElementById('durationMinutes').value;
-        const timeSpentStr = hrsSelected + ":" + minsSelected;
-        
-        if(!creds.name || !creds.pin) {
+        if (!creds.name || !creds.pin) {
             statusDiv.style.color = "red";
-            statusDiv.innerText = "Validation Lock: You must verify your name and enter your PIN at the top.";
+            statusDiv.innerText = "Validation Lock: Verify Name and PIN at top.";
             return;
         }
-
-        if(timeSpentStr === "00:00") {
+        if (timeSpentStr === "00:00") {
             statusDiv.style.color = "red";
-            statusDiv.innerText = "🛑 Entry Blocked: Time spent cannot be 0 Hours and 00 Mins.";
+            statusDiv.innerText = "🛑 Time spent cannot be 00:00.";
             return;
         }
 
         statusDiv.style.color = "orange";
-        statusDiv.innerText = "Verifying operational security clearance...";
+        statusDiv.innerText = "Logging entry...";
 
         const params = new URLSearchParams({
             action: "submitPunch",
@@ -482,23 +1114,20 @@
         fetch(`${WEB_APP_URL}?${params.toString()}`)
         .then(res => res.json())
         .then(res => {
-            if(res.status === "SUCCESS") {
+            if (res.status === "SUCCESS") {
                 statusDiv.style.color = "green";
-                statusDiv.innerText = "✓ Identity Verified. Activity metrics logged successfully.";
+                statusDiv.innerText = "✓ Activity metrics logged successfully.";
                 document.getElementById('description').value = "";
                 document.getElementById('durationHours').value = "00";
                 document.getElementById('durationMinutes').value = "00";
-                document.getElementById('subTaskCategory').innerHTML = '<option value="">-- Select Main Task First --</option>';
-                document.getElementById('taskCategory').value = "";
-                
                 runBackgroundTracker();
             } else {
                 statusDiv.style.color = "red";
-                statusDiv.innerText = "🛑 Access Terminated: " + res.message;
+                statusDiv.innerText = "🛑 Error: " + res.message;
             }
         }).catch(() => {
             statusDiv.style.color = "red";
-            statusDiv.innerText = "Network transmission error. Verify cloud endpoint.";
+            statusDiv.innerText = "Network transmission error.";
         });
     }
 
@@ -509,89 +1138,56 @@
         const tbody = table.querySelector('tbody');
         const actionRow = document.getElementById('taskActionRow');
         
-        if(!creds.name || !creds.pin) {
+        if (!creds.name || !creds.pin) {
             statusDiv.style.color = "red";
-            statusDiv.innerText = "Access Blocked: Provide a Name and matching PIN in the Security panel above.";
+            statusDiv.innerText = "Access Blocked: Provide Name and PIN above.";
             return;
         }
 
         statusDiv.style.color = "orange";
-        statusDiv.innerText = "Scanning active assignment lists...";
-        tbody.innerHTML = "";
-        actionRow.style.display = "none";
-        cachedAssignmentsData = [];
+        statusDiv.innerText = "Scanning assigned tasks...";
+        tbody.innerHTML = ""; actionRow.style.display = "none"; cachedAssignmentsData = [];
 
         fetch(`${WEB_APP_URL}?action=fetchAssignedTasks&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}`)
         .then(res => res.json())
         .then(res => {
-            if(res.status === "SUCCESS") {
+            if (res.status === "SUCCESS") {
                 statusDiv.innerText = "";
-                if(res.data.length === 0) {
+                if (res.data.length === 0) {
                     statusDiv.style.color = "blue";
-                    statusDiv.innerText = "No open task allocations assigned to your name this week.";
+                    statusDiv.innerText = "No open task allocations found.";
                     return;
                 }
-                
                 cachedAssignmentsData = res.data; 
-
                 res.data.forEach(row => {
                     const tr = document.createElement('tr');
                     const cleanDeadline = normalizeToDMY(row.deadline);
                     const isFulfilled = String(row.status).trim().toLowerCase() === "fulfilled";
+                    let actionCellHtml = isFulfilled ? `<span style="color:#155724; font-weight:bold;">✓ Fulfilled</span>` :
+                        `<button type="button" style="background-color:#28a745; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; font-size:11px;" onclick="markTaskFulfilled(${row.rowIndex}, this)">✓ Mark Done</button>`;
 
-                    // DYNAMICALLY RENDER BUTTON OR FULFILLED TEXT ON LOAD
-                    let actionCellHtml = "";
-                    if (isFulfilled) {
-                        tr.style.backgroundColor = "#d4edda"; // Light Green row
-                        actionCellHtml = `<span style="color: #155724; font-weight: bold;">✓ Fulfilled</span>`;
-                    } else {
-                        actionCellHtml = `<button type="button" style="background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;" onclick="markTaskFulfilled(${row.rowIndex}, this)">✓ Mark Done</button>`;
-                    }
-
-                    tr.innerHTML = `
-                        <td><strong>${row.client}</strong></td>
-                        <td>${row.description}</td>
-                        <td><span class="task-badge priority-${row.priority}">${row.priority}</span></td>
-                        <td>${cleanDeadline}</td>
-                        <td>${actionCellHtml}</td>`;
+                    if (isFulfilled) tr.style.backgroundColor = "#d4edda";
+                    tr.innerHTML = `<td><strong>${row.client}</strong></td><td>${row.description}</td><td><span class="task-badge priority-${row.priority}">${row.priority}</span></td><td>${cleanDeadline}</td><td>${actionCellHtml}</td>`;
                     tbody.appendChild(tr);
                 });
-                table.style.display = "table";
-                actionRow.style.display = "flex"; 
-            } else {
-                statusDiv.style.color = "red";
-                statusDiv.innerText = "🛑 Authentication Failed: " + res.message;
+                table.style.display = "table"; actionRow.style.display = "flex"; 
             }
-        }).catch(() => {
-            statusDiv.style.color = "red";
-            statusDiv.innerText = "Query aborted. Backend pipeline failure.";
-        });
+        }).catch(() => {});
     }
 
     function markTaskFulfilled(rowIndex, btnElement) {
         const creds = getCredentials();
-        if(!confirm("Are you sure you want to mark this task as fulfilled?")) return;
-        
-        btnElement.disabled = true;
-        btnElement.innerText = "Saving...";
+        if (!confirm("Are you sure you want to mark this task as fulfilled?")) return;
+        btnElement.disabled = true; btnElement.innerText = "Saving...";
 
         fetch(`${WEB_APP_URL}?action=markTaskCompleted&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}&rowIndex=${rowIndex}`)
         .then(res => res.json())
         .then(res => {
-            if(res.status === "SUCCESS") {
-                const rowElem = btnElement.closest('tr');
-                rowElem.style.backgroundColor = "#d4edda"; 
-                btnElement.parentElement.innerHTML = "<span style='color: #155724; font-weight: bold;'>✓ Fulfilled</span>";
-            } else {
-                alert("Failed to update task: " + res.message);
-                btnElement.disabled = false;
-                btnElement.innerText = "✓ Mark Done";
+            if (res.status === "SUCCESS") {
+                btnElement.closest('tr').style.backgroundColor = "#d4edda"; 
+                btnElement.parentElement.innerHTML = "<span style='color:#155724; font-weight:bold;'>✓ Fulfilled</span>";
             }
-        }).catch(() => {
-            alert("Network transmission error.");
-            btnElement.disabled = false;
-            btnElement.innerText = "✓ Mark Done";
-        });
+        }).catch(() => { btnElement.disabled = false; btnElement.innerText = "✓ Mark Done"; });
     }
 
     function fetchEmployeeHistory() {
@@ -601,122 +1197,64 @@
         const tbody = table.querySelector('tbody');
         const actionRow = document.getElementById('historyActionRow');
         
-        if(!creds.name || !creds.pin) {
+        if (!creds.name || !creds.pin) {
             statusDiv.style.color = "red";
-            statusDiv.innerText = "Access Blocked: Provide a Name and matching PIN in the Security panel above.";
+            statusDiv.innerText = "Access Blocked: Provide Name and PIN above.";
             return;
         }
 
         statusDiv.style.color = "orange";
-        statusDiv.innerText = "Fetching logged tracking records...";
-        tbody.innerHTML = "";
-        actionRow.style.display = "none";
-        cachedHistoryData = [];
+        statusDiv.innerText = "Fetching records...";
+        tbody.innerHTML = ""; actionRow.style.display = "none"; cachedHistoryData = [];
 
         fetch(`${WEB_APP_URL}?action=fetchHistory&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}`)
         .then(res => res.json())
         .then(res => {
-            if(res.status === "SUCCESS") {
+            if (res.status === "SUCCESS") {
                 statusDiv.innerText = "";
-                if(res.data.length === 0) {
+                if (res.data.length === 0) {
                     statusDiv.style.color = "blue";
                     statusDiv.innerText = "No historical log records found.";
                     return;
                 }
-                
                 cachedHistoryData = res.data; 
-
                 res.data.forEach(row => {
                     const tr = document.createElement('tr');
-                    const cleanDate = normalizeToDMY(row.date);
-                    tr.innerHTML = `<td>${cleanDate}</td><td>${row.client}</td><td>${row.task}</td><td>${row.remarks || '-'}</td><td><em>${row.status}</em></td><td><strong>${row.hours} hrs</strong></td>`;
+                    tr.innerHTML = `<td>${normalizeToDMY(row.date)}</td><td>${row.client}</td><td>${row.task}</td><td>${row.remarks || '-'}</td><td><em>${row.status}</em></td><td><strong>${row.hours} hrs</strong></td>`;
                     tbody.appendChild(tr);
                 });
-                table.style.display = "table";
-                actionRow.style.display = "flex"; 
-                
+                table.style.display = "table"; actionRow.style.display = "flex"; 
                 updateDailyTrackerUI();
-            } else {
-                statusDiv.style.color = "red";
-                statusDiv.innerText = "🛑 Authentication Failed: " + res.message;
             }
-        }).catch(() => {
-            statusDiv.style.color = "red";
-            statusDiv.innerText = "Query aborted. Ledger engine offline.";
-        });
+        }).catch(() => {});
     }
 
-    function executeBrandedPrint() {
-        const empName = document.getElementById('globalEmployeeName').value;
-        const currentTimestamp = new Date().toLocaleString('en-US', {
-            dateStyle: 'medium',
-            timeStyle: 'short'
-        });
-
-        document.getElementById('lblPrintEmployee').innerText = empName;
-        document.getElementById('lblPrintTimestamp').innerText = currentTimestamp;
+    function executeTimesheetPrint() {
         window.print();
     }
 
     function exportHistoryToExcel() {
-        const empName = document.getElementById('globalEmployeeName').value;
         if (!cachedHistoryData || cachedHistoryData.length === 0) return;
-
-        let csvContent = "\uFEFF"; 
-        csvContent += "Date,Client Account,Category (Sub-Task),Remarks,Current Status,Actual Time Spent (Decimal Hours)\n";
-
-        cachedHistoryData.forEach(row => {
-            const excelCleanDate = normalizeToDMY(row.date);
-            const cellDate = `"${excelCleanDate.replace(/"/g, '""')}"`;
-            const cellClient = `"${row.client.replace(/"/g, '""')}"`;
-            const cellTask = `"${row.task.replace(/"/g, '""')}"`;
-            const cellRemarks = `"${(row.remarks || '').replace(/"/g, '""')}"`;
-            const cellStatus = `"${row.status.replace(/"/g, '""')}"`;
-            const cellHours = `"${row.hours.replace(/"/g, '""')}"`;
-
-            csvContent += `${cellDate},${cellClient},${cellTask},${cellRemarks},${cellStatus},${cellHours}\n`;
+        let csv = "\uFEFFDate,Client Account,Category (Sub-Task),Remarks,Current Status,Hours\n";
+        cachedHistoryData.forEach(r => {
+            csv += `"${normalizeToDMY(r.date)}","${r.client}","${r.task}","${r.remarks || ''}","${r.status}","${r.hours}"\n`;
         });
-
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a");
-        const todayStr = new Date().toISOString().split('T')[0];
-        const filename = `TaxPro_Log_${empName.replace(/\s+/g, '_')}_${todayStr}.csv`;
-        
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", filename);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        downloadCsv(csv, `Timesheet_History_${new Date().toISOString().split('T')[0]}.csv`);
     }
 
     function exportAssignmentsToExcel() {
-        const empName = document.getElementById('globalEmployeeName').value;
         if (!cachedAssignmentsData || cachedAssignmentsData.length === 0) return;
-
-        let csvContent = "\uFEFF"; 
-        csvContent += "Client Name,Task Details,Priority,Target Deadline\n";
-
-        cachedAssignmentsData.forEach(row => {
-            const excelCleanDeadline = normalizeToDMY(row.deadline);
-            const cellClient = `"${row.client.replace(/"/g, '""')}"`;
-            const cellDesc = `"${row.description.replace(/"/g, '""')}"`;
-            const cellPriority = `"${row.priority.replace(/"/g, '""')}"`;
-            const cellDeadline = `"${excelCleanDeadline.replace(/"/g, '""')}"`;
-
-            csvContent += `${cellClient},${cellDesc},${cellPriority},${cellDeadline}\n`;
+        let csv = "\uFEFFClient Name,Task Details,Priority,Target Deadline\n";
+        cachedAssignmentsData.forEach(r => {
+            csv += `"${r.client}","${r.description}","${r.priority}","${normalizeToDMY(r.deadline)}"\n`;
         });
+        downloadCsv(csv, `Assigned_Tasks_${new Date().toISOString().split('T')[0]}.csv`);
+    }
 
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    function downloadCsv(csvContent, fileName) {
         const link = document.createElement("a");
-        const todayStr = new Date().toISOString().split('T')[0];
-        const filename = `TaxPro_Assignments_${empName.replace(/\s+/g, '_')}_${todayStr}.csv`;
-        
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", filename);
-        link.style.visibility = 'hidden';
+        link.href = URL.createObjectURL(new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }));
+        link.setAttribute("download", fileName);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
