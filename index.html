@@ -5,13 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaxPro & Associates - Enterprise Suite</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1000px; background: white; padding: 25px; margin: 0 auto 20px auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.08); }
+        /* LIGHT & SOFT INDIAN TRICOLOR BACKGROUND THEME */
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: linear-gradient(180deg, #ffd8b3 0%, #fff2e6 25%, #ffffff 50%, #e5f7e9 75%, #a2e0ab 100%) fixed; 
+            margin: 0; 
+            padding: 20px; 
+            color: #333; 
+        }
+
+        .container { max-width: 1000px; background: white; padding: 25px; margin: 0 auto 20px auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
         /* BRAND HEADER & LIVE CLOCK STRIP STYLES */
         .brand-header { text-align: center; margin-bottom: 20px; background-color: #1a365d; color: white; padding: 20px 20px 15px 20px; border-radius: 6px; }
         .firm-logo { max-width: 140px; height: auto; margin-bottom: 8px; display: inline-block; }
-        .brand-header h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px; }
+        
+        /* HEADER WITH LARGER INDIAN FLAGS */
+        .brand-header h1 { 
+            margin: 0; 
+            font-size: 26px; 
+            font-weight: 700; 
+            letter-spacing: 0.5px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .header-flag {
+            height: 36px;
+            width: auto;
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            vertical-align: middle;
+        }
+
         .brand-header p { margin: 5px 0 15px 0; font-size: 14px; color: #cbd5e1; font-weight: 600; }
         
         .clock-container {
@@ -107,7 +135,14 @@
 <div class="container">
     <div class="brand-header">
         <img src="logo.png" alt="TaxPro Logo" class="firm-logo" onerror="this.style.display='none';">
-        <h1>TaxPro & Associates</h1>
+        
+        <!-- FIRM NAME WITH INDIAN FLAGS ON BOTH SIDES -->
+        <h1>
+            <img src="https://flagcdn.com/w40/in.png" alt="India Flag" class="header-flag">
+            TaxPro & Associates
+            <img src="https://flagcdn.com/w40/in.png" alt="India Flag" class="header-flag">
+        </h1>
+        
         <p>Enterprise Management & Compliance Suite</p>
         
         <!-- LIVE MULTI-TIMEZONE CLOCK DISPLAY -->
