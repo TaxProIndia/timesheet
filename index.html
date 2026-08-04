@@ -751,7 +751,7 @@
     }
 
     // -------------------------------------------------------------------
-    // PERSISTENCE LOCAL STORAGE HELPERS (SAME DEVICE CACHING)
+    // PERSISTENCE LOCAL STORAGE HELPERS
     // -------------------------------------------------------------------
     function getAuditStoreKey(empName) {
         return 'taxpro_audit_progress_' + (empName || '').trim().toLowerCase().replace(/\s+/g, '_');
@@ -1420,9 +1420,8 @@
             return;
         }
 
-        // STEP 1: INSTANTLY RENDER SAVED PROGRESS FROM LOCAL STORAGE / IN-MEMORY CACHE
+        // Fast render local storage cache for instant tab switching
         const localStore = getSavedAuditProgress(creds.name);
-        
         if (cachedAuditClientsSummary && cachedAuditClientsSummary.length > 0) {
             cachedAuditClientsSummary.forEach(c => {
                 if (localStore[c.clientName]) {
@@ -1442,7 +1441,7 @@
             noticeDiv.innerText = "Syncing audit clients data from cloud...";
         }
 
-        // STEP 2: FETCH FROM GOOGLE SHEETS BACKEND (FOR MULTI-DEVICE / CROSS-LAPTOP ACCESS)
+        // Fetch authoritative server data from Google Sheets (Multi-Device)
         fetch(`${WEB_APP_URL}?action=fetchAuditClientsForStaff&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}`)
         .then(res => res.json())
         .then(res => {
@@ -1457,22 +1456,15 @@
                     return;
                 }
 
-                // MERGE BACKEND RESPONSE WITH LOCAL MEMORY
+                // Directly prioritize server values from Google Sheets
                 res.clients.forEach(item => {
                     const cName = item.clientName;
-                    const localData = localStore[cName];
-
                     let total = item.totalTasks || item.total || 0;
                     let completed = item.completedTasks !== undefined ? item.completedTasks : (item.completed !== undefined ? item.completed : 0);
                     let pct = item.percentage !== undefined ? item.percentage : (total > 0 ? Math.round((completed / total) * 100) : 0);
 
-                    if (localData && localData.completedTasks > completed) {
-                        completed = localData.completedTasks;
-                        total = localData.totalTasks || total;
-                        pct = localData.percentage;
-                    } else if (completed > 0 || pct > 0) {
-                        saveAuditProgressLocal(creds.name, cName, completed, total, pct);
-                    }
+                    // Update local store with server truth
+                    saveAuditProgressLocal(creds.name, cName, completed, total, pct);
 
                     item.completedTasks = completed;
                     item.completed = completed;
@@ -1506,7 +1498,6 @@
             return;
         }
 
-        // ENSURE SORTING: OLDEST TO NEWEST DEADLINE
         clientsList.sort((a, b) => parseDateForSort(a.deadline) - parseDateForSort(b.deadline));
 
         clientsList.forEach(item => {
@@ -1559,7 +1550,7 @@
         container.style.display = "none";
         progressBox.style.display = "none";
 
-        // OPEN CHECKLIST MODAL WINDOW
+        // Open Checklist Modal
         document.getElementById('auditModalOverlay').style.display = "flex";
 
         fetch(`${WEB_APP_URL}?action=fetchTaxAuditTasks&clientName=${encodeURIComponent(clientName)}&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}`)
@@ -1643,7 +1634,7 @@
         document.getElementById('auditPercentText').innerText = `${pct}%`;
         document.getElementById('auditProgressFill').style.width = `${pct}%`;
 
-        // SYNCHRONIZE METRICS ON MAIN SCREEN SUMMARY TABLE
+        // Update main overview table metrics instantly
         updateClientSummaryMetrics(clientName, completedCount, totalTasks, pct);
 
         progressBox.style.display = "block";
@@ -1682,7 +1673,7 @@
                 document.getElementById('auditPercentText').innerText = `${pct}%`;
                 document.getElementById('auditProgressFill').style.width = `${pct}%`;
                 
-                // SAVE TO BOTH BROWSER PERSISTENCE & IN-MEMORY CACHE
+                // Update local storage and overview table
                 updateClientSummaryMetrics(clientName, completedCount, totalTasks, pct);
             }
         }).catch(() => {});
@@ -1690,13 +1681,10 @@
 
     function updateClientSummaryMetrics(clientName, completedCount, totalTasks, pct) {
         const creds = getCredentials();
-        
-        // Save to browser LocalStorage for instant non-flickering access
         if (creds.name) {
             saveAuditProgressLocal(creds.name, clientName, completedCount, totalTasks, pct);
         }
 
-        // Update active in-memory list & re-render overview table
         if (cachedAuditClientsSummary && cachedAuditClientsSummary.length > 0) {
             const clientObj = cachedAuditClientsSummary.find(c => c.clientName === clientName);
             if (clientObj) {
