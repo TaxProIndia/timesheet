@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaxPro & Associates - Enterprise Suite</title>
     <style>
-        /* LIGHT & SOFT INDIAN TRICOLOR BACKGROUND THEME */
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
             background: linear-gradient(180deg, #ffd8b3 0%, #fff2e6 25%, #ffffff 50%, #e5f7e9 75%, #a2e0ab 100%) fixed; 
@@ -16,11 +15,9 @@
 
         .container { max-width: 1000px; background: white; padding: 25px; margin: 0 auto 20px auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        /* BRAND HEADER & LIVE CLOCK STRIP STYLES */
         .brand-header { text-align: center; margin-bottom: 20px; background-color: #1a365d; color: white; padding: 20px 20px 15px 20px; border-radius: 6px; }
         .firm-logo { max-width: 140px; height: auto; margin-bottom: 8px; display: inline-block; }
         
-        /* HEADER WITH LARGER INDIAN FLAGS */
         .brand-header h1 { 
             margin: 0; 
             font-size: 26px; 
@@ -44,21 +41,21 @@
         
         .clock-container {
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
             align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
             background-color: #0f2744;
             color: #e2e8f0;
             padding: 8px 12px;
             border-radius: 6px;
             font-size: 13px;
             font-weight: 600;
-            flex-wrap: wrap;
-            gap: 12px;
             border: 1px solid #2b4c7e;
         }
         .clock-item { display: flex; align-items: center; gap: 6px; }
         .clock-label { color: #90cdf4; font-weight: bold; }
-        .clock-time { color: #ffffff; letter-spacing: 0.5px; font-family: 'Segoe UI', monospace; }
+        .clock-time { color: #ffffff; letter-spacing: 0.5px; font-family: 'Segoe UI', monospace; font-size: 13px; }
 
         .module-nav { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 3px solid #cbd5e1; padding-bottom: 10px; }
         .module-btn { background-color: #edf2f7; color: #1a365d; border: 2px solid #cbd5e1; padding: 12px 10px; font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; flex: 1; transition: all 0.2s; text-align: center; }
@@ -107,7 +104,8 @@
         .modal-header h3 { margin: 0; color: #1a365d; font-size: 18px; }
         .modal-close { background: none; border: none; font-size: 26px; font-weight: bold; cursor: pointer; color: #a0aec0; }
 
-        .audit-group-title { font-size: 15px; font-weight: 700; color: #1a365d; background-color: #edf2f7; padding: 10px 14px; border-radius: 5px; margin: 16px 0 10px 0; border-left: 5px solid #2b6cb0; }
+        .audit-group-title { font-size: 14px; font-weight: 700; color: #1a365d; background-color: #edf2f7; padding: 10px 14px; border-radius: 5px; margin: 16px 0 10px 0; border-left: 5px solid #2b6cb0; display: flex; justify-content: space-between; align-items: center; }
+        .audit-group-badge { font-size: 11px; font-weight: 700; color: #2b6cb0; background: #ebf8ff; border: 1px solid #bee3f8; padding: 3px 8px; border-radius: 12px; }
         .audit-task-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
         .audit-task-desc { flex: 2; font-size: 13px; font-weight: 600; color: #2d3748; }
         .audit-task-controls { flex: 2; display: flex; gap: 8px; align-items: center; }
@@ -144,18 +142,19 @@
         
         <p>Enterprise Management & Compliance Suite</p>
         
+        <!-- TRIPLE TIMEZONE CLOCK BANNER (IST DEFAULT) -->
         <div class="clock-container">
             <div class="clock-item">
                 <span class="clock-label">🇮🇳 IST:</span>
-                <span id="istClock" class="clock-time">Loading...</span>
+                <span id="istClock" class="clock-time">Loading IST...</span>
             </div>
             <div class="clock-item">
-                <span class="clock-label">🇺🇸 PST (US West):</span>
-                <span id="pstClock" class="clock-time">Loading...</span>
+                <span class="clock-label">🇺🇸 EST:</span>
+                <span id="estClock" class="clock-time">Loading EST...</span>
             </div>
             <div class="clock-item">
-                <span class="clock-label">🇺🇸 EST (US East):</span>
-                <span id="estClock" class="clock-time">Loading...</span>
+                <span class="clock-label">🇺🇸 PST:</span>
+                <span id="pstClock" class="clock-time">Loading PST...</span>
             </div>
         </div>
     </div>
@@ -181,6 +180,7 @@
         <button class="module-btn" id="btn-mod-udin" onclick="switchModule('module-udin')">🔑 UDIN Tracker</button>
     </div>
 
+    <!-- MODULE 1: TIMESHEET -->
     <div id="module-timesheet" class="portal-module active">
         <div class="navigation-tabs">
             <button class="tab-btn active" onclick="switchTab('timecard-page')">📝 Log Time</button>
@@ -298,8 +298,9 @@
         </div>
     </div>
 
+    <!-- MODULE 2: GST COMPLIANCE PORTAL -->
     <div id="module-gst" class="portal-module">
-        <h2>📑 GST Returns Compliance Portal (Public Access)</h2>
+        <h2>📑 GST Returns Compliance Portal</h2>
         
         <div class="secure-auth-card">
             <div class="row">
@@ -316,7 +317,7 @@
                     <label id="gstPeriodLabel">Select Month / Period</label>
                     <select id="gstMonth" onchange="fetchPendingGST();"></select>
                 </div>
-                <div class="field">
+                <div class="field" id="freqFilterContainer">
                     <label>Select Filing Frequency</label>
                     <select id="gstFrequencyFilter" onchange="buildAlphabetBar(); renderPendingGSTTable(); renderFiledGSTTable(); renderChallanSharedTable();">
                         <option value="ALL">All Returns</option>
@@ -332,13 +333,13 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Filing Frequency</th>
+                            <th>Category</th>
                             <th style="color:#c53030;">⏳ Pending</th>
                             <th style="color:#276749;">✓ Filed</th>
                             <th>Total</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="gstSummaryTableBody">
                         <tr><td>Monthly</td><td id="cnt-month-pending">0</td><td id="cnt-month-filed">0</td><td id="cnt-month-total">0</td></tr>
                         <tr><td>Quarterly</td><td id="cnt-quart-pending">0</td><td id="cnt-quart-filed">0</td><td id="cnt-quart-total">0</td></tr>
                         <tr><td>Composition</td><td id="cnt-comp-pending">0</td><td id="cnt-comp-filed">0</td><td id="cnt-comp-total">0</td></tr>
@@ -417,13 +418,24 @@
         </div>
     </div>
 
+    <!-- MODULE 3: TAX AUDIT MANAGEMENT TRACKER -->
     <div id="module-audit" class="portal-module">
         <h2>📋 Tax Audit Management Tracker</h2>
         
         <div id="auditAuthNotice" class="status-msg" style="margin-bottom: 15px;"></div>
 
         <div id="auditSummaryBox" style="display:none; background:white; border:1px solid #cbd5e1; padding:18px; border-radius:6px; margin-bottom:20px;">
-            <h3 style="margin-top:0; font-size:16px; color:#1a365d; border-bottom:2px solid #e2e8f0; padding-bottom:8px;">📊 My Assigned Audit Clients Overview</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #e2e8f0; padding-bottom:8px; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+                <h3 style="margin:0; font-size:16px; color:#1a365d;">📊 My Assigned Audit Clients Overview</h3>
+                
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <label for="auditMainTaskFilter" style="font-size:13px; font-weight:600; color:#4a5568; margin:0;">Filter Main Task:</label>
+                    <select id="auditMainTaskFilter" onchange="renderAuditSummaryTable(cachedAuditClientsSummary)" style="padding:6px 10px; font-size:13px; border:1px solid #cbd5e1; border-radius:4px; font-weight:600; max-width:260px;">
+                        <option value="ALL">All Main Tasks</option>
+                    </select>
+                </div>
+            </div>
+
             <table id="auditSummaryTable">
                 <thead>
                     <tr>
@@ -436,6 +448,7 @@
                 </thead>
                 <tbody></tbody>
             </table>
+
             <div class="button-group-row" style="margin-top:15px;">
                 <button type="button" class="print-btn" onclick="printAuditSummary()">🖨️ Print Assigned Clients Summary</button>
                 <button type="button" class="download-btn" onclick="exportAuditSummaryToExcel()">📊 Download to Excel</button>
@@ -443,8 +456,9 @@
         </div>
     </div>
 
+    <!-- MODULE 4: UDIN TRACKER -->
     <div id="module-udin" class="portal-module">
-        <h2>🔑 UDIN Registration & Compliance Tracker (Public Access)</h2>
+        <h2>🔑 UDIN Registration & Compliance Tracker</h2>
         
         <div class="secure-auth-card">
             <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #1a365d;">📌 Update UDIN Entry</h3>
@@ -554,6 +568,7 @@
 
 <div id="gstPrintArea"></div>
 
+<!-- GST FILING MODAL -->
 <div id="gstModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeGstModal();">
     <div class="modal-content">
         <div class="modal-header">
@@ -633,6 +648,7 @@
     </div>
 </div>
 
+<!-- TAX AUDIT CHECKLIST MODAL -->
 <div id="auditModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeAuditModal();">
     <div class="modal-content" style="max-width: 820px; width: 95%;">
         <div class="modal-header">
@@ -657,10 +673,11 @@
 </div>
 
 <script>
-    // PASTE YOUR DEPLOYED WEB APP URL HERE
+    // DEPLOYED WEB APP URL
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwE-J2wSml0l--CjVDEl3k54Gn1cU9G7V1eWUV8BsPzzEICgLT0aV3HWxPVop9dM3twAA/exec";
 
     let globalTaskMap = {}; 
+    let auditMainTasksList = [];
     let cachedHistoryData = []; 
     let cachedAssignmentsData = []; 
     let cachedPendingGstData = [];
@@ -673,14 +690,20 @@
     let currentActiveAuditClient = "";
 
     const MONTHS = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
-    const FY_LIST = ['2023-24', '2024-25', '2025-26', '2026-27', '2027-28'];
+    const FY_LIST = ['FY 2023-24', 'FY 2024-25', 'FY 2025-26', 'FY 2026-27', 'FY 2027-28'];
 
-    document.getElementById('date').value = new Date().toISOString().split('T')[0];
-    document.getElementById('gstFilingDate').value = new Date().toISOString().split('T')[0];
-    document.getElementById('udinFilingDate').value = new Date().toISOString().split('T')[0];
+    // DEFAULT TIME AND DATE SETTINGS TO IST (Asia/Kolkata)
+    function getTodayIST() {
+        const now = new Date();
+        return now.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    }
 
     window.onload = function() {
-        // Start multi-timezone clock
+        const todayIST = getTodayIST();
+        document.getElementById('date').value = todayIST;
+        document.getElementById('gstFilingDate').value = todayIST;
+        document.getElementById('udinFilingDate').value = todayIST;
+
         updateClocks();
         setInterval(updateClocks, 1000);
 
@@ -707,29 +730,23 @@
         }
     };
 
-    // -------------------------------------------------------------------
-    // MULTI-TIMEZONE LIVE CLOCK FUNCTION
-    // -------------------------------------------------------------------
+    // MULTI-TIMEZONE CLOCKS DISPLAY (IST DEFAULT)
     function updateClocks() {
         const now = new Date();
-        
-        const dateOptions = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
-        const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+        const dateOpt = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+        const timeOpt = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
 
-        // IST (Asia/Kolkata)
-        const istDate = now.toLocaleDateString('en-IN', { ...dateOptions, timeZone: 'Asia/Kolkata' });
-        const istTime = now.toLocaleTimeString('en-IN', { ...timeOptions, timeZone: 'Asia/Kolkata' });
+        const istDate = now.toLocaleDateString('en-IN', { ...dateOpt, timeZone: 'Asia/Kolkata' });
+        const istTime = now.toLocaleTimeString('en-IN', { ...timeOpt, timeZone: 'Asia/Kolkata' });
         document.getElementById('istClock').innerText = `${istDate} | ${istTime}`;
 
-        // PST (America/Los_Angeles)
-        const pstDate = now.toLocaleDateString('en-US', { ...dateOptions, timeZone: 'America/Los_Angeles' });
-        const pstTime = now.toLocaleTimeString('en-US', { ...timeOptions, timeZone: 'America/Los_Angeles' });
-        document.getElementById('pstClock').innerText = `${pstDate} | ${pstTime}`;
-
-        // EST (America/New_York)
-        const estDate = now.toLocaleDateString('en-US', { ...dateOptions, timeZone: 'America/New_York' });
-        const estTime = now.toLocaleTimeString('en-US', { ...timeOptions, timeZone: 'America/New_York' });
+        const estDate = now.toLocaleDateString('en-US', { ...dateOpt, timeZone: 'America/New_York' });
+        const estTime = now.toLocaleTimeString('en-US', { ...timeOpt, timeZone: 'America/New_York' });
         document.getElementById('estClock').innerText = `${estDate} | ${estTime}`;
+
+        const pstDate = now.toLocaleDateString('en-US', { ...dateOpt, timeZone: 'America/Los_Angeles' });
+        const pstTime = now.toLocaleTimeString('en-US', { ...timeOpt, timeZone: 'America/Los_Angeles' });
+        document.getElementById('pstClock').innerText = `${pstDate} | ${pstTime}`;
     }
 
     function classifyFrequency(freq) {
@@ -739,44 +756,46 @@
         return "Monthly";
     }
 
+    // TIMEZONE-ACCURATE DATE DISPLAY FORMATTER
+    function normalizeToDMY(dateString) {
+        if (!dateString) return "";
+        let str = String(dateString).trim();
+
+        // Convert UTC ISO timestamp string into IST timezone (Asia/Kolkata)
+        if (str.includes("T")) {
+            let d = new Date(str);
+            if (!isNaN(d.getTime())) {
+                let options = { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' };
+                let parts = new Intl.DateTimeFormat('en-IN', options).formatToParts(d);
+                let day = parts.find(p => p.type === 'day').value;
+                let month = parts.find(p => p.type === 'month').value;
+                let year = parts.find(p => p.type === 'year').value;
+                return `${day}/${month}/${year}`;
+            }
+        }
+
+        let clean = str.split("T")[0].split(" ")[0];
+        if (/^\d{4}[-\/]\d{2}[-\/]\d{2}$/.test(clean)) {
+            let parts = clean.split(clean.includes("-") ? "-" : "/");
+            return parts[2] + "/" + parts[1] + "/" + parts[0];
+        }
+        return clean.replace(/-/g, "/"); 
+    }
+
     function parseDateForSort(dStr) {
         if (!dStr) return new Date(8640000000000000); 
-        let clean = String(dStr).trim().split("T")[0].split(" ")[0];
+        let str = String(dStr).trim();
+        if (str.includes("T")) {
+            let d = new Date(str);
+            if (!isNaN(d.getTime())) return d;
+        }
+        let clean = str.split("T")[0].split(" ")[0];
         if (/^\d{1,2}[\/-]\d{1,2}[\/-]\d{4}$/.test(clean)) {
             let parts = clean.split(/[\/-]/);
             return new Date(parts[2], parts[1] - 1, parts[0]);
         }
         let parsed = new Date(clean);
         return isNaN(parsed.getTime()) ? new Date(8640000000000000) : parsed;
-    }
-
-    // -------------------------------------------------------------------
-    // PERSISTENCE LOCAL STORAGE HELPERS
-    // -------------------------------------------------------------------
-    function getAuditStoreKey(empName) {
-        return 'taxpro_audit_progress_' + (empName || '').trim().toLowerCase().replace(/\s+/g, '_');
-    }
-
-    function getSavedAuditProgress(empName) {
-        try {
-            const data = localStorage.getItem(getAuditStoreKey(empName));
-            return data ? JSON.parse(data) : {};
-        } catch(e) {
-            return {};
-        }
-    }
-
-    function saveAuditProgressLocal(empName, clientName, completedCount, totalCount, percentage) {
-        try {
-            const store = getSavedAuditProgress(empName);
-            store[clientName] = {
-                completedTasks: completedCount,
-                totalTasks: totalCount,
-                percentage: percentage,
-                updatedAt: new Date().getTime()
-            };
-            localStorage.setItem(getAuditStoreKey(empName), JSON.stringify(store));
-        } catch(e) {}
     }
 
     function switchModule(moduleId) {
@@ -807,7 +826,7 @@
         document.querySelectorAll('.portal-page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
-        event.currentTarget.classList.add('active');
+        if (event && event.currentTarget) event.currentTarget.classList.add('active');
     }
 
     function switchGstView(viewType) {
@@ -825,6 +844,7 @@
         const periodSelect = document.getElementById('gstMonth');
         const periodLabel = document.getElementById('gstPeriodLabel');
         const gstr3bBox = document.getElementById('gstr3bSpecificFields');
+        const freqContainer = document.getElementById('freqFilterContainer');
 
         const prevSelectedVal = periodSelect.value;
         gstr3bBox.style.display = (returnType === "GSTR3B") ? "block" : "none";
@@ -832,16 +852,20 @@
 
         if (returnType === "GSTR9" || returnType === "GSTR9C") {
             periodLabel.innerText = "Select Financial Year";
+            if (freqContainer) freqContainer.style.display = "none"; 
+            
             FY_LIST.forEach(fy => {
                 let opt = document.createElement('option');
-                opt.value = fy; opt.innerText = "FY " + fy;
-                if (fy === prevSelectedVal || (fy === '2025-26' && !FY_LIST.includes(prevSelectedVal))) {
+                opt.value = fy; opt.innerText = fy;
+                if (fy === prevSelectedVal || (fy === 'FY 2024-25' && !FY_LIST.includes(prevSelectedVal))) {
                     opt.selected = true;
                 }
                 periodSelect.appendChild(opt);
             });
         } else {
             periodLabel.innerText = "Select Month / Period";
+            if (freqContainer) freqContainer.style.display = "block";
+
             MONTHS.forEach(m => {
                 let opt = document.createElement('option');
                 opt.value = m; opt.innerText = m;
@@ -867,16 +891,6 @@
         }
     }
 
-    function normalizeToDMY(dateString) {
-        if (!dateString) return "";
-        let clean = dateString.trim().split("T")[0].split(" ")[0];
-        if (/^\d{4}[-\/]\d{2}[-\/]\d{2}$/.test(clean)) {
-            let parts = clean.split(clean.includes("-") ? "-" : "/");
-            return parts[2] + "/" + parts[1] + "/" + parts[0];
-        }
-        return clean.replace(/-/g, "/"); 
-    }
-
     function onStaffCredentialsChanged() {
         resetDataViews();
         runBackgroundTracker();
@@ -894,36 +908,35 @@
         fetch(`${WEB_APP_URL}?action=fetchInitializationData`)
         .then(res => res.json())
         .then(res => {
-            if (res.status === "SUCCESS") {
-                empDropdown.innerHTML = '<option value="">-- Select Your Name --</option>';
-                res.employees.forEach(emp => {
-                    const opt = document.createElement('option');
-                    opt.value = emp; opt.innerText = emp;
-                    empDropdown.appendChild(opt);
-                });
+            const data = res.status === "SUCCESS" ? res : res;
+            const employees = data.employees || data.staffList || [];
+            const clients = data.clients || data.clientList || [];
+            globalTaskMap = data.taskMap || data.timesheetTasks || {};
 
-                clientDropdown.innerHTML = '<option value="">-- Select Client --</option>';
+            empDropdown.innerHTML = '<option value="">-- Select Your Name --</option>';
+            employees.forEach(emp => {
+                const opt = document.createElement('option');
+                opt.value = emp; opt.innerText = emp;
+                empDropdown.appendChild(opt);
+            });
 
-                res.clients.forEach(client => {
-                    const opt = document.createElement('option');
-                    opt.value = client; opt.innerText = client;
-                    clientDropdown.appendChild(opt);
-                });
+            clientDropdown.innerHTML = '<option value="">-- Select Client --</option>';
+            clients.forEach(client => {
+                const opt = document.createElement('option');
+                opt.value = client; opt.innerText = client;
+                clientDropdown.appendChild(opt);
+            });
 
-                globalTaskMap = res.taskMap;
-                taskDropdown.innerHTML = '<option value="">-- Select Task --</option>';
-                for (let mainTask in globalTaskMap) {
-                    const opt = document.createElement('option');
-                    opt.value = mainTask; opt.innerText = mainTask;
-                    taskDropdown.appendChild(opt);
-                }
+            taskDropdown.innerHTML = '<option value="">-- Select Task --</option>';
+            for (let mainTask in globalTaskMap) {
+                const opt = document.createElement('option');
+                opt.value = mainTask; opt.innerText = mainTask;
+                taskDropdown.appendChild(opt);
             }
         }).catch(() => {});
     }
 
-    // -------------------------------------------------------------------
-    // GST MODULE LOGIC (OPEN ACCESS)
-    // -------------------------------------------------------------------
+    // GST MODULE LOGIC
     function fetchPendingGST() {
         const returnType = document.getElementById('gstReturnType').value;
         const periodVal = document.getElementById('gstMonth').value;
@@ -937,7 +950,7 @@
         fetch(`${WEB_APP_URL}?action=fetchPendingGST&returnType=${returnType}&period=${encodeURIComponent(periodVal)}`)
         .then(res => res.json())
         .then(res => {
-            if (res.status === "SUCCESS") {
+            if (res.status === "SUCCESS" || Array.isArray(res)) {
                 cachedPendingGstData = res.pending || [];
                 cachedFiledGstData = res.filed || [];
                 cachedChallanGstData = res.challanShared || [];
@@ -949,7 +962,7 @@
                 renderChallanSharedTable();
             } else {
                 statusDiv.style.color = "red";
-                statusDiv.innerText = "Error: " + res.message;
+                statusDiv.innerText = "Error: " + (res.message || "Failed to fetch GST data.");
             }
         }).catch(() => {
             statusDiv.style.color = "red";
@@ -958,6 +971,7 @@
     }
 
     function updateGstSummaryTable() {
+        const returnType = document.getElementById('gstReturnType').value;
         let counts = { monthly: { pending: 0, filed: 0 }, quarterly: { pending: 0, filed: 0 }, composition: { pending: 0, filed: 0 } };
 
         cachedPendingGstData.forEach(item => {
@@ -995,12 +1009,13 @@
     function buildAlphabetBar() {
         const bar = document.getElementById('alphabetBar');
         bar.innerHTML = "";
+        const returnType = document.getElementById('gstReturnType').value;
         const freqFilter = document.getElementById('gstFrequencyFilter').value;
 
         if (!cachedPendingGstData || cachedPendingGstData.length === 0) return;
 
         let freqFilteredList = cachedPendingGstData;
-        if (freqFilter !== "ALL") {
+        if (returnType !== "GSTR9" && returnType !== "GSTR9C" && freqFilter !== "ALL") {
             freqFilteredList = cachedPendingGstData.filter(item => classifyFrequency(item.frequency) === freqFilter);
         }
 
@@ -1050,7 +1065,7 @@
         }
 
         let filteredList = cachedPendingGstData;
-        if (freqFilter !== "ALL") {
+        if (returnType !== "GSTR9" && returnType !== "GSTR9C" && freqFilter !== "ALL") {
             filteredList = cachedPendingGstData.filter(item => classifyFrequency(item.frequency) === freqFilter);
         }
 
@@ -1060,7 +1075,7 @@
 
         if (filteredList.length === 0) {
             statusDiv.style.color = "blue";
-            statusDiv.innerText = `No pending returns found.`;
+            statusDiv.innerText = `No pending returns found for selected filters.`;
             table.style.display = "none";
             actionRow.style.display = "none";
             return;
@@ -1070,13 +1085,13 @@
         filteredList.forEach(item => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><strong>${item.gstin}</strong></td>
+                <td><strong>${item.gstin || '-'}</strong></td>
                 <td>${item.clientName}</td>
-                <td>${item.frequency}</td>
+                <td>${item.frequency || 'N/A'}</td>
                 <td><span style="color:#c53030; font-weight:bold;">${item.status}</span></td>
                 <td>
                     <button type="button" style="background-color:#1a365d; color:white; border:none; padding:5px 12px; border-radius:3px; cursor:pointer;" 
-                    onclick="openGstModal(${item.rowIndex}, '${item.gstin}', '${item.clientName.replace(/'/g, "\\'")}')">Select</button>
+                    onclick="openGstModal(${item.rowIndex || 0}, '${item.gstin || ''}', '${item.clientName.replace(/'/g, "\\'")}')">Select</button>
                 </td>`;
             tbody.appendChild(tr);
         });
@@ -1106,7 +1121,7 @@
         }
 
         let filteredList = cachedFiledGstData;
-        if (freqFilter !== "ALL") {
+        if (returnType !== "GSTR9" && returnType !== "GSTR9C" && freqFilter !== "ALL") {
             filteredList = cachedFiledGstData.filter(item => classifyFrequency(item.frequency) === freqFilter);
         }
 
@@ -1124,27 +1139,27 @@
             filteredList.forEach(item => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>${item.gstin}</strong></td>
+                    <td><strong>${item.gstin || '-'}</strong></td>
                     <td>${item.clientName}</td>
-                    <td>${item.frequency}</td>
+                    <td>${item.frequency || 'N/A'}</td>
                     <td><span style="color:#276749; font-weight:bold;">${item.status}</span></td>
-                    <td>${item.filingDate}</td>
-                    <td><code>${item.arn}</code></td>`;
+                    <td>${normalizeToDMY(item.filingDate) || '-'}</td>
+                    <td><code>${item.arn || '-'}</code></td>`;
                 tbody.appendChild(tr);
             });
         } else {
-            headerRow.innerHTML = `<th>GSTIN</th><th>Client Name</th><th>Frequency</th><th>Reco</th><th>Mismatch</th><th>Tax Position</th><th>Date</th><th>ARN</th>`;
+            headerRow.innerHTML = `<th>GSTIN</th><th>Client Name</th><th>Frequency</th><th>Reco</th><th>Mismatch</th><th>Tax Position</th><th>Date</th><th>ARN Number</th>`;
             filteredList.forEach(item => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>${item.gstin}</strong></td>
+                    <td><strong>${item.gstin || '-'}</strong></td>
                     <td>${item.clientName}</td>
-                    <td>${item.frequency}</td>
+                    <td>${item.frequency || 'N/A'}</td>
                     <td>${item.recoUpdated || '-'}</td>
                     <td>${item.mismatchShared || '-'}</td>
                     <td><strong>${item.taxType || '-'}</strong></td>
-                    <td>${item.filingDate}</td>
-                    <td><code>${item.arn}</code></td>`;
+                    <td>${normalizeToDMY(item.filingDate) || '-'}</td>
+                    <td><code>${item.arn || '-'}</code></td>`;
                 tbody.appendChild(tr);
             });
         }
@@ -1184,12 +1199,12 @@
         filteredList.forEach(item => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><strong>${item.gstin}</strong></td>
+                <td><strong>${item.gstin || '-'}</strong></td>
                 <td>${item.clientName}</td>
-                <td>${item.frequency}</td>
+                <td>${item.frequency || 'N/A'}</td>
                 <td><span style="color:#b7791f; font-weight:bold;">Challan Shared</span></td>
                 <td>${item.status}</td>
-                <td>${item.filingDate || '-'}</td>
+                <td>${normalizeToDMY(item.filingDate) || '-'}</td>
                 <td><code>${item.arn || '-'}</code></td>`;
             tbody.appendChild(tr);
         });
@@ -1227,7 +1242,7 @@
             const arnRegex = /^[A-Z0-9]{15}$/;
             if (!arnRegex.test(arnNumber)) {
                 statusDiv.style.color = "red";
-                statusDiv.innerText = "🛑 Invalid ARN: Must be exactly 15 alphanumeric characters.";
+                statusDiv.innerText = "🛑 Return cannot be marked as Filed without a valid 15-digit alphanumeric ARN.";
                 return;
             }
         }
@@ -1268,9 +1283,7 @@
         });
     }
 
-    // -------------------------------------------------------------------
-    // UDIN TRACKER LOGIC (STRICTLY UDIN SHEET CLIENTS)
-    // -------------------------------------------------------------------
+    // UDIN TRACKER LOGIC
     function fetchUDINData() {
         const statusDiv = document.getElementById('udinTableStatus');
         const table = document.getElementById('udinTable');
@@ -1283,51 +1296,49 @@
         fetch(`${WEB_APP_URL}?action=fetchUDINData`)
         .then(res => res.json())
         .then(res => {
-            if (res.status === "SUCCESS") {
-                statusDiv.innerText = "";
-                tbody.innerHTML = "";
-                cachedUdinRecords = res.records || [];
+            const rawRecords = res.records || (Array.isArray(res) ? res : []);
+            statusDiv.innerText = "";
+            tbody.innerHTML = "";
+            cachedUdinRecords = rawRecords;
 
-                // STRICTLY POPULATE CLIENT DROPDOWN FROM UDIN SHEET
-                udinDropdown.innerHTML = '<option value="">-- Select Client from UDIN Sheet --</option>';
-                cachedUdinRecords.forEach(r => {
-                    const opt = document.createElement('option');
-                    opt.value = r.clientName;
-                    opt.innerText = r.clientName;
-                    udinDropdown.appendChild(opt);
-                });
+            udinDropdown.innerHTML = '<option value="">-- Select Client from UDIN Sheet --</option>';
+            cachedUdinRecords.forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r.clientName;
+                opt.innerText = r.clientName;
+                udinDropdown.appendChild(opt);
+            });
 
-                if (cachedUdinRecords.length === 0) {
-                    statusDiv.style.color = "blue";
-                    statusDiv.innerText = "No client rows found in 'UDIN' sheet Column A.";
-                    table.style.display = "none";
-                    return;
-                }
-
-                cachedUdinRecords.forEach(r => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td><strong>${r.clientName}</strong></td>
-                        <td>${r.personName || '-'}</td>
-                        <td><code>${r.pan || '-'}</code></td>
-                        <td>${normalizeToDMY(r.filingDate) || '-'}</td>
-                        <td><strong style="color:#1a365d;">${r.udin || '-'}</strong></td>
-                        <td><span style="font-weight:bold; color:${r.tarReport === 'Filed' ? '#276749' : '#c53030'};">${r.tarReport}</span></td>
-                        <td>${r.financialReport}</td>
-                        <td>${r.auditReport}</td>
-                        <td>${r.itrStatus}</td>
-                        <td><strong>${r.udinConsumed}</strong></td>
-                        <td><small>${r.comments || '-'}</small></td>
-                        <td>
-                            <button type="button" style="background-color:#1a365d; color:white; border:none; padding:4px 8px; border-radius:3px; cursor:pointer;"
-                            onclick="populateUdinEditForm('${r.clientName.replace(/'/g, "\\'")}')">Edit</button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-
-                table.style.display = "table";
+            if (cachedUdinRecords.length === 0) {
+                statusDiv.style.color = "blue";
+                statusDiv.innerText = "No client rows found in 'UDIN' sheet.";
+                table.style.display = "none";
+                return;
             }
+
+            cachedUdinRecords.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${r.clientName}</strong></td>
+                    <td>${r.personName || '-'}</td>
+                    <td><code>${r.pan || '-'}</code></td>
+                    <td>${normalizeToDMY(r.dateOfFiling || r.filingDate) || '-'}</td>
+                    <td><strong style="color:#1a365d;">${r.udin || '-'}</strong></td>
+                    <td><span style="font-weight:bold; color:${r.tarReport === 'Filed' ? '#276749' : '#c53030'};">${r.tarReport || 'Pending'}</span></td>
+                    <td>${r.financialReport || 'Pending'}</td>
+                    <td>${r.auditReport || 'Pending'}</td>
+                    <td>${r.itrStatus || 'Pending'}</td>
+                    <td><strong>${r.udinConsumed || 'No'}</strong></td>
+                    <td><small>${r.comments || '-'}</small></td>
+                    <td>
+                        <button type="button" style="background-color:#1a365d; color:white; border:none; padding:4px 8px; border-radius:3px; cursor:pointer;"
+                        onclick="populateUdinEditForm('${r.clientName.replace(/'/g, "\\'")}')">Edit</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            table.style.display = "table";
         }).catch(() => {
             statusDiv.style.color = "red";
             statusDiv.innerText = "Error fetching UDIN records.";
@@ -1346,7 +1357,7 @@
         if (item) {
             document.getElementById('udinPersonName').value = item.personName || "";
             document.getElementById('udinPan').value = item.pan || "";
-            document.getElementById('udinFilingDate').value = item.filingDate ? item.filingDate.split("T")[0] : "";
+            document.getElementById('udinFilingDate').value = item.dateOfFiling || item.filingDate ? (item.dateOfFiling || item.filingDate).split("T")[0] : "";
             document.getElementById('udinNumber').value = item.udin || "";
             document.getElementById('udinConsumedSelect').value = item.udinConsumed || "No";
             document.getElementById('udinTarReport').value = item.tarReport || "Pending";
@@ -1389,13 +1400,13 @@
         fetch(`${WEB_APP_URL}?${params.toString()}`)
         .then(res => res.json())
         .then(res => {
-            if (res.status === "SUCCESS") {
+            if (res.status === "SUCCESS" || res.success) {
                 statusDiv.style.color = "green";
                 statusDiv.innerText = "✓ UDIN entry updated successfully!";
                 fetchUDINData();
             } else {
                 statusDiv.style.color = "red";
-                statusDiv.innerText = "Error: " + res.message;
+                statusDiv.innerText = "Error: " + (res.message || "Failed to save record.");
             }
         }).catch(() => {
             statusDiv.style.color = "red";
@@ -1403,9 +1414,7 @@
         });
     }
 
-    // -------------------------------------------------------------------
-    // TAX AUDIT TRACKER LOGIC WITH DUAL PERSISTENCE
-    // -------------------------------------------------------------------
+    // TAX AUDIT TRACKER LOGIC
     function fetchAuditClientsForStaff() {
         const creds = getCredentials();
         const noticeDiv = document.getElementById('auditAuthNotice');
@@ -1420,77 +1429,59 @@
             return;
         }
 
-        // Fast render local storage cache for instant tab switching
-        const localStore = getSavedAuditProgress(creds.name);
-        if (cachedAuditClientsSummary && cachedAuditClientsSummary.length > 0) {
-            cachedAuditClientsSummary.forEach(c => {
-                if (localStore[c.clientName]) {
-                    const s = localStore[c.clientName];
-                    c.completedTasks = s.completedTasks;
-                    c.completed = s.completedTasks;
-                    c.totalTasks = s.totalTasks;
-                    c.total = s.totalTasks;
-                    c.percentage = s.percentage;
-                }
-            });
-            renderAuditSummaryTable(cachedAuditClientsSummary);
-        }
-
         if (noticeDiv) {
             noticeDiv.style.color = "orange";
             noticeDiv.innerText = "Syncing audit clients data from cloud...";
         }
 
-        // Fetch authoritative server data from Google Sheets (Multi-Device)
         fetch(`${WEB_APP_URL}?action=fetchAuditClientsForStaff&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}`)
         .then(res => res.json())
         .then(res => {
-            if (res.status === "SUCCESS") {
+            if (res.status === "SUCCESS" || res.success) {
                 if (noticeDiv) noticeDiv.innerText = "";
+                const clientsList = res.clients || [];
+                auditMainTasksList = res.mainTasks || [];
 
-                if (!res.clients || res.clients.length === 0) {
+                populateAuditMainTaskDropdown(auditMainTasksList);
+
+                if (!clientsList || clientsList.length === 0) {
                     if (noticeDiv) {
                         noticeDiv.style.color = "blue";
                         noticeDiv.innerText = `No clients assigned to ${creds.name} in 06_Tax_Audit_Data.`;
                     }
+                    if (summaryBox) summaryBox.style.display = "none";
                     return;
                 }
 
-                // Directly prioritize server values from Google Sheets
-                res.clients.forEach(item => {
-                    const cName = item.clientName;
-                    let total = item.totalTasks || item.total || 0;
-                    let completed = item.completedTasks !== undefined ? item.completedTasks : (item.completed !== undefined ? item.completed : 0);
-                    let pct = item.percentage !== undefined ? item.percentage : (total > 0 ? Math.round((completed / total) * 100) : 0);
-
-                    // Update local store with server truth
-                    saveAuditProgressLocal(creds.name, cName, completed, total, pct);
-
-                    item.completedTasks = completed;
-                    item.completed = completed;
-                    item.totalTasks = total;
-                    item.total = total;
-                    item.percentage = pct;
-                });
-
-                res.clients.sort((a, b) => parseDateForSort(a.deadline) - parseDateForSort(b.deadline));
-                cachedAuditClientsSummary = res.clients || [];
-
+                cachedAuditClientsSummary = clientsList;
                 renderAuditSummaryTable(cachedAuditClientsSummary);
             } else {
                 if (noticeDiv) {
                     noticeDiv.style.color = "red";
-                    noticeDiv.innerText = "Error: " + res.message;
+                    noticeDiv.innerText = "Error: " + (res.message || "Failed to load audit client data.");
                 }
             }
         }).catch(() => {
-            if (noticeDiv) noticeDiv.innerText = "";
+            if (noticeDiv) noticeDiv.innerText = "Network transmission error.";
         });
+    }
+
+    function populateAuditMainTaskDropdown(mainTasks) {
+        const filterSelect = document.getElementById('auditMainTaskFilter');
+        filterSelect.innerHTML = '<option value="ALL">All Main Tasks</option>';
+        if (mainTasks && mainTasks.length > 0) {
+            mainTasks.forEach(mt => {
+                const opt = document.createElement('option');
+                opt.value = mt; opt.innerText = mt;
+                filterSelect.appendChild(opt);
+            });
+        }
     }
 
     function renderAuditSummaryTable(clientsList) {
         const summaryBox = document.getElementById('auditSummaryBox');
         const tbody = document.querySelector('#auditSummaryTable tbody');
+        const selectedMainTask = document.getElementById('auditMainTaskFilter').value;
         tbody.innerHTML = "";
 
         if (!clientsList || clientsList.length === 0) {
@@ -1502,9 +1493,17 @@
 
         clientsList.forEach(item => {
             const tr = document.createElement('tr');
-            const total = item.totalTasks || item.total || 0;
-            const completed = item.completedTasks !== undefined ? item.completedTasks : (item.completed !== undefined ? item.completed : 0);
-            const pct = item.percentage !== undefined ? item.percentage : (total > 0 ? Math.round((completed / total) * 100) : 0);
+            let total = item.totalTasks || item.total || 0;
+            let completed = item.completedTasks !== undefined ? item.completedTasks : (item.completed !== undefined ? item.completed : 0);
+            let pct = item.percentage !== undefined ? item.percentage : (total > 0 ? Math.round((completed / total) * 100) : 0);
+
+            if (selectedMainTask !== "ALL" && item.mainTaskStats && item.mainTaskStats[selectedMainTask]) {
+                const stats = item.mainTaskStats[selectedMainTask];
+                total = stats.total;
+                completed = stats.completed;
+                pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+            }
+
             const deadlineFormatted = normalizeToDMY(item.deadline) || 'N/A';
 
             tr.innerHTML = `
@@ -1515,7 +1514,7 @@
                     <div style="display:flex; align-items:center; gap:8px;">
                         <span style="font-weight:bold; width:38px;">${pct}%</span>
                         <div style="flex:1; background-color:#cbd5e1; height:8px; border-radius:4px; overflow:hidden;">
-                            <div style="background-color:#2b6cb0; width:${pct}%; height:100%;"></div>
+                            <div style="background-color:${pct === 100 ? '#16a34a' : '#2b6cb0'}; width:${pct}%; height:100%;"></div>
                         </div>
                     </div>
                 </td>
@@ -1550,13 +1549,12 @@
         container.style.display = "none";
         progressBox.style.display = "none";
 
-        // Open Checklist Modal
         document.getElementById('auditModalOverlay').style.display = "flex";
 
         fetch(`${WEB_APP_URL}?action=fetchTaxAuditTasks&clientName=${encodeURIComponent(clientName)}&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}`)
         .then(res => res.json())
         .then(res => {
-            if (res.status === "SUCCESS") {
+            if (res.status === "SUCCESS" || res.tasks) {
                 statusDiv.innerText = "";
                 cachedAuditTasks = res.tasks || [];
                 
@@ -1566,7 +1564,7 @@
                 renderAuditChecklistGrouped(cachedAuditTasks, clientName);
             } else {
                 statusDiv.style.color = "red";
-                statusDiv.innerText = "Error: " + res.message;
+                statusDiv.innerText = "Error: " + (res.message || "Failed to load checklist.");
             }
         }).catch(() => {
             statusDiv.style.color = "red";
@@ -1580,7 +1578,7 @@
         container.innerHTML = "";
 
         if (!tasksList || tasksList.length === 0) {
-            container.innerHTML = `<div style="text-align:center; color:gray; padding:20px;">No Tax Audit Main/Sub Tasks found in Columns E & F of 05_Lists_Config.</div>`;
+            container.innerHTML = `<div style="text-align:center; color:gray; padding:20px;">No Tax Audit Main/Sub Tasks found in master list.</div>`;
             container.style.display = "block";
             return;
         }
@@ -1600,12 +1598,19 @@
 
         let idxCounter = 1;
         for (let mTask in grouped) {
+            const groupTasks = grouped[mTask];
+            const groupDone = groupTasks.filter(gt => gt.status === "Completed" || gt.status === "N/A").length;
+            const groupPct = groupTasks.length > 0 ? Math.round((groupDone / groupTasks.length) * 100) : 0;
+
             const groupHeader = document.createElement('div');
             groupHeader.className = "audit-group-title";
-            groupHeader.innerText = "📌 " + mTask; 
+            groupHeader.innerHTML = `
+                <span>📌 ${mTask}</span>
+                <span class="audit-group-badge" id="badge_group_${idxCounter}">${groupDone}/${groupTasks.length} Done (${groupPct}%)</span>
+            `; 
             container.appendChild(groupHeader);
 
-            grouped[mTask].forEach(t => {
+            groupTasks.forEach(t => {
                 const elementId = "audit_item_" + idxCounter;
                 const card = document.createElement('div');
                 card.className = "audit-task-card";
@@ -1634,9 +1639,6 @@
         document.getElementById('auditPercentText').innerText = `${pct}%`;
         document.getElementById('auditProgressFill').style.width = `${pct}%`;
 
-        // Update main overview table metrics instantly
-        updateClientSummaryMetrics(clientName, completedCount, totalTasks, pct);
-
         progressBox.style.display = "block";
         container.style.display = "block";
     }
@@ -1660,7 +1662,7 @@
         fetch(`${WEB_APP_URL}?${params.toString()}`)
         .then(res => res.json())
         .then(res => {
-            if (res.status === "SUCCESS") {
+            if (res.status === "SUCCESS" || res.success) {
                 let completedCount = 0;
                 let totalTasks = 0;
                 document.querySelectorAll('[id^="status_audit_item_"]').forEach(selectEl => {
@@ -1672,30 +1674,10 @@
                 document.getElementById('auditProgressText').innerText = `${completedCount} / ${totalTasks} Tasks Done`;
                 document.getElementById('auditPercentText').innerText = `${pct}%`;
                 document.getElementById('auditProgressFill').style.width = `${pct}%`;
-                
-                // Update local storage and overview table
-                updateClientSummaryMetrics(clientName, completedCount, totalTasks, pct);
+
+                fetchAuditClientsForStaff();
             }
         }).catch(() => {});
-    }
-
-    function updateClientSummaryMetrics(clientName, completedCount, totalTasks, pct) {
-        const creds = getCredentials();
-        if (creds.name) {
-            saveAuditProgressLocal(creds.name, clientName, completedCount, totalTasks, pct);
-        }
-
-        if (cachedAuditClientsSummary && cachedAuditClientsSummary.length > 0) {
-            const clientObj = cachedAuditClientsSummary.find(c => c.clientName === clientName);
-            if (clientObj) {
-                clientObj.completedTasks = completedCount;
-                clientObj.completed = completedCount;
-                clientObj.totalTasks = totalTasks;
-                clientObj.total = totalTasks;
-                clientObj.percentage = pct;
-            }
-            renderAuditSummaryTable(cachedAuditClientsSummary);
-        }
     }
 
     function closeAuditModal() {
@@ -1766,9 +1748,7 @@
         downloadCsv(csv, `Tax_Audit_Assigned_Clients_${new Date().toISOString().split('T')[0]}.csv`);
     }
 
-    // -------------------------------------------------------------------
     // TIMESHEET FRONTEND LOGIC
-    // -------------------------------------------------------------------
     function runBackgroundTracker() {
         const creds = getCredentials();
         if (!creds.name || !creds.pin || creds.pin.length < 4) {
@@ -1778,8 +1758,8 @@
         fetch(`${WEB_APP_URL}?action=fetchHistory&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}`)
         .then(res => res.json())
         .then(res => {
-            if (res.status === "SUCCESS") {
-                cachedHistoryData = res.data;
+            if (res.status === "SUCCESS" || res.data) {
+                cachedHistoryData = res.data || [];
                 updateDailyTrackerUI();
             }
         }).catch(() => {});
@@ -1803,7 +1783,7 @@
         let selectedTotal = 0, prevTotal = 0;
         if (cachedHistoryData && cachedHistoryData.length > 0) {
             cachedHistoryData.forEach(row => {
-                let cleanRowDate = row.date.trim().split("T")[0].split(" ")[0];
+                let cleanRowDate = String(row.date).trim().split("T")[0].split(" ")[0];
                 if (cleanRowDate === selectedDateVal) selectedTotal += parseFloat(row.hours) || 0;
                 else if (cleanRowDate === prevDateVal) prevTotal += parseFloat(row.hours) || 0;
             });
@@ -1887,7 +1867,7 @@
         fetch(`${WEB_APP_URL}?${params.toString()}`)
         .then(res => res.json())
         .then(res => {
-            if (res.status === "SUCCESS") {
+            if (res.status === "SUCCESS" || res.success) {
                 statusDiv.style.color = "green";
                 statusDiv.innerText = "✓ Activity metrics logged successfully.";
                 document.getElementById('description').value = "";
@@ -1896,7 +1876,7 @@
                 runBackgroundTracker();
             } else {
                 statusDiv.style.color = "red";
-                statusDiv.innerText = "🛑 Error: " + res.message;
+                statusDiv.innerText = "🛑 Error: " + (res.message || "Failed to log entry.");
             }
         }).catch(() => {
             statusDiv.style.color = "red";
@@ -1924,22 +1904,20 @@
         fetch(`${WEB_APP_URL}?action=fetchAssignedTasks&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}`)
         .then(res => res.json())
         .then(res => {
-            if (res.status === "SUCCESS") {
+            if (res.status === "SUCCESS" || res.data) {
                 statusDiv.innerText = "";
-                if (res.data.length === 0) {
+                const taskList = res.data || [];
+                if (taskList.length === 0) {
                     statusDiv.style.color = "blue";
-                    statusDiv.innerText = "No open task allocations found.";
+                    statusDiv.innerText = "No active open task allocations found.";
                     return;
                 }
-                cachedAssignmentsData = res.data; 
-                res.data.forEach(row => {
+                cachedAssignmentsData = taskList; 
+                taskList.forEach(row => {
                     const tr = document.createElement('tr');
                     const cleanDeadline = normalizeToDMY(row.deadline);
-                    const isFulfilled = String(row.status).trim().toLowerCase() === "fulfilled";
-                    let actionCellHtml = isFulfilled ? `<span style="color:#155724; font-weight:bold;">✓ Fulfilled</span>` :
-                        `<button type="button" style="background-color:#28a745; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; font-size:11px;" onclick="markTaskFulfilled(${row.rowIndex}, this)">✓ Mark Done</button>`;
+                    let actionCellHtml = `<button type="button" style="background-color:#28a745; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; font-size:11px;" onclick="markTaskFulfilled(${row.rowIndex}, this)">✓ Mark Done</button>`;
 
-                    if (isFulfilled) tr.style.backgroundColor = "#d4edda";
                     tr.innerHTML = `<td><strong>${row.client}</strong></td><td>${row.description}</td><td><span>${row.priority}</span></td><td>${cleanDeadline}</td><td>${actionCellHtml}</td>`;
                     tbody.appendChild(tr);
                 });
@@ -1956,9 +1934,8 @@
         fetch(`${WEB_APP_URL}?action=markTaskCompleted&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}&rowIndex=${rowIndex}`)
         .then(res => res.json())
         .then(res => {
-            if (res.status === "SUCCESS") {
-                btnElement.closest('tr').style.backgroundColor = "#d4edda"; 
-                btnElement.parentElement.innerHTML = "<span style='color:#155724; font-weight:bold;'>✓ Fulfilled</span>";
+            if (res.status === "SUCCESS" || res.success) {
+                fetchAssignedTasks();
             }
         }).catch(() => { btnElement.disabled = false; btnElement.innerText = "✓ Mark Done"; });
     }
@@ -1983,15 +1960,16 @@
         fetch(`${WEB_APP_URL}?action=fetchHistory&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}`)
         .then(res => res.json())
         .then(res => {
-            if (res.status === "SUCCESS") {
+            if (res.status === "SUCCESS" || res.data) {
                 statusDiv.innerText = "";
-                if (res.data.length === 0) {
+                const historyList = res.data || [];
+                if (historyList.length === 0) {
                     statusDiv.style.color = "blue";
                     statusDiv.innerText = "No historical log records found.";
                     return;
                 }
-                cachedHistoryData = res.data; 
-                res.data.forEach(row => {
+                cachedHistoryData = historyList; 
+                historyList.forEach(row => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `<td>${normalizeToDMY(row.date)}</td><td>${row.client}</td><td>${row.task}</td><td>${row.remarks || '-'}</td><td><em>${row.status}</em></td><td><strong>${row.hours} hrs</strong></td>`;
                     tbody.appendChild(tr);
@@ -2043,9 +2021,9 @@
         const periodVal = document.getElementById('gstMonth').value;
         if (!cachedPendingGstData || cachedPendingGstData.length === 0) return;
 
-        let csv = "\uFEFFGSTIN,Client Name,Trade Name,Filing Frequency,Status\n";
+        let csv = "\uFEFFGSTIN,Client Name,Filing Frequency,Status\n";
         cachedPendingGstData.forEach(r => {
-            csv += `"${r.gstin}","${r.clientName}","${r.tradeName}","${r.frequency}","${r.status}"\n`;
+            csv += `"${r.gstin || ''}","${r.clientName}","${r.frequency || 'N/A'}","${r.status}"\n`;
         });
         downloadCsv(csv, `GST_Pending_${returnType}_${periodVal}_${new Date().toISOString().split('T')[0]}.csv`);
     }
@@ -2055,9 +2033,9 @@
         const periodVal = document.getElementById('gstMonth').value;
         if (!cachedFiledGstData || cachedFiledGstData.length === 0) return;
 
-        let csv = "\uFEFFGSTIN,Client Name,Trade Name,Filing Frequency,Status,Filing Date,ARN Number\n";
+        let csv = "\uFEFFGSTIN,Client Name,Filing Frequency,Status,Filing Date,ARN Number\n";
         cachedFiledGstData.forEach(r => {
-            csv += `"${r.gstin}","${r.clientName}","${r.tradeName}","${r.frequency}","${r.status}","${r.filingDate}","'${r.arn}"\n`;
+            csv += `"${r.gstin || ''}","${r.clientName}","${r.frequency || 'N/A'}","${r.status}","${normalizeToDMY(r.filingDate)}","'${r.arn || ''}"\n`;
         });
         downloadCsv(csv, `GST_Filed_${returnType}_${periodVal}_${new Date().toISOString().split('T')[0]}.csv`);
     }
@@ -2072,7 +2050,7 @@
 
         let html = `<h2 style="text-align:center;">GST ${type.toUpperCase()} Report (${returnType} - ${periodVal})</h2><table><thead><tr><th>GSTIN</th><th>Client Name</th><th>Frequency</th><th>Status</th><th>Date</th><th>ARN</th></tr></thead><tbody>`;
         list.forEach(r => {
-            html += `<tr><td>${r.gstin}</td><td>${r.clientName}</td><td>${r.frequency}</td><td>${r.status}</td><td>${r.filingDate || '-'}</td><td>${r.arn || '-'}</td></tr>`;
+            html += `<tr><td>${r.gstin || '-'}</td><td>${r.clientName}</td><td>${r.frequency || 'N/A'}</td><td>${r.status}</td><td>${normalizeToDMY(r.filingDate) || '-'}</td><td>${r.arn || '-'}</td></tr>`;
         });
         html += `</tbody></table>`;
         printArea.innerHTML = html;
