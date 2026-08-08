@@ -1687,6 +1687,8 @@
     function printAuditSummary() {
         const creds = getCredentials();
         const printArea = document.getElementById('gstPrintArea');
+        const selectedMainTask = document.getElementById('auditMainTaskFilter').value;
+
         if (!cachedAuditClientsSummary || cachedAuditClientsSummary.length === 0) {
             alert("No assigned audit client data available to print.");
             return;
@@ -1697,7 +1699,7 @@
         let html = `
             <div style="text-align:center; margin-bottom:15px;">
                 <h2 style="margin:0 0 4px 0; color:#1a365d;">TaxPro & Associates</h2>
-                <h3 style="margin:0; font-size:16px;">My Assigned Audit Clients Overview</h3>
+                <h3 style="margin:0; font-size:16px;">My Assigned Audit Clients Overview ${selectedMainTask !== 'ALL' ? '(' + selectedMainTask + ')' : ''}</h3>
                 <p style="margin:5px 0 0 0; font-size:12px; color:#4a5568;">Assigned Staff: <strong>${creds.name || 'Staff Member'}</strong> | Printed Date: ${new Date().toLocaleDateString('en-IN')}</p>
             </div>
             <table>
@@ -1712,9 +1714,17 @@
                 <tbody>`;
 
         cachedAuditClientsSummary.forEach(r => {
-            const total = r.totalTasks || r.total || 0;
-            const completed = r.completedTasks !== undefined ? r.completedTasks : (r.completed !== undefined ? r.completed : 0);
-            const pct = r.percentage !== undefined ? r.percentage : (total > 0 ? Math.round((completed / total) * 100) : 0);
+            let total = r.totalTasks || r.total || 0;
+            let completed = r.completedTasks !== undefined ? r.completedTasks : (r.completed !== undefined ? r.completed : 0);
+            let pct = r.percentage !== undefined ? r.percentage : (total > 0 ? Math.round((completed / total) * 100) : 0);
+
+            if (selectedMainTask !== "ALL" && r.mainTaskStats && r.mainTaskStats[selectedMainTask]) {
+                const stats = r.mainTaskStats[selectedMainTask];
+                total = stats.total;
+                completed = stats.completed;
+                pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+            }
+
             const deadlineFormatted = normalizeToDMY(r.deadline) || 'N/A';
 
             html += `
@@ -1733,14 +1743,23 @@
 
     function exportAuditSummaryToExcel() {
         if (!cachedAuditClientsSummary || cachedAuditClientsSummary.length === 0) return;
-        
+        const selectedMainTask = document.getElementById('auditMainTaskFilter').value;
+
         cachedAuditClientsSummary.sort((a, b) => parseDateForSort(a.deadline) - parseDateForSort(b.deadline));
 
         let csv = "\uFEFFClient Name,Target Deadline,Tasks Completed,Total Tasks,% Completion\n";
         cachedAuditClientsSummary.forEach(r => {
-            const total = r.totalTasks || r.total || 0;
-            const completed = r.completedTasks !== undefined ? r.completedTasks : (r.completed !== undefined ? r.completed : 0);
-            const pct = r.percentage !== undefined ? r.percentage : (total > 0 ? Math.round((completed / total) * 100) : 0);
+            let total = r.totalTasks || r.total || 0;
+            let completed = r.completedTasks !== undefined ? r.completedTasks : (r.completed !== undefined ? r.completed : 0);
+            let pct = r.percentage !== undefined ? r.percentage : (total > 0 ? Math.round((completed / total) * 100) : 0);
+
+            if (selectedMainTask !== "ALL" && r.mainTaskStats && r.mainTaskStats[selectedMainTask]) {
+                const stats = r.mainTaskStats[selectedMainTask];
+                total = stats.total;
+                completed = stats.completed;
+                pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+            }
+
             const deadlineFormatted = normalizeToDMY(r.deadline) || 'N/A';
 
             csv += `"${r.clientName}","${deadlineFormatted}","${completed}","${total}","${pct}%"\n`;
