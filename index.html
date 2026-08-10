@@ -142,7 +142,6 @@
         
         <p>Enterprise Management & Compliance Suite</p>
         
-        <!-- TRIPLE TIMEZONE CLOCK BANNER (IST DEFAULT) -->
         <div class="clock-container">
             <div class="clock-item">
                 <span class="clock-label">🇮🇳 IST:</span>
@@ -180,7 +179,6 @@
         <button class="module-btn" id="btn-mod-udin" onclick="switchModule('module-udin')">🔑 UDIN Tracker</button>
     </div>
 
-    <!-- MODULE 1: TIMESHEET -->
     <div id="module-timesheet" class="portal-module active">
         <div class="navigation-tabs">
             <button class="tab-btn active" onclick="switchTab('timecard-page')">📝 Log Time</button>
@@ -268,9 +266,19 @@
         </div>
 
         <div id="assignments-page" class="portal-page">
-            <h2>🎯 Active Weekly Assignments</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+                <h2 style="margin:0; border:none; padding:0;">🎯 Active Weekly Assignments</h2>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <label for="taskStatusFilter" style="font-weight:600; font-size:13px; color:#4a5568; margin:0;">Filter Task Status:</label>
+                    <select id="taskStatusFilter" onchange="renderAssignedTasksTable();" style="padding:6px 10px; font-size:13px; border:1px solid #cbd5e1; border-radius:4px; font-weight:600; max-width:200px;">
+                        <option value="ALL">Show All Tasks</option>
+                        <option value="Pending">Pending Only</option>
+                        <option value="Fulfilled">Fulfilled Only</option>
+                    </select>
+                </div>
+            </div>
+            <div style="border-bottom: 2px solid #e2e8f0; margin-bottom:15px;"></div>
 
-            <!-- MY TASKS STATS SUMMARY CARD -->
             <div id="myTasksSummaryCard" style="display:none; background:#f7fafc; border:1px solid #cbd5e1; padding:15px; border-radius:6px; margin-bottom:20px;">
                 <h4 style="margin: 0 0 10px 0; color: #1a365d; font-size: 14px; text-align: center;">📊 Assigned Workload Breakdown</h4>
                 <div style="display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:12px; text-align:center;">
@@ -332,7 +340,6 @@
         </div>
     </div>
 
-    <!-- MODULE 2: GST COMPLIANCE PORTAL -->
     <div id="module-gst" class="portal-module">
         <h2>📑 GST Returns Compliance Portal</h2>
         
@@ -463,7 +470,6 @@
         </div>
     </div>
 
-    <!-- MODULE 3: TAX AUDIT MANAGEMENT TRACKER -->
     <div id="module-audit" class="portal-module">
         <h2>📋 Tax Audit Management Tracker</h2>
         
@@ -501,7 +507,6 @@
         </div>
     </div>
 
-    <!-- MODULE 4: UDIN TRACKER -->
     <div id="module-udin" class="portal-module">
         <h2>🔑 UDIN Registration & Compliance Tracker</h2>
         
@@ -613,7 +618,6 @@
 
 <div id="gstPrintArea"></div>
 
-<!-- GST FILING MODAL -->
 <div id="gstModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeGstModal();">
     <div class="modal-content">
         <div class="modal-header">
@@ -693,7 +697,6 @@
     </div>
 </div>
 
-<!-- TAX AUDIT CHECKLIST MODAL -->
 <div id="auditModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeAuditModal();">
     <div class="modal-content" style="max-width: 820px; width: 95%;">
         <div class="modal-header">
@@ -1170,7 +1173,6 @@
             filteredList = cachedFiledGstData.filter(item => classifyFrequency(item.frequency) === freqFilter);
         }
 
-        // Apply status filter (Filed vs N/A)
         if (filedFilter === "Filed") {
             filteredList = filteredList.filter(item => {
                 let st = (item.status || "").toLowerCase();
@@ -1193,7 +1195,6 @@
 
         statusDiv.innerText = "";
         
-        // Always include Status column in header
         if (returnType !== "GSTR3B") {
             headerRow.innerHTML = `<th>GSTIN</th><th>Client Name</th><th>Frequency</th><th>Status</th><th>Filing Date</th><th>ARN Number</th>`;
             filteredList.forEach(item => {
@@ -2010,34 +2011,70 @@
                     summaryCard.style.display = "block";
                 }
 
-                if (taskList.length === 0) {
-                    statusDiv.style.color = "blue";
-                    statusDiv.innerText = "No open task allocations found.";
-                    table.style.display = "none";
-                    return;
-                }
-
                 cachedAssignmentsData = taskList; 
-                taskList.forEach(row => {
-                    const tr = document.createElement('tr');
-                    const cleanDeadline = normalizeToDMY(row.deadline);
-                    const isFulfilled = (row.status || "").toLowerCase().includes("fulfill") || (row.status || "").toLowerCase().includes("done");
-
-                    let statusBadge = isFulfilled 
-                        ? `<span style="color:#276749; font-weight:bold; background:#e6fffa; padding:3px 8px; border-radius:4px; border:1px solid #b2f5ea;">Fulfilled</span>`
-                        : `<span style="color:#c53030; font-weight:bold; background:#fff5f5; padding:3px 8px; border-radius:4px; border:1px solid #fed7d7;">${row.status || 'Pending'}</span>`;
-
-                    let actionCellHtml = isFulfilled
-                        ? `<button type="button" style="background-color:#cbd5e1; color:#4a5568; border:none; padding:5px 10px; border-radius:3px; cursor:not-allowed; font-size:11px;" disabled>✓ Marked Done</button>`
-                        : `<button type="button" style="background-color:#28a745; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; font-size:11px;" onclick="markTaskFulfilled(${row.rowIndex}, this)">✓ Mark Done</button>`;
-
-                    tr.innerHTML = `<td><strong>${row.client}</strong></td><td>${row.description}</td><td><span>${row.priority}</span></td><td>${cleanDeadline}</td><td>${statusBadge}</td><td>${actionCellHtml}</td>`;
-                    tbody.appendChild(tr);
-                });
-
-                table.style.display = "table"; actionRow.style.display = "flex"; 
+                renderAssignedTasksTable();
             }
         }).catch(() => {});
+    }
+
+    function renderAssignedTasksTable() {
+        const table = document.getElementById('tasksTable');
+        const tbody = table.querySelector('tbody');
+        const statusDiv = document.getElementById('taskStatus');
+        const actionRow = document.getElementById('taskActionRow');
+        const filterVal = document.getElementById('taskStatusFilter') ? document.getElementById('taskStatusFilter').value : "ALL";
+
+        tbody.innerHTML = "";
+
+        if (!cachedAssignmentsData || cachedAssignmentsData.length === 0) {
+            statusDiv.style.color = "blue";
+            statusDiv.innerText = "No open task allocations found.";
+            table.style.display = "none";
+            actionRow.style.display = "none";
+            return;
+        }
+
+        let filteredTasks = cachedAssignmentsData;
+        if (filterVal === "Pending") {
+            filteredTasks = cachedAssignmentsData.filter(row => {
+                let st = (row.status || "").toLowerCase();
+                return !st.includes("fulfill") && !st.includes("done");
+            });
+        } else if (filterVal === "Fulfilled") {
+            filteredTasks = cachedAssignmentsData.filter(row => {
+                let st = (row.status || "").toLowerCase();
+                return st.includes("fulfill") || st.includes("done");
+            });
+        }
+
+        if (filteredTasks.length === 0) {
+            statusDiv.style.color = "blue";
+            statusDiv.innerText = `No tasks found matching filter '${filterVal}'.`;
+            table.style.display = "none";
+            actionRow.style.display = "none";
+            return;
+        }
+
+        statusDiv.innerText = "";
+        filteredTasks.forEach(row => {
+            const tr = document.createElement('tr');
+            const cleanDeadline = normalizeToDMY(row.deadline);
+            const isFulfilled = (row.status || "").toLowerCase().includes("fulfill") || (row.status || "").toLowerCase().includes("done");
+
+            let statusBadge = isFulfilled 
+                ? `<span style="color:#276749; font-weight:bold; background:#e6fffa; padding:3px 8px; border-radius:4px; border:1px solid #b2f5ea;">Fulfilled</span>`
+                : `<span style="color:#c53030; font-weight:bold; background:#fff5f5; padding:3px 8px; border-radius:4px; border:1px solid #fed7d7;">${row.status || 'Pending'}</span>`;
+
+            let actionCellHtml = isFulfilled
+                ? `<button type="button" style="background-color:#cbd5e1; color:#4a5568; border:none; padding:5px 10px; border-radius:3px; cursor:not-allowed; font-size:11px;" disabled>✓ Marked Done</button>`
+                : `<button type="button" style="background-color:#28a745; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; font-size:11px;" onclick="markTaskFulfilled(${row.rowIndex}, this)">✓ Mark Done</button>`;
+
+            tr.innerHTML = `<td><strong>${row.client}</strong></td><td>${row.description}</td><td><span>${row.priority}</span></td><td>${cleanDeadline}</td><td>${statusBadge}</td><td>${actionCellHtml}</td>`;
+            tbody.appendChild(tr);
+        });
+
+        table.style.display = "table";
+        actionRow.style.display = "flex";
     }
 
     function markTaskFulfilled(rowIndex, btnElement) {
@@ -2123,8 +2160,17 @@
 
     function exportAssignmentsToExcel() {
         if (!cachedAssignmentsData || cachedAssignmentsData.length === 0) return;
+        const filterVal = document.getElementById('taskStatusFilter') ? document.getElementById('taskStatusFilter').value : "ALL";
+        
+        let list = cachedAssignmentsData;
+        if (filterVal === "Pending") {
+            list = cachedAssignmentsData.filter(r => !(r.status || "").toLowerCase().includes("fulfill") && !(r.status || "").toLowerCase().includes("done"));
+        } else if (filterVal === "Fulfilled") {
+            list = cachedAssignmentsData.filter(r => (r.status || "").toLowerCase().includes("fulfill") || (r.status || "").toLowerCase().includes("done"));
+        }
+
         let csv = "\uFEFFClient Name,Task Details,Priority,Target Deadline,Status\n";
-        cachedAssignmentsData.forEach(r => {
+        list.forEach(r => {
             csv += `"${r.client}","${r.description}","${r.priority}","${normalizeToDMY(r.deadline)}","${r.status || 'Pending'}"\n`;
         });
         downloadCsv(csv, `Assigned_Tasks_${new Date().toISOString().split('T')[0]}.csv`);
