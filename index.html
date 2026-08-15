@@ -2,70 +2,111 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TaxPro">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#1a365d">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="logo.png">
     <title>TaxPro & Associates - Enterprise Suite</title>
     <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            overscroll-behavior-y: none;
+            overflow-x: hidden;
+        }
+
         body { 
-            font-family: 'Segoe UI', Arial, sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
             background: linear-gradient(180deg, #ffd8b3 0%, #fff2e6 25%, #ffffff 50%, #e5f7e9 75%, #a2e0ab 100%) fixed; 
             margin: 0; 
-            padding: 20px 20px 80px 20px; 
+            padding: 20px 20px calc(80px + env(safe-area-inset-bottom)) 20px; 
             color: #333; 
         }
 
-        .container { max-width: 1000px; background: white; padding: 25px; margin: 0 auto 20px auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .container { 
+            max-width: 1000px; 
+            background: white; 
+            padding: 25px; 
+            margin: 0 auto 20px auto; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+        }
         
-        .brand-header { text-align: center; margin-bottom: 20px; background-color: #1a365d; color: white; padding: 20px 20px 15px 20px; border-radius: 6px; }
-        .firm-logo { max-width: 140px; height: auto; margin-bottom: 8px; display: inline-block; }
+        .brand-header { 
+            text-align: center; 
+            margin-bottom: 20px; 
+            background-color: #1a365d; 
+            color: white; 
+            padding: calc(15px + env(safe-area-inset-top)) 20px 15px 20px; 
+            border-radius: 8px; 
+        }
+        .firm-logo { max-width: 130px; height: auto; margin-bottom: 8px; display: inline-block; }
         
         .brand-header h1 { 
             margin: 0; 
-            font-size: 26px; 
+            font-size: 24px; 
             font-weight: 700; 
             letter-spacing: 0.5px; 
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 14px;
+            gap: 10px;
             flex-wrap: wrap;
         }
         .header-flag {
-            height: 36px;
+            height: 30px;
             width: auto;
             border-radius: 3px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             vertical-align: middle;
         }
 
-        .brand-header p { margin: 5px 0 15px 0; font-size: 14px; color: #cbd5e1; font-weight: 600; }
+        .brand-header p { margin: 5px 0 12px 0; font-size: 13px; color: #cbd5e1; font-weight: 600; }
         
         .clock-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 18px;
+            gap: 12px;
             flex-wrap: wrap;
             background-color: #0f2744;
             color: #e2e8f0;
             padding: 8px 12px;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             border: 1px solid #2b4c7e;
         }
-        .clock-item { display: flex; align-items: center; gap: 6px; }
+        .clock-item { display: flex; align-items: center; gap: 4px; }
         .clock-label { color: #90cdf4; font-weight: bold; }
-        .clock-time { color: #ffffff; letter-spacing: 0.5px; font-family: 'Segoe UI', monospace; font-size: 13px; }
+        .clock-time { color: #ffffff; letter-spacing: 0.5px; font-family: monospace; font-size: 12px; }
 
         .module-nav { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 3px solid #cbd5e1; padding-bottom: 10px; }
-        .module-btn { background-color: #edf2f7; color: #1a365d; border: 2px solid #cbd5e1; padding: 12px 10px; font-size: 13px; font-weight: 700; border-radius: 6px; cursor: pointer; flex: 1; transition: all 0.2s; text-align: center; }
+        .module-btn { 
+            background-color: #edf2f7; 
+            color: #1a365d; 
+            border: 2px solid #cbd5e1; 
+            padding: 12px 10px; 
+            font-size: 13px; 
+            font-weight: 700; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            flex: 1; 
+            transition: all 0.2s; 
+            text-align: center; 
+        }
         .module-btn.active { background-color: #1a365d; color: white; border-color: #1a365d; box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
 
-        .navigation-tabs { display: flex; gap: 8px; margin-bottom: 20px; justify-content: center; }
-        .tab-btn { background-color: #e2e8f0; color: #4a5568; border: none; padding: 10px 14px; font-size: 13px; font-weight: 600; border-radius: 4px; cursor: pointer; flex: 1; transition: all 0.2s; }
+        .navigation-tabs { display: flex; gap: 6px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+        .tab-btn { background-color: #e2e8f0; color: #4a5568; border: none; padding: 10px 12px; font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; flex: 1; transition: all 0.2s; min-height: 40px; }
         .tab-btn.active { background-color: #2c5282; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
 
         .portal-module { display: none; }
@@ -75,82 +116,129 @@
 
         h2 { color: #1a365d; margin-top: 0; font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
         label { display: block; margin: 12px 0 5px 0; font-weight: 600; font-size: 13px; color: #4a5568; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
-        .secure-auth-card { background-color: #edf2f7; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
         
-        button.action-submit { background-color: #1a365d; color: white; border: none; padding: 12px 20px; font-size: 15px; font-weight: 600; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 15px; }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 10px 12px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            font-size: 16px !important; /* Prevents auto-zoom on mobile safari */
+            background-color: #fff;
+        }
+
+        .secure-auth-card { background-color: #edf2f7; border: 1px solid #cbd5e1; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        
+        button.action-submit { background-color: #1a365d; color: white; border: none; padding: 14px 20px; font-size: 15px; font-weight: 600; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 15px; min-height: 46px; }
         button.action-submit:hover { background-color: #2c5282; }
-        button.print-btn { background-color: #4a5568; color: white; border: none; padding: 10px 15px; font-size: 14px; font-weight: 600; border-radius: 4px; cursor: pointer; flex: 1; }
-        button.download-btn { background-color: #107c41; color: white; border: none; padding: 10px 15px; font-size: 14px; font-weight: 600; border-radius: 4px; cursor: pointer; flex: 1; }
-        .button-group-row { display: flex; gap: 12px; margin-top: 15px; }
+        button.print-btn { background-color: #4a5568; color: white; border: none; padding: 10px 15px; font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; flex: 1; min-height: 42px; }
+        button.download-btn { background-color: #107c41; color: white; border: none; padding: 10px 15px; font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; flex: 1; min-height: 42px; }
+        .button-group-row { display: flex; gap: 10px; margin-top: 15px; }
         
         .row { display: flex; gap: 15px; }
         .row .field { flex: 1; }
-        table { width: 100%; border-collapse: collapse; margin-top: 12px; background: white; font-size: 12px; }
+        
+        .table-responsive-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 12px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+        }
+
+        table { width: 100%; border-collapse: collapse; background: white; font-size: 12px; min-width: 600px; }
         th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; }
         th { background-color: #f7fafc; color: #2d3748; font-weight: 600; }
         .status-msg { margin-top: 12px; font-weight: bold; text-align: center; font-size: 14px; }
         
         .summary-table-box { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 15px; margin: 15px auto 0 auto; max-width: 520px; }
-        .summary-table-box table { margin-top: 0; font-size: 12px; }
+        .summary-table-box table { margin-top: 0; font-size: 12px; min-width: 100%; }
         .summary-table-box th { text-align: center; background-color: #edf2f7; padding: 6px 10px; }
         .summary-table-box td { text-align: center; font-weight: 600; padding: 6px 10px; }
 
         .alphabet-filter-container { margin: 15px 0; }
         .alphabet-bar { display: flex; flex-wrap: wrap; gap: 4px; min-height: 32px; }
-        .alpha-btn { background-color: #edf2f7; color: #2d3748; border: 1px solid #cbd5e1; padding: 5px 8px; font-size: 12px; font-weight: 700; border-radius: 4px; cursor: pointer; min-width: 28px; text-align: center; }
+        .alpha-btn { background-color: #edf2f7; color: #2d3748; border: 1px solid #cbd5e1; padding: 6px 9px; font-size: 12px; font-weight: 700; border-radius: 4px; cursor: pointer; min-width: 32px; text-align: center; }
         .alpha-btn.active { background-color: #1a365d; color: white; border-color: #1a365d; }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.55); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: white; border-radius: 8px; width: 92%; max-width: 600px; padding: 22px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 10000; justify-content: center; align-items: center; padding: 12px; }
+        .modal-content { background: white; border-radius: 10px; width: 100%; max-width: 600px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 88vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px; }
         .modal-header h3 { margin: 0; color: #1a365d; font-size: 18px; }
         .modal-close { background: none; border: none; font-size: 26px; font-weight: bold; cursor: pointer; color: #a0aec0; }
 
-        .audit-group-title { font-size: 14px; font-weight: 700; color: #1a365d; background-color: #edf2f7; padding: 10px 14px; border-radius: 5px; margin: 16px 0 10px 0; border-left: 5px solid #2b6cb0; display: flex; justify-content: space-between; align-items: center; }
+        .audit-group-title { font-size: 13px; font-weight: 700; color: #1a365d; background-color: #edf2f7; padding: 10px 12px; border-radius: 5px; margin: 14px 0 8px 0; border-left: 5px solid #2b6cb0; display: flex; justify-content: space-between; align-items: center; }
         .audit-group-badge { font-size: 11px; font-weight: 700; color: #2b6cb0; background: #ebf8ff; border: 1px solid #bee3f8; padding: 3px 8px; border-radius: 12px; }
-        .audit-task-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-        .audit-task-desc { flex: 2; font-size: 13px; font-weight: 600; color: #2d3748; }
-        .audit-task-controls { flex: 2; display: flex; gap: 8px; align-items: center; }
-        .audit-info-badge { background-color: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; padding: 10px; border-radius: 6px; margin-top: 10px; display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; }
-        .audit-progress-bar { background-color: #cbd5e1; height: 12px; border-radius: 6px; overflow: hidden; margin: 12px 0 5px 0; }
+        .audit-task-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 8px; }
+        .audit-task-desc { font-size: 13px; font-weight: 600; color: #2d3748; }
+        .audit-task-controls { display: flex; gap: 8px; align-items: center; }
+        .audit-info-badge { background-color: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; padding: 10px; border-radius: 6px; margin-top: 10px; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; flex-wrap: wrap; gap: 6px; }
+        .audit-progress-bar { background-color: #cbd5e1; height: 10px; border-radius: 5px; overflow: hidden; margin: 10px 0 5px 0; }
         .audit-progress-fill { background-color: #2b6cb0; height: 100%; width: 0%; transition: width 0.3s ease; }
 
         #gstPrintArea { display: none; }
 
-        /* MOBILE APP RESPONSIVE DOCK & UI STYLES */
+        /* DYNAMIC MOBILE SCREEN RESOLUTION STYLES */
         @media (max-width: 768px) {
-            body { padding: 10px 10px 80px 10px; }
-            .container { padding: 15px; margin-bottom: 10px; border-radius: 0; box-shadow: none; }
+            body { 
+                padding: 10px 10px calc(75px + env(safe-area-inset-bottom)) 10px; 
+                background: #f4f6f9; 
+            }
+            .container { 
+                padding: 14px; 
+                margin-bottom: 0; 
+                border-radius: 10px; 
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+            }
+            .brand-header { padding: 14px 12px; }
+            .brand-header h1 { font-size: 18px; }
+            .header-flag { height: 24px; }
+            
             .row { flex-direction: column; gap: 0; }
+            
+            /* Native Mobile Bottom Dock Bar */
             .module-nav {
                 position: fixed;
                 bottom: 0;
                 left: 0;
                 right: 0;
+                height: calc(60px + env(safe-area-inset-bottom));
+                padding-bottom: env(safe-area-inset-bottom);
                 background: #1a365d;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
                 margin: 0;
-                padding: 6px;
-                z-index: 999;
-                border-top: 2px solid #0f2744;
+                padding-left: 4px;
+                padding-right: 4px;
+                border-top: 1px solid #0f2744;
                 border-bottom: none;
-                box-shadow: 0 -4px 10px rgba(0,0,0,0.2);
+                box-shadow: 0 -3px 12px rgba(0,0,0,0.2);
+                z-index: 9999;
             }
             .module-btn {
-                background-color: transparent;
-                color: #cbd5e1;
+                flex: 1;
+                height: 100%;
+                background: transparent;
+                color: #94a3b8;
                 border: none;
-                padding: 8px 4px;
+                border-radius: 0;
                 font-size: 11px;
-                border-radius: 4px;
+                font-weight: 700;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 4px 2px;
             }
             .module-btn.active {
-                background-color: #2c5282;
-                color: white;
+                color: #ffffff;
+                background: #2c5282;
+                border-top: 3px solid #60a5fa;
                 box-shadow: none;
             }
-            table { font-size: 11px; }
-            th, td { padding: 6px 4px; }
+            .button-group-row { flex-direction: column; }
         }
 
         @media print {
@@ -228,7 +316,7 @@
         <div id="timecard-page" class="portal-page active">
             <div id="dailyTrackerBox" style="background-color: #e6fffa; border: 1px solid #b2f5ea; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: none;">
                 <h4 style="margin: 0 0 8px 0; color: #234e52; font-size: 14px;">📊 Daily Workload Progress (Target: 8 Hours)</h4>
-                <div style="display: flex; justify-content: space-between; font-size: 13px; color: #2d3748;">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; color: #2d3748; flex-wrap: wrap; gap: 4px;">
                     <div><strong>Selected Date (<span id="trackerDateLabel">--</span>):</strong> <span id="trackerSelectedHours" style="font-weight: bold;">0.00</span> / 8.00 hrs</div>
                     <div><strong>Previous Day Summary:</strong> <span id="trackerPrevHours" style="font-weight: bold;">0.00</span> / 8.00 hrs</div>
                 </div>
@@ -284,7 +372,7 @@
 
                 <div class="row">
                     <div class="field">
-                        <div style="display: flex; gap: 15px;">
+                        <div style="display: flex; gap: 10px;">
                             <div style="flex: 1;"><label>Hours</label><select id="durationHours" required></select></div>
                             <div style="flex: 1;"><label>Minutes</label><select id="durationMinutes" required></select></div>
                         </div>
@@ -309,17 +397,17 @@
                 <h2 style="margin:0; border:none; padding:0;">🎯 Tasks Register</h2>
                 
                 <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                    <button type="button" style="background-color:#16a34a; color:white; border:none; padding:8px 14px; border-radius:4px; cursor:pointer; font-weight:700; font-size:13px;" onclick="openAddOwnTaskModal()">➕ Add Own Task</button>
+                    <button type="button" style="background-color:#16a34a; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; font-weight:700; font-size:13px; min-height:38px;" onclick="openAddOwnTaskModal()">➕ Add Own Task</button>
 
-                    <label for="taskOriginFilter" style="font-weight:600; font-size:12px; color:#4a5568; margin:0;">Category:</label>
-                    <select id="taskOriginFilter" onchange="renderAssignedTasksTable();" style="padding:6px 10px; font-size:12px; border:1px solid #cbd5e1; border-radius:4px; font-weight:600; width:auto;">
+                    <label for="taskOriginFilter" style="font-weight:600; font-size:12px; color:#4a5568; margin:0;">Source:</label>
+                    <select id="taskOriginFilter" onchange="renderAssignedTasksTable();" style="padding:6px 10px; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; font-weight:600; width:auto;">
                         <option value="ALL">All Sources (Combined)</option>
                         <option value="Assigned Task">My Assigned Tasks</option>
                         <option value="Own Task">My Own Tasks</option>
                     </select>
 
                     <label for="taskStatusFilter" style="font-weight:600; font-size:12px; color:#4a5568; margin:0;">Status:</label>
-                    <select id="taskStatusFilter" onchange="renderAssignedTasksTable();" style="padding:6px 10px; font-size:12px; border:1px solid #cbd5e1; border-radius:4px; font-weight:600; width:auto;">
+                    <select id="taskStatusFilter" onchange="renderAssignedTasksTable();" style="padding:6px 10px; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; font-weight:600; width:auto;">
                         <option value="ALL">All Status</option>
                         <option value="Pending">Pending Only</option>
                         <option value="Fulfilled">Fulfilled Only</option>
@@ -328,25 +416,24 @@
             </div>
             <div style="border-bottom: 2px solid #e2e8f0; margin-bottom:15px;"></div>
 
-            <!-- MY TASKS STATS SUMMARY CARD -->
             <div id="myTasksSummaryCard" style="display:none; background:#f7fafc; border:1px solid #cbd5e1; padding:15px; border-radius:6px; margin-bottom:20px;">
                 <h4 style="margin: 0 0 10px 0; color: #1a365d; font-size: 14px; text-align: center;">📊 Workload Summary Breakdown</h4>
-                <div style="display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:12px; text-align:center;">
-                    <div style="flex:1; min-width:110px; background:white; padding:10px; border-radius:6px; border:1px solid #e2e8f0;">
-                        <div style="font-size:11px; color:#4a5568; font-weight:bold; text-transform:uppercase;">Total Tasks</div>
-                        <div id="summaryTotalAssigned" style="font-size:20px; font-weight:bold; color:#1a365d;">0</div>
+                <div style="display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:10px; text-align:center;">
+                    <div style="flex:1; min-width:100px; background:white; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
+                        <div style="font-size:10px; color:#4a5568; font-weight:bold; text-transform:uppercase;">Total Tasks</div>
+                        <div id="summaryTotalAssigned" style="font-size:18px; font-weight:bold; color:#1a365d;">0</div>
                     </div>
-                    <div style="flex:1; min-width:110px; background:white; padding:10px; border-radius:6px; border:1px solid #e2e8f0;">
-                        <div style="font-size:11px; color:#c53030; font-weight:bold; text-transform:uppercase;">⏳ Pending</div>
-                        <div id="summaryPendingTasks" style="font-size:20px; font-weight:bold; color:#c53030;">0</div>
+                    <div style="flex:1; min-width:100px; background:white; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
+                        <div style="font-size:10px; color:#c53030; font-weight:bold; text-transform:uppercase;">⏳ Pending</div>
+                        <div id="summaryPendingTasks" style="font-size:18px; font-weight:bold; color:#c53030;">0</div>
                     </div>
-                    <div style="flex:1; min-width:110px; background:white; padding:10px; border-radius:6px; border:1px solid #e2e8f0;">
-                        <div style="font-size:11px; color:#276749; font-weight:bold; text-transform:uppercase;">✓ Fulfilled / Done</div>
-                        <div id="summaryDoneTasks" style="font-size:20px; font-weight:bold; color:#276749;">0</div>
+                    <div style="flex:1; min-width:100px; background:white; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
+                        <div style="font-size:10px; color:#276749; font-weight:bold; text-transform:uppercase;">✓ Fulfilled / Done</div>
+                        <div id="summaryDoneTasks" style="font-size:18px; font-weight:bold; color:#276749;">0</div>
                     </div>
-                    <div style="flex:1; min-width:130px; background:white; padding:10px; border-radius:6px; border:1px solid #e2e8f0;">
-                        <div style="font-size:11px; color:#2b6cb0; font-weight:bold; text-transform:uppercase;">Completion %</div>
-                        <div id="summaryCompletionPct" style="font-size:20px; font-weight:bold; color:#2b6cb0;">0%</div>
+                    <div style="flex:1; min-width:110px; background:white; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
+                        <div style="font-size:10px; color:#2b6cb0; font-weight:bold; text-transform:uppercase;">Completion %</div>
+                        <div id="summaryCompletionPct" style="font-size:18px; font-weight:bold; color:#2b6cb0;">0%</div>
                     </div>
                 </div>
                 <div style="background-color:#cbd5e1; height:8px; border-radius:4px; margin-top:12px; overflow:hidden;">
@@ -355,20 +442,22 @@
             </div>
 
             <div id="taskStatus" class="status-msg"></div>
-            <table id="tasksTable" style="display:none;">
-                <thead>
-                    <tr>
-                        <th>Client Name</th>
-                        <th>Task Details</th>
-                        <th>Assigned By</th>
-                        <th>Priority</th>
-                        <th>Target Deadline</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive-wrapper">
+                <table id="tasksTable" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>Client Name</th>
+                            <th>Task Details</th>
+                            <th>Assigned By</th>
+                            <th>Priority</th>
+                            <th>Target Deadline</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
             <div class="button-group-row" id="taskActionRow" style="display:none;">
                 <button type="button" class="print-btn" onclick="executeTimesheetPrint()">🖨️ Print Tasks</button>
                 <button type="button" class="download-btn" onclick="exportAssignmentsToExcel()">📊 Download to Excel</button>
@@ -378,12 +467,14 @@
         <div id="history-page" class="portal-page">
             <h2>🔍 Personal Performance History Log</h2>
             <div id="historyStatus" class="status-msg"></div>
-            <table id="historyTable" style="display:none;">
-                <thead>
-                    <tr><th>Date</th><th>Client Account</th><th>Category (Sub-Task)</th><th>Remarks</th><th>Status</th><th>Logged</th></tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive-wrapper">
+                <table id="historyTable" style="display:none;">
+                    <thead>
+                        <tr><th>Date</th><th>Client Account</th><th>Category (Sub-Task)</th><th>Remarks</th><th>Status</th><th>Logged</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
             <div class="button-group-row" id="historyActionRow" style="display:none;">
                 <button type="button" class="print-btn" onclick="executeTimesheetPrint()">🖨️ Print Log</button>
                 <button type="button" class="download-btn" onclick="exportHistoryToExcel()">📊 Download to Excel</button>
@@ -423,29 +514,31 @@
 
             <div class="summary-table-box">
                 <h4 style="margin: 0 0 8px 0; color: #1a365d; font-size: 13px; text-align: center;">📊 Return Filing Summary Breakdown</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th style="color:#c53030;">⏳ Pending</th>
-                            <th style="color:#276749;">✓ Filed</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="gstSummaryTableBody">
-                        <tr><td>Monthly</td><td id="cnt-month-pending">0</td><td id="cnt-month-filed">0</td><td id="cnt-month-total">0</td></tr>
-                        <tr><td>Quarterly</td><td id="cnt-quart-pending">0</td><td id="cnt-quart-filed">0</td><td id="cnt-quart-total">0</td></tr>
-                        <tr><td>Composition</td><td id="cnt-comp-pending">0</td><td id="cnt-comp-filed">0</td><td id="cnt-comp-total">0</td></tr>
-                        <tr style="background-color:#f7fafc; font-weight:bold;"><td>Total</td><td id="cnt-tot-pending" style="color:#c53030;">0</td><td id="cnt-tot-filed" style="color:#276749;">0</td><td id="cnt-tot-grand">0</td></tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive-wrapper" style="border:none; margin-top:0;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th style="color:#c53030;">⏳ Pending</th>
+                                <th style="color:#276749;">✓ Filed</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gstSummaryTableBody">
+                            <tr><td>Monthly</td><td id="cnt-month-pending">0</td><td id="cnt-month-filed">0</td><td id="cnt-month-total">0</td></tr>
+                            <tr><td>Quarterly</td><td id="cnt-quart-pending">0</td><td id="cnt-quart-filed">0</td><td id="cnt-quart-total">0</td></tr>
+                            <tr><td>Composition</td><td id="cnt-comp-pending">0</td><td id="cnt-comp-filed">0</td><td id="cnt-comp-total">0</td></tr>
+                            <tr style="background-color:#f7fafc; font-weight:bold;"><td>Total</td><td id="cnt-tot-pending" style="color:#c53030;">0</td><td id="cnt-tot-filed" style="color:#276749;">0</td><td id="cnt-tot-grand">0</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
         <div class="navigation-tabs">
-            <button class="tab-btn active" id="btn-gst-sub-pending" onclick="switchGstView('pending')">⏳ Pending Returns Queue</button>
-            <button class="tab-btn" id="btn-gst-sub-filed" onclick="switchGstView('filed')">✓ Filed Returns Register</button>
-            <button class="tab-btn" id="btn-gst-sub-challan" onclick="switchGstView('challan')">📄 Challan Shared Tracker</button>
+            <button class="tab-btn active" id="btn-gst-sub-pending" onclick="switchGstView('pending')">⏳ Pending Queue</button>
+            <button class="tab-btn" id="btn-gst-sub-filed" onclick="switchGstView('filed')">✓ Filed Register</button>
+            <button class="tab-btn" id="btn-gst-sub-challan" onclick="switchGstView('challan')">📄 Challan Shared</button>
         </div>
 
         <div id="gst-view-pending">
@@ -456,18 +549,20 @@
 
             <h3>⏳ Pending Returns List</h3>
             <div id="gstTableStatus" class="status-msg"></div>
-            <table id="gstPendingTable" style="display:none;">
-                <thead>
-                    <tr>
-                        <th>GSTIN</th>
-                        <th>Client Name</th>
-                        <th>Frequency</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive-wrapper">
+                <table id="gstPendingTable" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>GSTIN</th>
+                            <th>Client Name</th>
+                            <th>Frequency</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
 
             <div class="button-group-row" id="gstPendingActionRow" style="display:none;">
                 <button type="button" class="print-btn" onclick="executeGstPrint('pending')">🖨️ Print Pending (PDF)</button>
@@ -480,7 +575,7 @@
                 <h3 style="margin:0;">✓ Completed / Filed Returns Register</h3>
                 <div style="display:flex; align-items:center; gap:8px;">
                     <label style="font-weight:600; font-size:12px; color:#4a5568; margin:0;">Filter Status:</label>
-                    <select id="gstFiledFilterSelect" onchange="renderFiledGSTTable();" style="padding:5px 10px; font-size:12px; border:1px solid #cbd5e1; border-radius:4px; font-weight:600;">
+                    <select id="gstFiledFilterSelect" onchange="renderFiledGSTTable();" style="padding:5px 10px; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; font-weight:600;">
                         <option value="ALL">Show All (Filed & N/A)</option>
                         <option value="Filed">Filed Returns Only</option>
                         <option value="N/A">Not Applicable (N/A) Only</option>
@@ -489,12 +584,14 @@
             </div>
 
             <div id="gstFiledTableStatus" class="status-msg"></div>
-            <table id="gstFiledTable" style="display:none;">
-                <thead>
-                    <tr id="gstFiledTableHeader"></tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive-wrapper">
+                <table id="gstFiledTable" style="display:none;">
+                    <thead>
+                        <tr id="gstFiledTableHeader"></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
 
             <div class="button-group-row" id="gstFiledActionRow" style="display:none;">
                 <button type="button" class="print-btn" onclick="executeGstPrint('filed')">🖨️ Print Filed List (PDF)</button>
@@ -505,20 +602,22 @@
         <div id="gst-view-challan" style="display:none;">
             <h3>📄 Challan Shared Clients List (GSTR-3B)</h3>
             <div id="gstChallanTableStatus" class="status-msg"></div>
-            <table id="gstChallanTable" style="display:none;">
-                <thead>
-                    <tr>
-                        <th>GSTIN</th>
-                        <th>Client Name</th>
-                        <th>Frequency</th>
-                        <th>Tax Position</th>
-                        <th>Filing Status</th>
-                        <th>Filing Date</th>
-                        <th>ARN</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive-wrapper">
+                <table id="gstChallanTable" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>GSTIN</th>
+                            <th>Client Name</th>
+                            <th>Frequency</th>
+                            <th>Tax Position</th>
+                            <th>Filing Status</th>
+                            <th>Filing Date</th>
+                            <th>ARN</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -528,30 +627,32 @@
         
         <div id="auditAuthNotice" class="status-msg" style="margin-bottom: 15px;"></div>
 
-        <div id="auditSummaryBox" style="display:none; background:white; border:1px solid #cbd5e1; padding:18px; border-radius:6px; margin-bottom:20px;">
+        <div id="auditSummaryBox" style="display:none; background:white; border:1px solid #cbd5e1; padding:15px; border-radius:8px; margin-bottom:20px;">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #e2e8f0; padding-bottom:8px; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
-                <h3 style="margin:0; font-size:16px; color:#1a365d;">📊 My Assigned Audit Clients Overview</h3>
+                <h3 style="margin:0; font-size:15px; color:#1a365d;">📊 My Assigned Audit Clients Overview</h3>
                 
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <label for="auditMainTaskFilter" style="font-size:13px; font-weight:600; color:#4a5568; margin:0;">Filter Main Task:</label>
-                    <select id="auditMainTaskFilter" onchange="renderAuditSummaryTable(cachedAuditClientsSummary)" style="padding:6px 10px; font-size:13px; border:1px solid #cbd5e1; border-radius:4px; font-weight:600; max-width:260px;">
+                    <label for="auditMainTaskFilter" style="font-size:12px; font-weight:600; color:#4a5568; margin:0;">Filter Main Task:</label>
+                    <select id="auditMainTaskFilter" onchange="renderAuditSummaryTable(cachedAuditClientsSummary)" style="padding:6px 10px; font-size:12px; border:1px solid #cbd5e1; border-radius:6px; font-weight:600; max-width:260px;">
                         <option value="ALL">All Main Tasks</option>
                     </select>
                 </div>
             </div>
 
-            <table id="auditSummaryTable">
-                <thead>
-                    <tr>
-                        <th>Client Name</th>
-                        <th>Target Deadline</th>
-                        <th>Tasks Completed</th>
-                        <th>% Completion</th>
-                        <th class="no-print">Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-responsive-wrapper">
+                <table id="auditSummaryTable">
+                    <thead>
+                        <tr>
+                            <th>Client Name</th>
+                            <th>Target Deadline</th>
+                            <th>Tasks Completed</th>
+                            <th>% Completion</th>
+                            <th class="no-print">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
 
             <div class="button-group-row" style="margin-top:15px;">
                 <button type="button" class="print-btn" onclick="printAuditSummary()">🖨️ Print Assigned Clients Summary</button>
@@ -646,7 +747,7 @@
 
         <h3>📋 UDIN Compliance Register</h3>
         <div id="udinTableStatus" class="status-msg"></div>
-        <div style="overflow-x: auto;">
+        <div class="table-responsive-wrapper">
             <table id="udinTable" style="display:none;">
                 <thead>
                     <tr>
@@ -791,7 +892,7 @@
 
 <!-- TAX AUDIT CHECKLIST MODAL -->
 <div id="auditModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeAuditModal();">
-    <div class="modal-content" style="max-width: 820px; width: 95%;">
+    <div class="modal-content" style="max-width: 820px; width: 100%;">
         <div class="modal-header">
             <h3 id="auditModalTitle">📋 Tax Audit Checklist</h3>
             <button type="button" class="modal-close" onclick="closeAuditModal()">&times;</button>
@@ -1079,7 +1180,6 @@
         }).catch(() => {});
     }
 
-    // USER OWN TASK MODAL LOGIC
     function openAddOwnTaskModal() {
         const creds = getCredentials();
         if (!creds.name || !creds.pin || creds.pin.length < 4) {
@@ -1142,7 +1242,6 @@
         });
     }
 
-    // TASKS MODULE FRONTEND
     function fetchAssignedTasks() {
         const creds = getCredentials();
         const statusDiv = document.getElementById('taskStatus');
@@ -1204,12 +1303,10 @@
 
         let filteredTasks = cachedAssignmentsData;
 
-        // Apply Source/Origin Filter
         if (originFilter !== "ALL") {
             filteredTasks = filteredTasks.filter(row => row.origin === originFilter);
         }
 
-        // Apply Status Filter
         if (statusFilter === "Pending") {
             filteredTasks = filteredTasks.filter(row => {
                 let st = (row.status || "").toLowerCase();
@@ -1245,8 +1342,8 @@
                 : `<span style="color:#c53030; font-weight:bold; background:#fff5f5; padding:3px 8px; border-radius:4px; border:1px solid #fed7d7;">${row.status || 'Pending'}</span>`;
 
             let actionCellHtml = isFulfilled
-                ? `<button type="button" style="background-color:#cbd5e1; color:#4a5568; border:none; padding:5px 10px; border-radius:3px; cursor:not-allowed; font-size:11px;" disabled>✓ Marked Done</button>`
-                : `<button type="button" style="background-color:#28a745; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; font-size:11px;" onclick="markTaskFulfilled(${row.rowIndex}, '${row.origin}', this)">✓ Mark Done</button>`;
+                ? `<button type="button" style="background-color:#cbd5e1; color:#4a5568; border:none; padding:5px 10px; border-radius:4px; cursor:not-allowed; font-size:11px;" disabled>✓ Marked Done</button>`
+                : `<button type="button" style="background-color:#28a745; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:11px;" onclick="markTaskFulfilled(${row.rowIndex}, '${row.origin}', this)">✓ Mark Done</button>`;
 
             tr.innerHTML = `<td><strong>${row.client}</strong></td><td>${row.description}</td><td>${originBadge}</td><td><span>${row.priority}</span></td><td>${cleanDeadline}</td><td>${statusBadge}</td><td>${actionCellHtml}</td>`;
             tbody.appendChild(tr);
@@ -1270,7 +1367,6 @@
         }).catch(() => { btnElement.disabled = false; btnElement.innerText = "✓ Mark Done"; });
     }
 
-    // GST MODULE LOGIC
     function fetchPendingGST() {
         const returnType = document.getElementById('gstReturnType').value;
         const periodVal = document.getElementById('gstMonth').value;
@@ -1423,7 +1519,7 @@
                 <td>${item.frequency || 'N/A'}</td>
                 <td><span style="color:#c53030; font-weight:bold;">${item.status}</span></td>
                 <td>
-                    <button type="button" style="background-color:#1a365d; color:white; border:none; padding:5px 12px; border-radius:3px; cursor:pointer;" 
+                    <button type="button" style="background-color:#1a365d; color:white; border:none; padding:5px 12px; border-radius:4px; cursor:pointer;" 
                     onclick="openGstModal(${item.rowIndex || 0}, '${item.gstin || ''}', '${item.clientName.replace(/'/g, "\\'")}')">Select</button>
                 </td>`;
             tbody.appendChild(tr);
@@ -1641,7 +1737,6 @@
         });
     }
 
-    // UDIN TRACKER LOGIC
     function fetchUDINData() {
         const statusDiv = document.getElementById('udinTableStatus');
         const table = document.getElementById('udinTable');
@@ -1689,7 +1784,7 @@
                     <td><strong>${r.udinConsumed || 'No'}</strong></td>
                     <td><small>${r.comments || '-'}</small></td>
                     <td>
-                        <button type="button" style="background-color:#1a365d; color:white; border:none; padding:4px 8px; border-radius:3px; cursor:pointer;"
+                        <button type="button" style="background-color:#1a365d; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;"
                         onclick="populateUdinEditForm('${r.clientName.replace(/'/g, "\\'")}')">Edit</button>
                     </td>
                 `;
@@ -1772,7 +1867,6 @@
         });
     }
 
-    // TAX AUDIT TRACKER LOGIC
     function fetchAuditClientsForStaff() {
         const creds = getCredentials();
         const noticeDiv = document.getElementById('auditAuthNotice');
@@ -2125,7 +2219,6 @@
         downloadCsv(csv, `Tax_Audit_Assigned_Clients_${new Date().toISOString().split('T')[0]}.csv`);
     }
 
-    // TIMESHEET FRONTEND LOGIC
     function runBackgroundTracker() {
         const creds = getCredentials();
         if (!creds.name || !creds.pin || creds.pin.length < 4) {
