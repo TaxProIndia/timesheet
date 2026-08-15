@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="TaxPro">
+    <meta name="apple-mobile-web-app-title" content="TaxPro Suite">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#1a365d">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlRheFBybyAmIEFzc29jaWF0ZXMgRW50ZXJwcmlzZSBTdWl0ZSIsCiAgInNob3J0X25hbWUiOiAiVGF4UHJvIiwKICAic3RhcnRfdXJsIjogIi4vIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMWEzNjVkIiwKICAidGhlbWVfY29sb3IiOiAiIzFhMzY1ZCIKZX0=">
     <title>TaxPro & Associates - Enterprise Suite</title>
     <style>
         * {
@@ -111,7 +110,7 @@
         .module-btn.active { background-color: #1a365d; color: white; border-color: #1a365d; box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
 
         .navigation-tabs { display: flex; gap: 6px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
-        .tab-btn { background-color: #e2e8f0; color: #4a5568; border: none; padding: 10px 12px; font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; flex: 1; transition: all 0.2s; min-height: 40px; }
+        .tab-btn { background-color: #e2e8f0; color: #4a5568; border: none; padding: 10px 12px; font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; flex: 1; transition: all 0.2s; min-height: 44px; }
         .tab-btn.active { background-color: #2c5282; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
 
         .portal-module { display: none; }
@@ -124,33 +123,33 @@
         
         input, select, textarea { 
             width: 100%; 
-            padding: 10px 12px; 
+            padding: 12px 14px; 
             border: 1px solid #cbd5e1; 
-            border-radius: 6px; 
+            border-radius: 8px; 
             box-sizing: border-box; 
             font-size: 16px !important;
             background-color: #fff;
+            min-height: 44px;
         }
 
         .secure-auth-card { background-color: #edf2f7; border: 1px solid #cbd5e1; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
         
-        button.action-submit { background-color: #1a365d; color: white; border: none; padding: 14px 20px; font-size: 15px; font-weight: 600; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 15px; min-height: 46px; }
+        button.action-submit { background-color: #1a365d; color: white; border: none; padding: 14px 20px; font-size: 15px; font-weight: 600; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 15px; min-height: 48px; }
         button.action-submit:hover { background-color: #2c5282; }
-        button.print-btn { background-color: #4a5568; color: white; border: none; padding: 10px 15px; font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; flex: 1; min-height: 42px; }
-        button.download-btn { background-color: #107c41; color: white; border: none; padding: 10px 15px; font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; flex: 1; min-height: 42px; }
+        button.print-btn { background-color: #4a5568; color: white; border: none; padding: 12px 15px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; flex: 1; min-height: 44px; }
+        button.download-btn { background-color: #107c41; color: white; border: none; padding: 12px 15px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; flex: 1; min-height: 44px; }
         .button-group-row { display: flex; gap: 10px; margin-top: 15px; }
         
         .row { display: flex; gap: 15px; }
         .row .field { flex: 1; }
         
-        /* Single Line Filter Bar Toolbar */
         .filter-bar-single-line {
             display: flex;
             align-items: center;
             gap: 10px;
             flex-wrap: nowrap;
             overflow-x: auto;
-            padding: 8px 4px;
+            padding: 8px;
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
@@ -164,14 +163,15 @@
             color: #4a5568;
         }
         .filter-bar-single-line select, .filter-bar-single-line input[type="date"] {
-            padding: 6px 10px;
-            font-size: 12px !important;
+            padding: 8px 10px;
+            font-size: 13px !important;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
             font-weight: 600;
             white-space: nowrap;
             width: auto;
             min-width: 120px;
+            min-height: 40px;
         }
 
         .table-responsive-wrapper {
@@ -184,10 +184,49 @@
         }
 
         table { width: 100%; border-collapse: collapse; background: white; font-size: 12px; min-width: 600px; }
-        th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; }
+        th, td { border: 1px solid #cbd5e1; padding: 10px 8px; text-align: left; }
         th { background-color: #f7fafc; color: #2d3748; font-weight: 600; }
         .status-msg { margin-top: 12px; font-weight: bold; text-align: center; font-size: 14px; }
+
+        /* Mobile Mobile Card View Container for Tasks */
+        .mobile-task-cards { display: none; flex-direction: column; gap: 12px; margin-top: 12px; }
+        .task-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .task-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+        .task-card-client { font-size: 15px; font-weight: 700; color: #1a365d; }
+        .task-card-desc { font-size: 13px; color: #4a5568; line-height: 1.4; }
+        .task-card-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px; }
+        .task-badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 12px; border: 1px solid transparent; }
         
+        /* Floating Action Button (FAB) for Mobile Quick Task Add */
+        .mobile-fab-add {
+            display: none;
+            position: fixed;
+            bottom: calc(75px + env(safe-area-inset-bottom));
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
+            background-color: #16a34a;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
         .summary-table-box { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 15px; margin: 15px auto 0 auto; max-width: 520px; }
         .summary-table-box table { margin-top: 0; font-size: 12px; min-width: 100%; }
         .summary-table-box th { text-align: center; background-color: #edf2f7; padding: 6px 10px; }
@@ -195,7 +234,7 @@
 
         .alphabet-filter-container { margin: 15px 0; }
         .alphabet-bar { display: flex; flex-wrap: wrap; gap: 4px; min-height: 32px; }
-        .alpha-btn { background-color: #edf2f7; color: #2d3748; border: 1px solid #cbd5e1; padding: 6px 9px; font-size: 12px; font-weight: 700; border-radius: 4px; cursor: pointer; min-width: 32px; text-align: center; }
+        .alpha-btn { background-color: #edf2f7; color: #2d3748; border: 1px solid #cbd5e1; padding: 8px 10px; font-size: 12px; font-weight: 700; border-radius: 4px; cursor: pointer; min-width: 36px; min-height: 36px; text-align: center; }
         .alpha-btn.active { background-color: #1a365d; color: white; border-color: #1a365d; }
 
         .modal-overlay { 
@@ -212,10 +251,10 @@
             padding: 12px;
             overflow-y: auto;
         }
-        .modal-content { background: white; border-radius: 10px; width: 100%; max-width: 600px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 88vh; overflow-y: auto; }
+        .modal-content { background: white; border-radius: 12px; width: 100%; max-width: 600px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px; }
         .modal-header h3 { margin: 0; color: #1a365d; font-size: 18px; }
-        .modal-close { background: none; border: none; font-size: 26px; font-weight: bold; cursor: pointer; color: #a0aec0; }
+        .modal-close { background: none; border: none; font-size: 28px; font-weight: bold; cursor: pointer; color: #a0aec0; }
 
         .audit-group-title { font-size: 13px; font-weight: 700; color: #1a365d; background-color: #edf2f7; padding: 10px 12px; border-radius: 5px; margin: 14px 0 8px 0; border-left: 5px solid #2b6cb0; display: flex; justify-content: space-between; align-items: center; }
         .audit-group-badge { font-size: 11px; font-weight: 700; color: #2b6cb0; background: #ebf8ff; border: 1px solid #bee3f8; padding: 3px 8px; border-radius: 12px; }
@@ -230,7 +269,7 @@
 
         @media (max-width: 768px) {
             body { 
-                padding: 10px 10px calc(75px + env(safe-area-inset-bottom)) 10px; 
+                padding: 10px 10px calc(80px + env(safe-area-inset-bottom)) 10px; 
                 background: #f4f6f9; 
             }
             .container { 
@@ -245,6 +284,10 @@
             
             .row { flex-direction: column; gap: 0; }
             
+            .table-responsive-wrapper { display: none !important; }
+            .mobile-task-cards { display: flex !important; }
+            .mobile-fab-add { display: flex !important; }
+
             .module-nav {
                 position: fixed;
                 bottom: 0;
@@ -291,7 +334,7 @@
 
         @media print {
             body { background: white; color: black; padding: 0; margin: 0; }
-            .brand-header, .secure-auth-card, .module-nav, .navigation-tabs, .status-msg, button, .button-group-row, #dailyTrackerBox, .alphabet-filter-container, .modal-overlay, .summary-table-box, #gst-view-pending, #gst-view-filed, #gst-view-challan, .portal-module, .no-print, .filter-bar-single-line {
+            .brand-header, .secure-auth-card, .module-nav, .navigation-tabs, .status-msg, button, .button-group-row, #dailyTrackerBox, .alphabet-filter-container, .modal-overlay, .summary-table-box, #gst-view-pending, #gst-view-filed, #gst-view-challan, .portal-module, .no-print, .filter-bar-single-line, .mobile-fab-add {
                 display: none !important;
             }
             .container { box-shadow: none !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important; border: none !important; }
@@ -444,17 +487,17 @@
         <div id="assignments-page" class="portal-page">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h2 style="margin:0; border:none; padding:0;">🎯 Tasks Register</h2>
-                <button type="button" style="background-color:#16a34a; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:700; font-size:13px; min-height:38px; box-shadow:0 2px 4px rgba(0,0,0,0.1);" onclick="openAddOwnTaskModal()">
-                    <span style="color:#1a365d; font-weight:900; font-size:16px; margin-right:4px;">+</span> Add Own Task
+                <button type="button" style="background-color:#16a34a; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-weight:700; font-size:13px; min-height:42px; box-shadow:0 2px 4px rgba(0,0,0,0.1);" onclick="openAddOwnTaskModal()">
+                    <span style="color:#ffffff; font-weight:900; font-size:16px; margin-right:4px;">+</span> Add Own Task
                 </button>
             </div>
 
             <div class="filter-bar-single-line">
                 <label for="taskOriginFilter">Source:</label>
                 <select id="taskOriginFilter" onchange="renderAssignedTasksTable();">
-                    <option value="ALL">All Sources (Combined)</option>
-                    <option value="Assigned Task">My Assigned Tasks</option>
-                    <option value="Own Task">My Own Tasks</option>
+                    <option value="ALL">All Sources</option>
+                    <option value="Assigned Task">Assigned</option>
+                    <option value="Own Task">Own Tasks</option>
                 </select>
 
                 <label for="taskClientFilter">Client:</label>
@@ -486,32 +529,34 @@
                 </select>
             </div>
 
-            <div id="myTasksSummaryCard" style="display:none; background:#f7fafc; border:1px solid #cbd5e1; padding:15px; border-radius:6px; margin-bottom:20px;">
+            <div id="myTasksSummaryCard" style="display:none; background:#f7fafc; border:1px solid #cbd5e1; padding:15px; border-radius:8px; margin-bottom:15px;">
                 <h4 style="margin: 0 0 10px 0; color: #1a365d; font-size: 14px; text-align: center;">📊 Workload Summary Breakdown</h4>
-                <div style="display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:10px; text-align:center;">
-                    <div style="flex:1; min-width:100px; background:white; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
-                        <div style="font-size:10px; color:#4a5568; font-weight:bold; text-transform:uppercase;">Total Tasks</div>
-                        <div id="summaryTotalAssigned" style="font-size:18px; font-weight:bold; color:#1a365d;">0</div>
+                <div style="display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:8px; text-align:center;">
+                    <div style="flex:1; min-width:80px; background:white; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
+                        <div style="font-size:10px; color:#4a5568; font-weight:bold; text-transform:uppercase;">Total</div>
+                        <div id="summaryTotalAssigned" style="font-size:16px; font-weight:bold; color:#1a365d;">0</div>
                     </div>
-                    <div style="flex:1; min-width:100px; background:white; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
+                    <div style="flex:1; min-width:80px; background:white; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
                         <div style="font-size:10px; color:#c53030; font-weight:bold; text-transform:uppercase;">⏳ Pending</div>
-                        <div id="summaryPendingTasks" style="font-size:18px; font-weight:bold; color:#c53030;">0</div>
+                        <div id="summaryPendingTasks" style="font-size:16px; font-weight:bold; color:#c53030;">0</div>
                     </div>
-                    <div style="flex:1; min-width:100px; background:white; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
-                        <div style="font-size:10px; color:#276749; font-weight:bold; text-transform:uppercase;">✓ Fulfilled / Done</div>
-                        <div id="summaryDoneTasks" style="font-size:18px; font-weight:bold; color:#276749;">0</div>
+                    <div style="flex:1; min-width:80px; background:white; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
+                        <div style="font-size:10px; color:#276749; font-weight:bold; text-transform:uppercase;">✓ Done</div>
+                        <div id="summaryDoneTasks" style="font-size:16px; font-weight:bold; color:#276749;">0</div>
                     </div>
-                    <div style="flex:1; min-width:110px; background:white; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
-                        <div style="font-size:10px; color:#2b6cb0; font-weight:bold; text-transform:uppercase;">Completion %</div>
-                        <div id="summaryCompletionPct" style="font-size:18px; font-weight:bold; color:#2b6cb0;">0%</div>
+                    <div style="flex:1; min-width:90px; background:white; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
+                        <div style="font-size:10px; color:#2b6cb0; font-weight:bold; text-transform:uppercase;">Progress</div>
+                        <div id="summaryCompletionPct" style="font-size:16px; font-weight:bold; color:#2b6cb0;">0%</div>
                     </div>
                 </div>
-                <div style="background-color:#cbd5e1; height:8px; border-radius:4px; margin-top:12px; overflow:hidden;">
+                <div style="background-color:#cbd5e1; height:8px; border-radius:4px; margin-top:10px; overflow:hidden;">
                     <div id="summaryProgressBar" style="background-color:#2b6cb0; height:100%; width:0%; transition:width 0.4s ease;"></div>
                 </div>
             </div>
 
             <div id="taskStatus" class="status-msg"></div>
+            
+            <!-- Desktop View Table -->
             <div class="table-responsive-wrapper">
                 <table id="tasksTable" style="display:none;">
                     <thead>
@@ -528,6 +573,10 @@
                     <tbody></tbody>
                 </table>
             </div>
+
+            <!-- Mobile View Stacked Cards Container -->
+            <div id="mobileTasksCardContainer" class="mobile-task-cards"></div>
+
             <div class="button-group-row" id="taskActionRow" style="display:none;">
                 <button type="button" class="print-btn" onclick="executeTimesheetPrint()">🖨️ Print Tasks (PDF)</button>
                 <button type="button" class="download-btn" onclick="exportAssignmentsToExcel()">📊 Download to Excel</button>
@@ -612,7 +661,6 @@
         <h2>📑 GST Returns Compliance Portal</h2>
         
         <div class="secure-auth-card">
-            <!-- SINGLE LINE FILTER BAR FOR GST PORTAL INCLUDING CLIENT FILTER -->
             <div class="filter-bar-single-line" style="margin-bottom:0; background:transparent; border:none; padding:0;">
                 <label for="gstReturnType">Return Type:</label>
                 <select id="gstReturnType" onchange="toggleGstPeriodOptions(); fetchPendingGST();">
@@ -900,13 +948,16 @@
     </div>
 </div>
 
+<!-- Mobile FAB button for adding tasks -->
+<button class="mobile-fab-add" onclick="openAddOwnTaskModal()" title="Add Task">+</button>
+
 <div id="gstPrintArea"></div>
 
 <!-- ADD OWN TASK MODAL WINDOW -->
 <div id="userTaskModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeAddOwnTaskModal();">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><span style="color:#1a365d; font-weight:900; font-size:20px; margin-right:4px;">+</span> Create Personal Task</h3>
+            <h3><span style="color:#16a34a; font-weight:900; font-size:20px; margin-right:4px;">+</span> Create Personal Task</h3>
             <button type="button" class="modal-close" onclick="closeAddOwnTaskModal()">&times;</button>
         </div>
         <form id="userTaskForm">
@@ -1044,6 +1095,17 @@
 </div>
 
 <script>
+    // Register PWA Service Worker Inline
+    if ('serviceWorker' in navigator) {
+        const swBlob = new Blob([`
+            self.addEventListener('install', e => self.skipWaiting());
+            self.addEventListener('activate', e => e.waitUntil(clients.claim()));
+            self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('Offline'))));
+        `], { type: 'text/javascript' });
+        const swUrl = URL.createObjectURL(swBlob);
+        navigator.serviceWorker.register(swUrl).catch(() => {});
+    }
+
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwE-J2wSml0l--CjVDEl3k54Gn1cU9G7V1eWUV8BsPzzEICgLT0aV3HWxPVop9dM3twAA/exec";
 
     let globalTaskMap = {}; 
@@ -1475,6 +1537,7 @@
     function renderAssignedTasksTable() {
         const table = document.getElementById('tasksTable');
         const tbody = table.querySelector('tbody');
+        const mobileContainer = document.getElementById('mobileTasksCardContainer');
         const statusDiv = document.getElementById('taskStatus');
         const actionRow = document.getElementById('taskActionRow');
         const summaryCard = document.getElementById('myTasksSummaryCard');
@@ -1485,6 +1548,7 @@
         const statusFilter = document.getElementById('taskStatusFilter') ? document.getElementById('taskStatusFilter').value : "ALL";
 
         tbody.innerHTML = "";
+        mobileContainer.innerHTML = "";
 
         if (!cachedAssignmentsData || cachedAssignmentsData.length === 0) {
             statusDiv.style.color = "blue";
@@ -1596,7 +1660,6 @@
 
         statusDiv.innerText = "";
         filteredTasks.forEach(row => {
-            const tr = document.createElement('tr');
             const cleanDeadline = normalizeToDMY(row.deadline);
             const isFulfilled = (row.status || "").toLowerCase().includes("fulfill") || (row.status || "").toLowerCase().includes("done");
 
@@ -1609,11 +1672,33 @@
                 : `<span style="color:#c53030; font-weight:bold; background:#fff5f5; padding:3px 8px; border-radius:4px; border:1px solid #fed7d7;">${row.status || 'Pending'}</span>`;
 
             let actionCellHtml = isFulfilled
-                ? `<button type="button" style="background-color:#cbd5e1; color:#4a5568; border:none; padding:5px 10px; border-radius:4px; cursor:not-allowed; font-size:11px;" disabled>✓ Marked Done</button>`
-                : `<button type="button" style="background-color:#28a745; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:11px;" onclick="markTaskFulfilled(${row.rowIndex}, '${row.origin}', this)">✓ Mark Done</button>`;
+                ? `<button type="button" style="background-color:#cbd5e1; color:#4a5568; border:none; padding:8px 12px; border-radius:6px; cursor:not-allowed; font-size:12px; font-weight:600;" disabled>✓ Marked Done</button>`
+                : `<button type="button" style="background-color:#28a745; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;" onclick="markTaskFulfilled(${row.rowIndex}, '${row.origin}', this)">✓ Mark Done</button>`;
 
+            // Render Desktop Table Row
+            const tr = document.createElement('tr');
             tr.innerHTML = `<td><strong>${row.client}</strong></td><td>${row.description}</td><td>${originBadge}</td><td><span>${row.priority}</span></td><td>${cleanDeadline}</td><td>${statusBadge}</td><td>${actionCellHtml}</td>`;
             tbody.appendChild(tr);
+
+            // Render Mobile Stacked Card
+            const card = document.createElement('div');
+            card.className = "task-card";
+            card.innerHTML = `
+                <div class="task-card-header">
+                    <div class="task-card-client">${row.client}</div>
+                    <div>${statusBadge}</div>
+                </div>
+                <div class="task-card-desc">${row.description}</div>
+                <div class="task-card-meta">
+                    ${originBadge}
+                    <span style="font-size:11px; color:#4a5568; background:#edf2f7; padding:2px 6px; border-radius:3px;">🔥 ${row.priority} Priority</span>
+                    <span style="font-size:11px; color:#2b6cb0; background:#ebf8ff; padding:2px 6px; border-radius:3px;">📅 ${cleanDeadline}</span>
+                </div>
+                <div style="margin-top:6px; text-align:right;">
+                    ${actionCellHtml}
+                </div>
+            `;
+            mobileContainer.appendChild(card);
         });
 
         table.style.display = "table";
@@ -1668,7 +1753,6 @@
         });
     }
 
-    /* Populates GST Client Filter Dropdown Dynamically */
     function populateGstClientFilter() {
         const clientSelect = document.getElementById('gstClientFilter');
         if (!clientSelect) return;
@@ -1789,17 +1873,14 @@
 
         let filteredList = cachedPendingGstData;
         
-        // Filter by Frequency
         if (returnType !== "GSTR9" && returnType !== "GSTR9C" && freqFilter !== "ALL") {
             filteredList = filteredList.filter(item => classifyFrequency(item.frequency) === freqFilter);
         }
 
-        // Filter by Client Name
         if (clientFilter !== "ALL") {
             filteredList = filteredList.filter(item => item.clientName === clientFilter);
         }
 
-        // Filter by Initial Letter
         if (selectedAlphabet !== "ALL") {
             filteredList = filteredList.filter(item => item.clientName.trim().charAt(0).toUpperCase() === selectedAlphabet);
         }
@@ -1821,7 +1902,7 @@
                 <td>${item.frequency || 'N/A'}</td>
                 <td><span style="color:#c53030; font-weight:bold;">${item.status}</span></td>
                 <td>
-                    <button type="button" style="background-color:#1a365d; color:white; border:none; padding:5px 12px; border-radius:4px; cursor:pointer;" 
+                    <button type="button" style="background-color:#1a365d; color:white; border:none; padding:6px 14px; border-radius:6px; cursor:pointer;" 
                     onclick="openGstModal(${item.rowIndex || 0}, '${item.gstin || ''}', '${item.clientName.replace(/'/g, "\\'")}')">Select</button>
                 </td>`;
             tbody.appendChild(tr);
@@ -1855,17 +1936,14 @@
 
         let filteredList = cachedFiledGstData;
 
-        // Filter by Frequency
         if (returnType !== "GSTR9" && returnType !== "GSTR9C" && freqFilter !== "ALL") {
             filteredList = filteredList.filter(item => classifyFrequency(item.frequency) === freqFilter);
         }
 
-        // Filter by Client Name
         if (clientFilter !== "ALL") {
             filteredList = filteredList.filter(item => item.clientName === clientFilter);
         }
 
-        // Filter by Status (Filed / NA)
         if (filedFilter === "Filed") {
             filteredList = filteredList.filter(item => {
                 let st = (item.status || "").toLowerCase();
@@ -2099,7 +2177,7 @@
                     <td><strong>${r.udinConsumed || 'No'}</strong></td>
                     <td><small>${r.comments || '-'}</small></td>
                     <td>
-                        <button type="button" style="background-color:#1a365d; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;"
+                        <button type="button" style="background-color:#1a365d; color:white; border:none; padding:6px 10px; border-radius:4px; cursor:pointer;"
                         onclick="populateUdinEditForm('${r.clientName.replace(/'/g, "\\'")}')">Edit</button>
                     </td>
                 `;
@@ -3111,7 +3189,6 @@
         downloadCsv(csv, `GST_Filed_${returnType}_${periodVal}_${new Date().toISOString().split('T')[0]}.csv`);
     }
 
-    /* Fixed Printing Function to Strictly Apply Active Filters */
     function executeGstPrint(type) {
         const returnType = document.getElementById('gstReturnType').value;
         const periodVal = document.getElementById('gstMonth').value;
@@ -3129,17 +3206,14 @@
 
         let filteredList = list;
 
-        // 1. Frequency filter
         if (returnType !== "GSTR9" && returnType !== "GSTR9C" && freqFilter !== "ALL") {
             filteredList = filteredList.filter(item => classifyFrequency(item.frequency) === freqFilter);
         }
 
-        // 2. Client Name filter
         if (clientFilter !== "ALL") {
             filteredList = filteredList.filter(item => item.clientName === clientFilter);
         }
 
-        // 3. Tab-specific active filters
         if (type === 'pending') {
             if (selectedAlphabet !== "ALL") {
                 filteredList = filteredList.filter(item => item.clientName.trim().charAt(0).toUpperCase() === selectedAlphabet);
