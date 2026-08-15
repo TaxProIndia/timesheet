@@ -123,7 +123,7 @@
             border: 1px solid #cbd5e1; 
             border-radius: 6px; 
             box-sizing: border-box; 
-            font-size: 16px !important; /* Prevents auto-zoom on mobile safari */
+            font-size: 16px !important;
             background-color: #fff;
         }
 
@@ -179,7 +179,6 @@
 
         #gstPrintArea { display: none; }
 
-        /* DYNAMIC MOBILE SCREEN RESOLUTION STYLES */
         @media (max-width: 768px) {
             body { 
                 padding: 10px 10px calc(75px + env(safe-area-inset-bottom)) 10px; 
@@ -197,7 +196,6 @@
             
             .row { flex-direction: column; gap: 0; }
             
-            /* Native Mobile Bottom Dock Bar */
             .module-nav {
                 position: fixed;
                 bottom: 0;
@@ -1248,7 +1246,6 @@
         const table = document.getElementById('tasksTable');
         const tbody = table.querySelector('tbody');
         const actionRow = document.getElementById('taskActionRow');
-        const summaryCard = document.getElementById('myTasksSummaryCard');
         
         if (!creds.name || !creds.pin) {
             statusDiv.style.color = "red";
@@ -1266,16 +1263,6 @@
             if (res.status === "SUCCESS" || res.data) {
                 statusDiv.innerText = "";
                 const taskList = res.data || [];
-
-                if (res.summary) {
-                    document.getElementById('summaryTotalAssigned').innerText = res.summary.total || 0;
-                    document.getElementById('summaryPendingTasks').innerText = res.summary.pending || 0;
-                    document.getElementById('summaryDoneTasks').innerText = res.summary.totalDone || 0;
-                    document.getElementById('summaryCompletionPct').innerText = (res.summary.percent || 0) + "%";
-                    document.getElementById('summaryProgressBar').style.width = (res.summary.percent || 0) + "%";
-                    summaryCard.style.display = "block";
-                }
-
                 cachedAssignmentsData = taskList; 
                 renderAssignedTasksTable();
             }
@@ -1287,6 +1274,7 @@
         const tbody = table.querySelector('tbody');
         const statusDiv = document.getElementById('taskStatus');
         const actionRow = document.getElementById('taskActionRow');
+        const summaryCard = document.getElementById('myTasksSummaryCard');
         
         const originFilter = document.getElementById('taskOriginFilter') ? document.getElementById('taskOriginFilter').value : "ALL";
         const statusFilter = document.getElementById('taskStatusFilter') ? document.getElementById('taskStatusFilter').value : "ALL";
@@ -1298,22 +1286,48 @@
             statusDiv.innerText = "No task allocations found.";
             table.style.display = "none";
             actionRow.style.display = "none";
+            summaryCard.style.display = "none";
             return;
         }
 
-        let filteredTasks = cachedAssignmentsData;
-
+        // Dynamically recalculate workload summary breakdown based on selected origin source filter
+        let originFilteredTasks = cachedAssignmentsData;
         if (originFilter !== "ALL") {
-            filteredTasks = filteredTasks.filter(row => row.origin === originFilter);
+            originFilteredTasks = cachedAssignmentsData.filter(row => row.origin === originFilter);
         }
 
+        const total = originFilteredTasks.length;
+        let pending = 0;
+        let done = 0;
+
+        originFilteredTasks.forEach(row => {
+            let st = (row.status || "").toLowerCase();
+            if (st.includes("fulfill") || st.includes("done")) {
+                done++;
+            } else {
+                pending++;
+            }
+        });
+
+        const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+        document.getElementById('summaryTotalAssigned').innerText = total;
+        document.getElementById('summaryPendingTasks').innerText = pending;
+        document.getElementById('summaryDoneTasks').innerText = done;
+        document.getElementById('summaryCompletionPct').innerText = pct + "%";
+        document.getElementById('summaryProgressBar').style.width = pct + "%";
+        summaryCard.style.display = "block";
+
+        // Filter for table rendering
+        let filteredTasks = originFilteredTasks;
+
         if (statusFilter === "Pending") {
-            filteredTasks = filteredTasks.filter(row => {
+            filteredTasks = originFilteredTasks.filter(row => {
                 let st = (row.status || "").toLowerCase();
                 return !st.includes("fulfill") && !st.includes("done");
             });
         } else if (statusFilter === "Fulfilled") {
-            filteredTasks = filteredTasks.filter(row => {
+            filteredTasks = originFilteredTasks.filter(row => {
                 let st = (row.status || "").toLowerCase();
                 return st.includes("fulfill") || st.includes("done");
             });
