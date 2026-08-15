@@ -2,14 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a365d">
     <title>TaxPro & Associates - Enterprise Suite</title>
     <style>
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
             background: linear-gradient(180deg, #ffd8b3 0%, #fff2e6 25%, #ffffff 50%, #e5f7e9 75%, #a2e0ab 100%) fixed; 
             margin: 0; 
-            padding: 20px; 
+            padding: 20px 20px 80px 20px; 
             color: #333; 
         }
 
@@ -115,6 +118,41 @@
 
         #gstPrintArea { display: none; }
 
+        /* MOBILE APP RESPONSIVE DOCK & UI STYLES */
+        @media (max-width: 768px) {
+            body { padding: 10px 10px 80px 10px; }
+            .container { padding: 15px; margin-bottom: 10px; border-radius: 0; box-shadow: none; }
+            .row { flex-direction: column; gap: 0; }
+            .module-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: #1a365d;
+                margin: 0;
+                padding: 6px;
+                z-index: 999;
+                border-top: 2px solid #0f2744;
+                border-bottom: none;
+                box-shadow: 0 -4px 10px rgba(0,0,0,0.2);
+            }
+            .module-btn {
+                background-color: transparent;
+                color: #cbd5e1;
+                border: none;
+                padding: 8px 4px;
+                font-size: 11px;
+                border-radius: 4px;
+            }
+            .module-btn.active {
+                background-color: #2c5282;
+                color: white;
+                box-shadow: none;
+            }
+            table { font-size: 11px; }
+            th, td { padding: 6px 4px; }
+        }
+
         @media print {
             body { background: white; color: black; padding: 0; margin: 0; }
             .brand-header, .secure-auth-card, .module-nav, .navigation-tabs, .status-msg, button, .button-group-row, #dailyTrackerBox, .alphabet-filter-container, .modal-overlay, .summary-table-box, #gst-view-pending, #gst-view-filed, #gst-view-challan, .portal-module, .no-print {
@@ -174,15 +212,16 @@
 
     <div class="module-nav">
         <button class="module-btn active" id="btn-mod-timesheet" onclick="switchModule('module-timesheet')">📊 Timesheet</button>
-        <button class="module-btn" id="btn-mod-gst" onclick="switchModule('module-gst')">📑 GST Compliance</button>
-        <button class="module-btn" id="btn-mod-audit" onclick="switchModule('module-audit')">📋 Tax Audit Tracker</button>
-        <button class="module-btn" id="btn-mod-udin" onclick="switchModule('module-udin')">🔑 UDIN Tracker</button>
+        <button class="module-btn" id="btn-mod-gst" onclick="switchModule('module-gst')">📑 GST</button>
+        <button class="module-btn" id="btn-mod-audit" onclick="switchModule('module-audit')">📋 Tax Audit</button>
+        <button class="module-btn" id="btn-mod-udin" onclick="switchModule('module-udin')">🔑 UDIN</button>
     </div>
 
+    <!-- MODULE 1: TIMESHEET & TASKS -->
     <div id="module-timesheet" class="portal-module active">
         <div class="navigation-tabs">
             <button class="tab-btn active" onclick="switchTab('timecard-page')">📝 Log Time</button>
-            <button class="tab-btn" onclick="switchTab('assignments-page'); fetchAssignedTasks();">🎯 My Tasks</button>
+            <button class="tab-btn" onclick="switchTab('assignments-page'); fetchAssignedTasks();">🎯 Tasks</button>
             <button class="tab-btn" onclick="switchTab('history-page'); fetchEmployeeHistory();">🔍 History Logs</button>
         </div>
 
@@ -267,11 +306,21 @@
 
         <div id="assignments-page" class="portal-page">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
-                <h2 style="margin:0; border:none; padding:0;">🎯 Active Weekly Assignments</h2>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <label for="taskStatusFilter" style="font-weight:600; font-size:13px; color:#4a5568; margin:0;">Filter Task Status:</label>
-                    <select id="taskStatusFilter" onchange="renderAssignedTasksTable();" style="padding:6px 10px; font-size:13px; border:1px solid #cbd5e1; border-radius:4px; font-weight:600; max-width:200px;">
-                        <option value="ALL">Show All Tasks</option>
+                <h2 style="margin:0; border:none; padding:0;">🎯 Tasks Register</h2>
+                
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <button type="button" style="background-color:#16a34a; color:white; border:none; padding:8px 14px; border-radius:4px; cursor:pointer; font-weight:700; font-size:13px;" onclick="openAddOwnTaskModal()">➕ Add Own Task</button>
+
+                    <label for="taskOriginFilter" style="font-weight:600; font-size:12px; color:#4a5568; margin:0;">Category:</label>
+                    <select id="taskOriginFilter" onchange="renderAssignedTasksTable();" style="padding:6px 10px; font-size:12px; border:1px solid #cbd5e1; border-radius:4px; font-weight:600; width:auto;">
+                        <option value="ALL">All Sources (Combined)</option>
+                        <option value="Assigned Task">My Assigned Tasks</option>
+                        <option value="Own Task">My Own Tasks</option>
+                    </select>
+
+                    <label for="taskStatusFilter" style="font-weight:600; font-size:12px; color:#4a5568; margin:0;">Status:</label>
+                    <select id="taskStatusFilter" onchange="renderAssignedTasksTable();" style="padding:6px 10px; font-size:12px; border:1px solid #cbd5e1; border-radius:4px; font-weight:600; width:auto;">
+                        <option value="ALL">All Status</option>
                         <option value="Pending">Pending Only</option>
                         <option value="Fulfilled">Fulfilled Only</option>
                     </select>
@@ -279,11 +328,12 @@
             </div>
             <div style="border-bottom: 2px solid #e2e8f0; margin-bottom:15px;"></div>
 
+            <!-- MY TASKS STATS SUMMARY CARD -->
             <div id="myTasksSummaryCard" style="display:none; background:#f7fafc; border:1px solid #cbd5e1; padding:15px; border-radius:6px; margin-bottom:20px;">
-                <h4 style="margin: 0 0 10px 0; color: #1a365d; font-size: 14px; text-align: center;">📊 Assigned Workload Breakdown</h4>
+                <h4 style="margin: 0 0 10px 0; color: #1a365d; font-size: 14px; text-align: center;">📊 Workload Summary Breakdown</h4>
                 <div style="display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:12px; text-align:center;">
                     <div style="flex:1; min-width:110px; background:white; padding:10px; border-radius:6px; border:1px solid #e2e8f0;">
-                        <div style="font-size:11px; color:#4a5568; font-weight:bold; text-transform:uppercase;">Total Assigned</div>
+                        <div style="font-size:11px; color:#4a5568; font-weight:bold; text-transform:uppercase;">Total Tasks</div>
                         <div id="summaryTotalAssigned" style="font-size:20px; font-weight:bold; color:#1a365d;">0</div>
                     </div>
                     <div style="flex:1; min-width:110px; background:white; padding:10px; border-radius:6px; border:1px solid #e2e8f0;">
@@ -310,6 +360,7 @@
                     <tr>
                         <th>Client Name</th>
                         <th>Task Details</th>
+                        <th>Assigned By</th>
                         <th>Priority</th>
                         <th>Target Deadline</th>
                         <th>Status</th>
@@ -340,6 +391,7 @@
         </div>
     </div>
 
+    <!-- MODULE 2: GST COMPLIANCE PORTAL -->
     <div id="module-gst" class="portal-module">
         <h2>📑 GST Returns Compliance Portal</h2>
         
@@ -470,6 +522,7 @@
         </div>
     </div>
 
+    <!-- MODULE 3: TAX AUDIT MANAGEMENT TRACKER -->
     <div id="module-audit" class="portal-module">
         <h2>📋 Tax Audit Management Tracker</h2>
         
@@ -507,6 +560,7 @@
         </div>
     </div>
 
+    <!-- MODULE 4: UDIN TRACKER -->
     <div id="module-udin" class="portal-module">
         <h2>🔑 UDIN Registration & Compliance Tracker</h2>
         
@@ -618,6 +672,44 @@
 
 <div id="gstPrintArea"></div>
 
+<!-- ADD OWN TASK MODAL WINDOW -->
+<div id="userTaskModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeAddOwnTaskModal();">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>➕ Create Personal Task</h3>
+            <button type="button" class="modal-close" onclick="closeAddOwnTaskModal()">&times;</button>
+        </div>
+        <form id="userTaskForm">
+            <div class="field">
+                <label>Client Name</label>
+                <select id="userTaskClientSelect" required><option value="">-- Select Client --</option></select>
+            </div>
+            <div class="field">
+                <label>Task Details / Description</label>
+                <textarea id="userTaskDetails" rows="3" placeholder="Enter task instructions or details..." required></textarea>
+            </div>
+            <div class="row">
+                <div class="field">
+                    <label>Priority</label>
+                    <select id="userTaskPriority" required>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Target Deadline</label>
+                    <input type="date" id="userTaskDeadline" required>
+                </div>
+            </div>
+
+            <button type="button" class="action-submit" onclick="submitUserTask()">✓ Add Task to My List</button>
+            <div id="userTaskSubmitStatus" class="status-msg"></div>
+        </form>
+    </div>
+</div>
+
+<!-- GST FILING MODAL -->
 <div id="gstModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeGstModal();">
     <div class="modal-content">
         <div class="modal-header">
@@ -697,6 +789,7 @@
     </div>
 </div>
 
+<!-- TAX AUDIT CHECKLIST MODAL -->
 <div id="auditModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeAuditModal();">
     <div class="modal-content" style="max-width: 820px; width: 95%;">
         <div class="modal-header">
@@ -721,7 +814,6 @@
 </div>
 
 <script>
-    // DEPLOYED WEB APP URL
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwE-J2wSml0l--CjVDEl3k54Gn1cU9G7V1eWUV8BsPzzEICgLT0aV3HWxPVop9dM3twAA/exec";
 
     let globalTaskMap = {}; 
@@ -740,7 +832,6 @@
     const MONTHS = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
     const FY_LIST = ['FY 2023-24', 'FY 2024-25', 'FY 2025-26', 'FY 2026-27', 'FY 2027-28'];
 
-    // DEFAULT TIME AND DATE SETTINGS TO IST (Asia/Kolkata)
     function getTodayIST() {
         const now = new Date();
         return now.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
@@ -751,6 +842,7 @@
         document.getElementById('date').value = todayIST;
         document.getElementById('gstFilingDate').value = todayIST;
         document.getElementById('udinFilingDate').value = todayIST;
+        document.getElementById('userTaskDeadline').value = todayIST;
 
         updateClocks();
         setInterval(updateClocks, 1000);
@@ -778,7 +870,6 @@
         }
     };
 
-    // MULTI-TIMEZONE CLOCKS DISPLAY (IST DEFAULT)
     function updateClocks() {
         const now = new Date();
         const dateOpt = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
@@ -804,7 +895,6 @@
         return "Monthly";
     }
 
-    // TIMEZONE-ACCURATE DATE DISPLAY FORMATTER
     function normalizeToDMY(dateString) {
         if (!dateString) return "";
         let str = String(dateString).trim();
@@ -950,6 +1040,7 @@
     function loadInitializationData() {
         const empDropdown = document.getElementById('globalEmployeeName');
         const clientDropdown = document.getElementById('clientName');
+        const userClientDropdown = document.getElementById('userTaskClientSelect');
         const taskDropdown = document.getElementById('taskCategory');
 
         fetch(`${WEB_APP_URL}?action=fetchInitializationData`)
@@ -968,10 +1059,15 @@
             });
 
             clientDropdown.innerHTML = '<option value="">-- Select Client --</option>';
+            userClientDropdown.innerHTML = '<option value="">-- Select Client --</option>';
             clients.forEach(client => {
                 const opt = document.createElement('option');
                 opt.value = client; opt.innerText = client;
                 clientDropdown.appendChild(opt);
+
+                const opt2 = document.createElement('option');
+                opt2.value = client; opt2.innerText = client;
+                userClientDropdown.appendChild(opt2);
             });
 
             taskDropdown.innerHTML = '<option value="">-- Select Task --</option>';
@@ -981,6 +1077,197 @@
                 taskDropdown.appendChild(opt);
             }
         }).catch(() => {});
+    }
+
+    // USER OWN TASK MODAL LOGIC
+    function openAddOwnTaskModal() {
+        const creds = getCredentials();
+        if (!creds.name || !creds.pin || creds.pin.length < 4) {
+            alert("🔒 Access Lock: Please select your Name and enter your PIN at the top first.");
+            return;
+        }
+        document.getElementById('userTaskDetails').value = "";
+        document.getElementById('userTaskSubmitStatus').innerText = "";
+        document.getElementById('userTaskModalOverlay').style.display = "flex";
+    }
+
+    function closeAddOwnTaskModal() {
+        document.getElementById('userTaskModalOverlay').style.display = "none";
+    }
+
+    function submitUserTask() {
+        const creds = getCredentials();
+        const clientName = document.getElementById('userTaskClientSelect').value;
+        const taskDetails = document.getElementById('userTaskDetails').value.trim();
+        const priority = document.getElementById('userTaskPriority').value;
+        const deadline = document.getElementById('userTaskDeadline').value;
+        const statusDiv = document.getElementById('userTaskSubmitStatus');
+
+        if (!clientName || !taskDetails || !deadline) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Please fill in all task details.";
+            return;
+        }
+
+        statusDiv.style.color = "orange";
+        statusDiv.innerText = "Creating personal task...";
+
+        const params = new URLSearchParams({
+            action: "addUserTask",
+            employeeName: creds.name,
+            pin: creds.pin,
+            clientName: clientName,
+            taskDetails: taskDetails,
+            priority: priority,
+            deadline: deadline
+        });
+
+        fetch(`${WEB_APP_URL}?${params.toString()}`)
+        .then(res => res.json())
+        .then(res => {
+            if (res.status === "SUCCESS" || res.success) {
+                statusDiv.style.color = "green";
+                statusDiv.innerText = "✓ Task created successfully!";
+                setTimeout(() => {
+                    closeAddOwnTaskModal();
+                    fetchAssignedTasks();
+                }, 800);
+            } else {
+                statusDiv.style.color = "red";
+                statusDiv.innerText = "Error: " + (res.message || "Failed to create task.");
+            }
+        }).catch(() => {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Network transmission error.";
+        });
+    }
+
+    // TASKS MODULE FRONTEND
+    function fetchAssignedTasks() {
+        const creds = getCredentials();
+        const statusDiv = document.getElementById('taskStatus');
+        const table = document.getElementById('tasksTable');
+        const tbody = table.querySelector('tbody');
+        const actionRow = document.getElementById('taskActionRow');
+        const summaryCard = document.getElementById('myTasksSummaryCard');
+        
+        if (!creds.name || !creds.pin) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Access Blocked: Provide Name and PIN above.";
+            return;
+        }
+
+        statusDiv.style.color = "orange";
+        statusDiv.innerText = "Scanning tasks register...";
+        tbody.innerHTML = ""; actionRow.style.display = "none"; cachedAssignmentsData = [];
+
+        fetch(`${WEB_APP_URL}?action=fetchAssignedTasks&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}`)
+        .then(res => res.json())
+        .then(res => {
+            if (res.status === "SUCCESS" || res.data) {
+                statusDiv.innerText = "";
+                const taskList = res.data || [];
+
+                if (res.summary) {
+                    document.getElementById('summaryTotalAssigned').innerText = res.summary.total || 0;
+                    document.getElementById('summaryPendingTasks').innerText = res.summary.pending || 0;
+                    document.getElementById('summaryDoneTasks').innerText = res.summary.totalDone || 0;
+                    document.getElementById('summaryCompletionPct').innerText = (res.summary.percent || 0) + "%";
+                    document.getElementById('summaryProgressBar').style.width = (res.summary.percent || 0) + "%";
+                    summaryCard.style.display = "block";
+                }
+
+                cachedAssignmentsData = taskList; 
+                renderAssignedTasksTable();
+            }
+        }).catch(() => {});
+    }
+
+    function renderAssignedTasksTable() {
+        const table = document.getElementById('tasksTable');
+        const tbody = table.querySelector('tbody');
+        const statusDiv = document.getElementById('taskStatus');
+        const actionRow = document.getElementById('taskActionRow');
+        
+        const originFilter = document.getElementById('taskOriginFilter') ? document.getElementById('taskOriginFilter').value : "ALL";
+        const statusFilter = document.getElementById('taskStatusFilter') ? document.getElementById('taskStatusFilter').value : "ALL";
+
+        tbody.innerHTML = "";
+
+        if (!cachedAssignmentsData || cachedAssignmentsData.length === 0) {
+            statusDiv.style.color = "blue";
+            statusDiv.innerText = "No task allocations found.";
+            table.style.display = "none";
+            actionRow.style.display = "none";
+            return;
+        }
+
+        let filteredTasks = cachedAssignmentsData;
+
+        // Apply Source/Origin Filter
+        if (originFilter !== "ALL") {
+            filteredTasks = filteredTasks.filter(row => row.origin === originFilter);
+        }
+
+        // Apply Status Filter
+        if (statusFilter === "Pending") {
+            filteredTasks = filteredTasks.filter(row => {
+                let st = (row.status || "").toLowerCase();
+                return !st.includes("fulfill") && !st.includes("done");
+            });
+        } else if (statusFilter === "Fulfilled") {
+            filteredTasks = filteredTasks.filter(row => {
+                let st = (row.status || "").toLowerCase();
+                return st.includes("fulfill") || st.includes("done");
+            });
+        }
+
+        if (filteredTasks.length === 0) {
+            statusDiv.style.color = "blue";
+            statusDiv.innerText = `No tasks found for selected filters.`;
+            table.style.display = "none";
+            actionRow.style.display = "none";
+            return;
+        }
+
+        statusDiv.innerText = "";
+        filteredTasks.forEach(row => {
+            const tr = document.createElement('tr');
+            const cleanDeadline = normalizeToDMY(row.deadline);
+            const isFulfilled = (row.status || "").toLowerCase().includes("fulfill") || (row.status || "").toLowerCase().includes("done");
+
+            let originBadge = (row.origin === "Own Task")
+                ? `<span style="color:#7b2cbf; font-weight:bold; background:#f3e8ff; padding:2px 6px; border-radius:3px; border:1px solid #d8b4fe;">Own Task</span>`
+                : `<span style="color:#1e40af; font-weight:bold; background:#dbeafe; padding:2px 6px; border-radius:3px; border:1px solid #93c5fd;">Assigned Task</span>`;
+
+            let statusBadge = isFulfilled 
+                ? `<span style="color:#276749; font-weight:bold; background:#e6fffa; padding:3px 8px; border-radius:4px; border:1px solid #b2f5ea;">Fulfilled</span>`
+                : `<span style="color:#c53030; font-weight:bold; background:#fff5f5; padding:3px 8px; border-radius:4px; border:1px solid #fed7d7;">${row.status || 'Pending'}</span>`;
+
+            let actionCellHtml = isFulfilled
+                ? `<button type="button" style="background-color:#cbd5e1; color:#4a5568; border:none; padding:5px 10px; border-radius:3px; cursor:not-allowed; font-size:11px;" disabled>✓ Marked Done</button>`
+                : `<button type="button" style="background-color:#28a745; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; font-size:11px;" onclick="markTaskFulfilled(${row.rowIndex}, '${row.origin}', this)">✓ Mark Done</button>`;
+
+            tr.innerHTML = `<td><strong>${row.client}</strong></td><td>${row.description}</td><td>${originBadge}</td><td><span>${row.priority}</span></td><td>${cleanDeadline}</td><td>${statusBadge}</td><td>${actionCellHtml}</td>`;
+            tbody.appendChild(tr);
+        });
+
+        table.style.display = "table";
+        actionRow.style.display = "flex";
+    }
+
+    function markTaskFulfilled(rowIndex, origin, btnElement) {
+        const creds = getCredentials();
+        if (!confirm("Are you sure you want to mark this task as fulfilled?")) return;
+        btnElement.disabled = true; btnElement.innerText = "Saving...";
+
+        fetch(`${WEB_APP_URL}?action=markTaskCompleted&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}&rowIndex=${rowIndex}&origin=${encodeURIComponent(origin)}`)
+        .then(res => res.json())
+        .then(res => {
+            if (res.status === "SUCCESS" || res.success) {
+                fetchAssignedTasks();
+            }
+        }).catch(() => { btnElement.disabled = false; btnElement.innerText = "✓ Mark Done"; });
     }
 
     // GST MODULE LOGIC
@@ -1018,7 +1305,6 @@
     }
 
     function updateGstSummaryTable() {
-        const returnType = document.getElementById('gstReturnType').value;
         let counts = { monthly: { pending: 0, filed: 0 }, quarterly: { pending: 0, filed: 0 }, composition: { pending: 0, filed: 0 } };
 
         cachedPendingGstData.forEach(item => {
@@ -1976,121 +2262,6 @@
         });
     }
 
-    function fetchAssignedTasks() {
-        const creds = getCredentials();
-        const statusDiv = document.getElementById('taskStatus');
-        const table = document.getElementById('tasksTable');
-        const tbody = table.querySelector('tbody');
-        const actionRow = document.getElementById('taskActionRow');
-        const summaryCard = document.getElementById('myTasksSummaryCard');
-        
-        if (!creds.name || !creds.pin) {
-            statusDiv.style.color = "red";
-            statusDiv.innerText = "Access Blocked: Provide Name and PIN above.";
-            return;
-        }
-
-        statusDiv.style.color = "orange";
-        statusDiv.innerText = "Scanning assigned tasks...";
-        tbody.innerHTML = ""; actionRow.style.display = "none"; cachedAssignmentsData = [];
-
-        fetch(`${WEB_APP_URL}?action=fetchAssignedTasks&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}`)
-        .then(res => res.json())
-        .then(res => {
-            if (res.status === "SUCCESS" || res.data) {
-                statusDiv.innerText = "";
-                const taskList = res.data || [];
-
-                // Render Summary Card stats
-                if (res.summary) {
-                    document.getElementById('summaryTotalAssigned').innerText = res.summary.total || 0;
-                    document.getElementById('summaryPendingTasks').innerText = res.summary.pending || 0;
-                    document.getElementById('summaryDoneTasks').innerText = res.summary.totalDone || 0;
-                    document.getElementById('summaryCompletionPct').innerText = (res.summary.percent || 0) + "%";
-                    document.getElementById('summaryProgressBar').style.width = (res.summary.percent || 0) + "%";
-                    summaryCard.style.display = "block";
-                }
-
-                cachedAssignmentsData = taskList; 
-                renderAssignedTasksTable();
-            }
-        }).catch(() => {});
-    }
-
-    function renderAssignedTasksTable() {
-        const table = document.getElementById('tasksTable');
-        const tbody = table.querySelector('tbody');
-        const statusDiv = document.getElementById('taskStatus');
-        const actionRow = document.getElementById('taskActionRow');
-        const filterVal = document.getElementById('taskStatusFilter') ? document.getElementById('taskStatusFilter').value : "ALL";
-
-        tbody.innerHTML = "";
-
-        if (!cachedAssignmentsData || cachedAssignmentsData.length === 0) {
-            statusDiv.style.color = "blue";
-            statusDiv.innerText = "No open task allocations found.";
-            table.style.display = "none";
-            actionRow.style.display = "none";
-            return;
-        }
-
-        let filteredTasks = cachedAssignmentsData;
-        if (filterVal === "Pending") {
-            filteredTasks = cachedAssignmentsData.filter(row => {
-                let st = (row.status || "").toLowerCase();
-                return !st.includes("fulfill") && !st.includes("done");
-            });
-        } else if (filterVal === "Fulfilled") {
-            filteredTasks = cachedAssignmentsData.filter(row => {
-                let st = (row.status || "").toLowerCase();
-                return st.includes("fulfill") || st.includes("done");
-            });
-        }
-
-        if (filteredTasks.length === 0) {
-            statusDiv.style.color = "blue";
-            statusDiv.innerText = `No tasks found matching filter '${filterVal}'.`;
-            table.style.display = "none";
-            actionRow.style.display = "none";
-            return;
-        }
-
-        statusDiv.innerText = "";
-        filteredTasks.forEach(row => {
-            const tr = document.createElement('tr');
-            const cleanDeadline = normalizeToDMY(row.deadline);
-            const isFulfilled = (row.status || "").toLowerCase().includes("fulfill") || (row.status || "").toLowerCase().includes("done");
-
-            let statusBadge = isFulfilled 
-                ? `<span style="color:#276749; font-weight:bold; background:#e6fffa; padding:3px 8px; border-radius:4px; border:1px solid #b2f5ea;">Fulfilled</span>`
-                : `<span style="color:#c53030; font-weight:bold; background:#fff5f5; padding:3px 8px; border-radius:4px; border:1px solid #fed7d7;">${row.status || 'Pending'}</span>`;
-
-            let actionCellHtml = isFulfilled
-                ? `<button type="button" style="background-color:#cbd5e1; color:#4a5568; border:none; padding:5px 10px; border-radius:3px; cursor:not-allowed; font-size:11px;" disabled>✓ Marked Done</button>`
-                : `<button type="button" style="background-color:#28a745; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; font-size:11px;" onclick="markTaskFulfilled(${row.rowIndex}, this)">✓ Mark Done</button>`;
-
-            tr.innerHTML = `<td><strong>${row.client}</strong></td><td>${row.description}</td><td><span>${row.priority}</span></td><td>${cleanDeadline}</td><td>${statusBadge}</td><td>${actionCellHtml}</td>`;
-            tbody.appendChild(tr);
-        });
-
-        table.style.display = "table";
-        actionRow.style.display = "flex";
-    }
-
-    function markTaskFulfilled(rowIndex, btnElement) {
-        const creds = getCredentials();
-        if (!confirm("Are you sure you want to mark this task as fulfilled?")) return;
-        btnElement.disabled = true; btnElement.innerText = "Saving...";
-
-        fetch(`${WEB_APP_URL}?action=markTaskCompleted&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}&rowIndex=${rowIndex}`)
-        .then(res => res.json())
-        .then(res => {
-            if (res.status === "SUCCESS" || res.success) {
-                fetchAssignedTasks();
-            }
-        }).catch(() => { btnElement.disabled = false; btnElement.innerText = "✓ Mark Done"; });
-    }
-
     function fetchEmployeeHistory() {
         const creds = getCredentials();
         const statusDiv = document.getElementById('historyStatus');
@@ -2160,20 +2331,24 @@
 
     function exportAssignmentsToExcel() {
         if (!cachedAssignmentsData || cachedAssignmentsData.length === 0) return;
-        const filterVal = document.getElementById('taskStatusFilter') ? document.getElementById('taskStatusFilter').value : "ALL";
+        const originFilter = document.getElementById('taskOriginFilter') ? document.getElementById('taskOriginFilter').value : "ALL";
+        const statusFilter = document.getElementById('taskStatusFilter') ? document.getElementById('taskStatusFilter').value : "ALL";
         
         let list = cachedAssignmentsData;
-        if (filterVal === "Pending") {
-            list = cachedAssignmentsData.filter(r => !(r.status || "").toLowerCase().includes("fulfill") && !(r.status || "").toLowerCase().includes("done"));
-        } else if (filterVal === "Fulfilled") {
-            list = cachedAssignmentsData.filter(r => (r.status || "").toLowerCase().includes("fulfill") || (r.status || "").toLowerCase().includes("done"));
+        if (originFilter !== "ALL") {
+            list = list.filter(r => r.origin === originFilter);
+        }
+        if (statusFilter === "Pending") {
+            list = list.filter(r => !(r.status || "").toLowerCase().includes("fulfill") && !(r.status || "").toLowerCase().includes("done"));
+        } else if (statusFilter === "Fulfilled") {
+            list = list.filter(r => (r.status || "").toLowerCase().includes("fulfill") || (r.status || "").toLowerCase().includes("done"));
         }
 
-        let csv = "\uFEFFClient Name,Task Details,Priority,Target Deadline,Status\n";
+        let csv = "\uFEFFClient Name,Task Details,Assigned By,Priority,Target Deadline,Status\n";
         list.forEach(r => {
-            csv += `"${r.client}","${r.description}","${r.priority}","${normalizeToDMY(r.deadline)}","${r.status || 'Pending'}"\n`;
+            csv += `"${r.client}","${r.description}","${r.origin}","${r.priority}","${normalizeToDMY(r.deadline)}","${r.status || 'Pending'}"\n`;
         });
-        downloadCsv(csv, `Assigned_Tasks_${new Date().toISOString().split('T')[0]}.csv`);
+        downloadCsv(csv, `Tasks_Register_${new Date().toISOString().split('T')[0]}.csv`);
     }
 
     function exportPendingGSTToExcel() {
