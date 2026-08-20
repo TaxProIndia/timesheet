@@ -162,7 +162,7 @@
             font-size: 12px;
             color: #4a5568;
         }
-        .filter-bar-single-line select, .filter-bar-single-line input[type="date"] {
+        .filter-bar-single-line select, .filter-bar-single-line input[type="date"], .filter-bar-single-line input[type="text"] {
             padding: 8px 10px;
             font-size: 13px !important;
             border: 1px solid #cbd5e1;
@@ -188,7 +188,6 @@
         th { background-color: #f7fafc; color: #2d3748; font-weight: 600; }
         .status-msg { margin-top: 12px; font-weight: bold; text-align: center; font-size: 14px; }
 
-        /* Mobile Mobile Card View Container for Tasks */
         .mobile-task-cards { display: none; flex-direction: column; gap: 12px; margin-top: 12px; }
         .task-card {
             background: #ffffff;
@@ -204,9 +203,7 @@
         .task-card-client { font-size: 15px; font-weight: 700; color: #1a365d; }
         .task-card-desc { font-size: 13px; color: #4a5568; line-height: 1.4; }
         .task-card-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px; }
-        .task-badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 12px; border: 1px solid transparent; }
         
-        /* Floating Action Button (FAB) for Mobile Quick Task Add */
         .mobile-fab-add {
             display: none;
             position: fixed;
@@ -492,21 +489,27 @@
                 </button>
             </div>
 
+            <!-- CASCADING TASK FILTERS BAR -->
             <div class="filter-bar-single-line">
                 <label for="taskOriginFilter">Source:</label>
-                <select id="taskOriginFilter" onchange="renderAssignedTasksTable();">
+                <select id="taskOriginFilter" onchange="updateTaskDetailsDropdownOptions(); renderAssignedTasksTable();">
                     <option value="ALL">All Sources</option>
                     <option value="Assigned Task">Assigned</option>
                     <option value="Own Task">Own Tasks</option>
                 </select>
 
                 <label for="taskClientFilter">Client:</label>
-                <select id="taskClientFilter" onchange="renderAssignedTasksTable();">
+                <select id="taskClientFilter" onchange="updateTaskDetailsDropdownOptions(); renderAssignedTasksTable();">
                     <option value="ALL">All Clients</option>
                 </select>
 
+                <label for="taskDetailsFilter">Task Details:</label>
+                <select id="taskDetailsFilter" onchange="renderAssignedTasksTable();">
+                    <option value="ALL">All Task Details</option>
+                </select>
+
                 <label for="taskDeadlineFilter">Deadline:</label>
-                <select id="taskDeadlineFilter" onchange="toggleCustomDateInputs(); renderAssignedTasksTable();">
+                <select id="taskDeadlineFilter" onchange="toggleCustomDateInputs(); updateTaskDetailsDropdownOptions(); renderAssignedTasksTable();">
                     <option value="ALL">All Deadlines</option>
                     <option value="TODAY">Today</option>
                     <option value="TOMORROW">Tomorrow</option>
@@ -516,13 +519,13 @@
                 </select>
 
                 <div id="customDateRangeContainer" style="display:none; align-items:center; gap:4px;">
-                    <input type="date" id="taskStartDateFilter" onchange="renderAssignedTasksTable();">
+                    <input type="date" id="taskStartDateFilter" onchange="updateTaskDetailsDropdownOptions(); renderAssignedTasksTable();">
                     <span style="font-size:11px; font-weight:600; color:#4a5568;">to</span>
-                    <input type="date" id="taskEndDateFilter" onchange="renderAssignedTasksTable();">
+                    <input type="date" id="taskEndDateFilter" onchange="updateTaskDetailsDropdownOptions(); renderAssignedTasksTable();">
                 </div>
 
                 <label for="taskStatusFilter">Status:</label>
-                <select id="taskStatusFilter" onchange="renderAssignedTasksTable();">
+                <select id="taskStatusFilter" onchange="updateTaskDetailsDropdownOptions(); renderAssignedTasksTable();">
                     <option value="ALL">All Status</option>
                     <option value="Pending">Pending Only</option>
                     <option value="Fulfilled">Fulfilled Only</option>
@@ -997,6 +1000,21 @@
             <h3>📌 File Return Entry</h3>
             <button type="button" class="modal-close" onclick="closeGstModal()">&times;</button>
         </div>
+
+        <div style="background-color: #0f2744; border: 2px solid #3182ce; padding: 12px 16px; border-radius: 8px; text-align: center; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+            <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <span style="font-size: 11px; text-transform: uppercase; color: #90cdf4; font-weight: 800; display: block; letter-spacing: 0.5px;">RETURN TYPE</span>
+                    <span id="modalDisplayReturnType" style="font-size: 22px; font-weight: 900; color: #f6ad55; text-shadow: 0 1px 3px rgba(0,0,0,0.6); display: inline-block; margin-top: 2px;">--</span>
+                </div>
+                <div style="border-left: 2px solid #2b4c7e; height: 32px; margin: 0 10px;"></div>
+                <div>
+                    <span style="font-size: 11px; text-transform: uppercase; color: #90cdf4; font-weight: 800; display: block; letter-spacing: 0.5px;">FILING PERIOD</span>
+                    <span id="modalDisplayPeriod" style="font-size: 22px; font-weight: 900; color: #38bdf8; text-shadow: 0 1px 3px rgba(0,0,0,0.6); display: inline-block; margin-top: 2px;">--</span>
+                </div>
+            </div>
+        </div>
+
         <form id="gstPunchForm">
             <input type="hidden" id="gstTargetRowIndex">
             <div class="row">
@@ -1015,10 +1033,11 @@
                     <label>Filing Action Status</label>
                     <select id="gstFilingStatusSelect" onchange="toggleArnRequirement();">
                         <option value="Filed">Filed Return</option>
+                        <option value="Challan Shared">Challan Shared</option>
                         <option value="Not Applicable">Not Applicable (N/A)</option>
                     </select>
                 </div>
-                <div class="field">
+                <div class="field" id="gstFilingDateFieldGroup">
                     <label>Filing Date</label>
                     <input type="date" id="gstFilingDate" required>
                 </div>
@@ -1057,8 +1076,6 @@
                         <select id="gstTaxType">
                             <option value="Payable">Payable</option>
                             <option value="Carry Forward">Carry Forward</option>
-                            <option value="Challan Shared">Challan Shared</option>
-                            <option value="N/A">N/A</option>
                         </select>
                     </div>
                 </div>
@@ -1067,6 +1084,22 @@
             <button type="button" class="action-submit" onclick="submitGstFiling()">✓ Submit Filing Punch</button>
             <div id="gstSubmitStatus" class="status-msg"></div>
         </form>
+    </div>
+</div>
+
+<!-- NOT APPLICABLE CONFIRMATION MODAL -->
+<div id="naConfirmModalOverlay" class="modal-overlay" style="z-index: 10001;">
+    <div class="modal-content" style="max-width: 420px; text-align: center; border: 2px solid #ed8936;">
+        <div style="font-size: 38px; margin-bottom: 8px;">⚠️</div>
+        <h3 style="margin: 0 0 10px 0; color: #c05621;">Confirm 'Not Applicable'</h3>
+        <p style="font-size: 13px; color: #4a5568; margin-bottom: 20px; line-height: 1.5;">
+            Are you sure you want to mark this return as <strong>Not Applicable (N/A)</strong>?<br><br>
+            This action will move the client out of the <strong>Pending Queue</strong> without requiring an ARN.
+        </p>
+        <div style="display: flex; gap: 10px;">
+            <button type="button" style="background-color: #cbd5e1; color: #2d3748; border: none; padding: 10px; border-radius: 6px; flex: 1; font-weight: bold; cursor: pointer;" onclick="closeNaConfirmModal()">Cancel</button>
+            <button type="button" style="background-color: #dd6b20; color: white; border: none; padding: 10px; border-radius: 6px; flex: 1; font-weight: bold; cursor: pointer;" onclick="proceedWithNaSubmission()">Yes, Mark as N/A</button>
+        </div>
     </div>
 </div>
 
@@ -1095,7 +1128,6 @@
 </div>
 
 <script>
-    // Register PWA Service Worker Inline
     if ('serviceWorker' in navigator) {
         const swBlob = new Blob([`
             self.addEventListener('install', e => self.skipWaiting());
@@ -1313,11 +1345,9 @@
         const returnType = document.getElementById('gstReturnType').value;
         const periodSelect = document.getElementById('gstMonth');
         const periodLabel = document.getElementById('gstPeriodLabel');
-        const gstr3bBox = document.getElementById('gstr3bSpecificFields');
         const freqContainer = document.getElementById('freqFilterContainer');
 
         const prevSelectedVal = periodSelect.value;
-        gstr3bBox.style.display = (returnType === "GSTR3B") ? "block" : "none";
         periodSelect.innerHTML = "";
 
         if (returnType === "GSTR9" || returnType === "GSTR9C") {
@@ -1345,19 +1375,36 @@
                 periodSelect.appendChild(opt);
             });
         }
+
+        toggleArnRequirement();
     }
 
     function toggleArnRequirement() {
+        const returnType = document.getElementById('gstReturnType').value;
         const filingStatus = document.getElementById('gstFilingStatusSelect').value;
         const arnRow = document.getElementById('arnInputRow');
         const arnInput = document.getElementById('gstArnNumber');
-        
-        if (filingStatus === "Not Applicable") {
-            arnRow.style.display = "none";
-            arnInput.required = false;
+        const filingDateFieldGroup = document.getElementById('gstFilingDateFieldGroup');
+        const gstr3bBox = document.getElementById('gstr3bSpecificFields');
+
+        if (filingStatus === "Challan Shared") {
+            if (filingDateFieldGroup) filingDateFieldGroup.style.display = "none";
         } else {
-            arnRow.style.display = "flex";
-            arnInput.required = true;
+            if (filingDateFieldGroup) filingDateFieldGroup.style.display = "block";
+        }
+
+        if (filingStatus === "Not Applicable" || filingStatus === "Challan Shared") {
+            if (arnRow) arnRow.style.display = "none";
+            if (arnInput) arnInput.required = false;
+        } else {
+            if (arnRow) arnRow.style.display = "flex";
+            if (arnInput) arnInput.required = true;
+        }
+
+        if (filingStatus === "Not Applicable") {
+            if (gstr3bBox) gstr3bBox.style.display = "none";
+        } else {
+            if (gstr3bBox) gstr3bBox.style.display = (returnType === "GSTR3B") ? "block" : "none";
         }
     }
 
@@ -1515,6 +1562,7 @@
                 const taskList = res.data || [];
                 cachedAssignmentsData = taskList; 
                 populateTaskClientFilter(taskList);
+                populateTaskDetailsFilter(taskList);
                 renderAssignedTasksTable();
             }
         }).catch(() => {});
@@ -1534,6 +1582,94 @@
         });
     }
 
+    function populateTaskDetailsFilter(taskList) {
+        updateTaskDetailsDropdownOptions();
+    }
+
+    // CASCADING TASK DETAILS DROPDOWN OPTIONS UPDATER
+    function updateTaskDetailsDropdownOptions() {
+        const originFilter = document.getElementById('taskOriginFilter') ? document.getElementById('taskOriginFilter').value : "ALL";
+        const clientFilter = document.getElementById('taskClientFilter') ? document.getElementById('taskClientFilter').value : "ALL";
+        const deadlineFilter = document.getElementById('taskDeadlineFilter') ? document.getElementById('taskDeadlineFilter').value : "ALL";
+        const statusFilter = document.getElementById('taskStatusFilter') ? document.getElementById('taskStatusFilter').value : "ALL";
+        const detailsSelect = document.getElementById('taskDetailsFilter');
+
+        if (!detailsSelect || !cachedAssignmentsData) return;
+
+        const currentSelectedVal = detailsSelect.value;
+
+        let subset = cachedAssignmentsData;
+
+        if (originFilter !== "ALL") {
+            subset = subset.filter(r => r.origin === originFilter);
+        }
+
+        if (clientFilter !== "ALL") {
+            subset = subset.filter(r => r.client === clientFilter);
+        }
+
+        if (deadlineFilter !== "ALL") {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+            const dayOfWeek = today.getDay();
+            const diffToMon = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            const thisWeekStart = new Date(today); thisWeekStart.setDate(today.getDate() + diffToMon);
+            const thisWeekEnd = new Date(thisWeekStart); thisWeekEnd.setDate(thisWeekStart.getDate() + 6);
+            const nextWeekStart = new Date(thisWeekStart); nextWeekStart.setDate(thisWeekStart.getDate() + 7);
+            const nextWeekEnd = new Date(nextWeekStart); nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
+
+            subset = subset.filter(row => {
+                const tDate = parseTaskDate(row.deadline);
+                if (!tDate) return false;
+                if (deadlineFilter === "TODAY") return tDate.getTime() === today.getTime();
+                if (deadlineFilter === "TOMORROW") return tDate.getTime() === tomorrow.getTime();
+                if (deadlineFilter === "THIS_WEEK") return tDate >= thisWeekStart && tDate <= thisWeekEnd;
+                if (deadlineFilter === "NEXT_WEEK") return tDate >= nextWeekStart && tDate <= nextWeekEnd;
+                if (deadlineFilter === "CUSTOM") {
+                    const startVal = document.getElementById('taskStartDateFilter').value;
+                    const endVal = document.getElementById('taskEndDateFilter').value;
+                    const sDate = startVal ? parseTaskDate(startVal) : null;
+                    const eDate = endVal ? parseTaskDate(endVal) : null;
+                    if (sDate && tDate < sDate) return false;
+                    if (eDate && tDate > eDate) return false;
+                    return true;
+                }
+                return true;
+            });
+        }
+
+        if (statusFilter === "Pending") {
+            subset = subset.filter(r => {
+                let st = (r.status || "").toLowerCase();
+                return !st.includes("fulfill") && !st.includes("done");
+            });
+        } else if (statusFilter === "Fulfilled") {
+            subset = subset.filter(r => {
+                let st = (r.status || "").toLowerCase();
+                return st.includes("fulfill") || st.includes("done");
+            });
+        }
+
+        const availableDetails = Array.from(new Set(subset.map(t => (t.description || "").trim()).filter(Boolean))).sort();
+
+        detailsSelect.innerHTML = '<option value="ALL">All Task Details</option>';
+        availableDetails.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d;
+            opt.innerText = d.length > 45 ? d.substring(0, 42) + '...' : d;
+            opt.title = d;
+            if (d === currentSelectedVal) {
+                opt.selected = true;
+            }
+            detailsSelect.appendChild(opt);
+        });
+
+        if (currentSelectedVal !== "ALL" && !availableDetails.includes(currentSelectedVal)) {
+            detailsSelect.value = "ALL";
+        }
+    }
+
     function renderAssignedTasksTable() {
         const table = document.getElementById('tasksTable');
         const tbody = table.querySelector('tbody');
@@ -1544,6 +1680,7 @@
         
         const originFilter = document.getElementById('taskOriginFilter') ? document.getElementById('taskOriginFilter').value : "ALL";
         const clientFilter = document.getElementById('taskClientFilter') ? document.getElementById('taskClientFilter').value : "ALL";
+        const detailsFilter = document.getElementById('taskDetailsFilter') ? document.getElementById('taskDetailsFilter').value : "ALL";
         const deadlineFilter = document.getElementById('taskDeadlineFilter') ? document.getElementById('taskDeadlineFilter').value : "ALL";
         const statusFilter = document.getElementById('taskStatusFilter') ? document.getElementById('taskStatusFilter').value : "ALL";
 
@@ -1569,6 +1706,11 @@
             step2 = step1.filter(row => row.client === clientFilter);
         }
 
+        let stepDetails = step2;
+        if (detailsFilter !== "ALL") {
+            stepDetails = step2.filter(row => (row.description || "").trim() === detailsFilter);
+        }
+
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         
@@ -1587,9 +1729,9 @@
         const nextWeekEnd = new Date(nextWeekStart);
         nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
 
-        let step3 = step2;
+        let step3 = stepDetails;
         if (deadlineFilter !== "ALL") {
-            step3 = step2.filter(row => {
+            step3 = stepDetails.filter(row => {
                 const tDate = parseTaskDate(row.deadline);
                 if (!tDate) return false;
                 
@@ -1675,12 +1817,10 @@
                 ? `<button type="button" style="background-color:#cbd5e1; color:#4a5568; border:none; padding:8px 12px; border-radius:6px; cursor:not-allowed; font-size:12px; font-weight:600;" disabled>✓ Marked Done</button>`
                 : `<button type="button" style="background-color:#28a745; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600;" onclick="markTaskFulfilled(${row.rowIndex}, '${row.origin}', this)">✓ Mark Done</button>`;
 
-            // Render Desktop Table Row
             const tr = document.createElement('tr');
             tr.innerHTML = `<td><strong>${row.client}</strong></td><td>${row.description}</td><td>${originBadge}</td><td><span>${row.priority}</span></td><td>${cleanDeadline}</td><td>${statusBadge}</td><td>${actionCellHtml}</td>`;
             tbody.appendChild(tr);
 
-            // Render Mobile Stacked Card
             const card = document.createElement('div');
             card.className = "task-card";
             card.innerHTML = `
@@ -2060,6 +2200,12 @@
     }
 
     function openGstModal(rowIndex, gstin, clientName) {
+        const returnType = document.getElementById('gstReturnType').value;
+        const periodVal = document.getElementById('gstMonth').value;
+
+        document.getElementById('modalDisplayReturnType').innerText = returnType;
+        document.getElementById('modalDisplayPeriod').innerText = periodVal;
+
         document.getElementById('gstTargetRowIndex').value = rowIndex;
         document.getElementById('gstinField').value = gstin;
         document.getElementById('gstClientNameField').value = clientName;
@@ -2068,7 +2214,6 @@
         document.getElementById('gstSubmitStatus').innerText = "";
         
         toggleArnRequirement();
-        toggleGstPeriodOptions();
         document.getElementById('gstModalOverlay').style.display = "flex";
     }
 
@@ -2077,6 +2222,26 @@
     }
 
     function submitGstFiling() {
+        const filingStatus = document.getElementById('gstFilingStatusSelect').value;
+
+        if (filingStatus === "Not Applicable") {
+            document.getElementById('naConfirmModalOverlay').style.display = "flex";
+            return;
+        }
+
+        processGstFilingSubmit();
+    }
+
+    function closeNaConfirmModal() {
+        document.getElementById('naConfirmModalOverlay').style.display = "none";
+    }
+
+    function proceedWithNaSubmission() {
+        closeNaConfirmModal();
+        processGstFilingSubmit();
+    }
+
+    function processGstFilingSubmit() {
         const returnType = document.getElementById('gstReturnType').value;
         const periodVal = document.getElementById('gstMonth').value;
         const rowIndex = document.getElementById('gstTargetRowIndex').value;
@@ -2097,6 +2262,13 @@
         statusDiv.style.color = "orange";
         statusDiv.innerText = "Updating return status...";
 
+        let effectiveTaxType = document.getElementById('gstTaxType').value;
+        if (filingStatus === "Challan Shared") {
+            effectiveTaxType = "Challan Shared";
+        } else if (filingStatus === "Not Applicable") {
+            effectiveTaxType = "N/A";
+        }
+
         const params = new URLSearchParams({
             action: "submitFilingData",
             returnType: returnType,
@@ -2107,7 +2279,7 @@
             arnNumber: arnNumber,
             recoUpdated: document.getElementById('gstRecoUpdated').value,
             mismatchShared: document.getElementById('gstMismatchShared').value,
-            taxType: document.getElementById('gstTaxType').value
+            taxType: effectiveTaxType
         });
 
         fetch(`${WEB_APP_URL}?${params.toString()}`)
@@ -2970,6 +3142,7 @@
         if (activeTab && activeTab.id === 'assignments-page') {
             const originFilter = document.getElementById('taskOriginFilter').value;
             const clientFilter = document.getElementById('taskClientFilter').value;
+            const detailsFilter = document.getElementById('taskDetailsFilter') ? document.getElementById('taskDetailsFilter').value : "ALL";
             const deadlineFilter = document.getElementById('taskDeadlineFilter').value;
             const statusFilter = document.getElementById('taskStatusFilter').value;
             
@@ -2980,7 +3153,7 @@
                 deadlineText = `Custom (${s || 'Start'} to ${e || 'End'})`;
             }
 
-            const filterDesc = `Source: ${originFilter} | Client: ${clientFilter} | Deadline: ${deadlineText} | Status: ${statusFilter}`;
+            const filterDesc = `Source: ${originFilter} | Client: ${clientFilter} | Details: ${detailsFilter} | Deadline: ${deadlineText} | Status: ${statusFilter}`;
             const headerHtml = buildPdfHeaderHTML("Tasks Register Report", filterDesc);
             const tableElement = document.getElementById('tasksTable');
             
@@ -3072,6 +3245,7 @@
         if (!cachedAssignmentsData || cachedAssignmentsData.length === 0) return;
         const originFilter = document.getElementById('taskOriginFilter') ? document.getElementById('taskOriginFilter').value : "ALL";
         const clientFilter = document.getElementById('taskClientFilter') ? document.getElementById('taskClientFilter').value : "ALL";
+        const detailsFilter = document.getElementById('taskDetailsFilter') ? document.getElementById('taskDetailsFilter').value : "ALL";
         const deadlineFilter = document.getElementById('taskDeadlineFilter') ? document.getElementById('taskDeadlineFilter').value : "ALL";
         const statusFilter = document.getElementById('taskStatusFilter') ? document.getElementById('taskStatusFilter').value : "ALL";
         
@@ -3082,6 +3256,10 @@
 
         if (clientFilter !== "ALL") {
             list = list.filter(r => r.client === clientFilter);
+        }
+
+        if (detailsFilter !== "ALL") {
+            list = list.filter(r => (r.description || "").trim() === detailsFilter);
         }
 
         if (deadlineFilter !== "ALL") {
