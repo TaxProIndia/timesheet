@@ -132,6 +132,17 @@
             min-height: 44px;
         }
 
+        /* CHECKBOX SPECIFIC OVERRIDE FIX */
+        input[type="checkbox"], input[type="radio"] {
+            width: 18px !important;
+            height: 18px !important;
+            min-height: 18px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            cursor: pointer;
+            accent-color: #1a365d;
+        }
+
         .secure-auth-card { background-color: #edf2f7; border: 1px solid #cbd5e1; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
         
         button.action-submit { background-color: #1a365d; color: white; border: none; padding: 14px 20px; font-size: 15px; font-weight: 600; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 15px; min-height: 48px; }
@@ -248,10 +259,40 @@
             padding: 12px;
             overflow-y: auto;
         }
-        .modal-content { background: white; border-radius: 12px; width: 100%; max-width: 600px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: white; border-radius: 12px; width: 100%; max-width: 620px; padding: 22px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px; }
         .modal-header h3 { margin: 0; color: #1a365d; font-size: 18px; }
         .modal-close { background: none; border: none; font-size: 28px; font-weight: bold; cursor: pointer; color: #a0aec0; }
+
+        /* BULK CLIENT SELECTOR UI ENHANCEMENTS */
+        .client-select-card {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #f8fafc;
+            padding: 10px;
+        }
+        .client-search-input {
+            width: 100% !important;
+            padding: 8px 12px !important;
+            font-size: 13px !important;
+            min-height: 36px !important;
+            margin-bottom: 8px;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            background-color: #ffffff !important;
+        }
+        .client-item-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+        .client-item-row:hover {
+            background-color: #edf2f7;
+        }
 
         .audit-group-title { font-size: 13px; font-weight: 700; color: #1a365d; background-color: #edf2f7; padding: 10px 12px; border-radius: 5px; margin: 14px 0 8px 0; border-left: 5px solid #2b6cb0; display: flex; justify-content: space-between; align-items: center; }
         .audit-group-badge { font-size: 11px; font-weight: 700; color: #2b6cb0; background: #ebf8ff; border: 1px solid #bee3f8; padding: 3px 8px; border-radius: 12px; }
@@ -437,7 +478,7 @@
                     </div>
                 </div>
 
-                <label>Remarks</label>
+                <label>Remarks <small style="color:#718096; font-weight:normal;">(Press Ctrl+Enter to quick-submit)</small></label>
                 <textarea id="description" rows="3" placeholder="Provide details regarding work completed..." required></textarea>
 
                 <div class="row">
@@ -484,12 +525,11 @@
         <div id="assignments-page" class="portal-page">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h2 style="margin:0; border:none; padding:0;">🎯 Tasks Register</h2>
-                <button type="button" style="background-color:#16a34a; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-weight:700; font-size:13px; min-height:42px; box-shadow:0 2px 4px rgba(0,0,0,0.1);" onclick="openAddOwnTaskModal()">
-                    <span style="color:#ffffff; font-weight:900; font-size:16px; margin-right:4px;">+</span> Add Own Task
+                <button type="button" style="background-color:#16a34a; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-weight:700; font-size:13px; min-height:42px; box-shadow:0 2px 4px rgba(0,0,0,0.1);" onclick="openAddOwnTaskModal()" title="Shortcut: Alt + N">
+                    <span style="color:#ffffff; font-weight:900; font-size:16px; margin-right:4px;">+</span> Add Own Task <span style="font-size:10px; opacity:0.85; margin-left:4px;">(Alt+N)</span>
                 </button>
             </div>
 
-            <!-- CASCADING TASK FILTERS BAR -->
             <div class="filter-bar-single-line">
                 <label for="taskOriginFilter">Source:</label>
                 <select id="taskOriginFilter" onchange="updateTaskDetailsDropdownOptions(); renderAssignedTasksTable();">
@@ -956,20 +996,35 @@
 
 <div id="gstPrintArea"></div>
 
-<!-- ADD OWN TASK MODAL WINDOW -->
+<!-- ADD OWN TASK MODAL WINDOW (POLISHED UI WITH SEARCH & BULK SELECTION) -->
 <div id="userTaskModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeAddOwnTaskModal();">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><span style="color:#16a34a; font-weight:900; font-size:20px; margin-right:4px;">+</span> Create Personal Task</h3>
+            <h3><span style="color:#16a34a; font-weight:900; font-size:20px; margin-right:4px;">+</span> Create Personal / Bulk Task</h3>
             <button type="button" class="modal-close" onclick="closeAddOwnTaskModal()">&times;</button>
         </div>
         <form id="userTaskForm">
-            <div class="field">
-                <label>Client Name</label>
-                <select id="userTaskClientSelect" required><option value="">-- Select Client --</option></select>
+            <div class="field" style="margin-bottom:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <label style="margin:0; font-size:13px; font-weight:700; color:#1a365d;">
+                        Select Client(s) 
+                        <span id="clientSelectedCountBadge" style="font-size:11px; font-weight:600; color:#2b6cb0; background:#ebf8ff; border:1px solid #bee3f8; padding:2px 8px; border-radius:10px; margin-left:6px;">0 Selected</span>
+                    </label>
+                    <label style="font-size:12px; font-weight:700; cursor:pointer; color:#2b6cb0; display:flex; align-items:center; gap:5px;">
+                        <input type="checkbox" id="selectAllClientsCb" onchange="toggleSelectAllClients(this.checked)"> Select All
+                    </label>
+                </div>
+                
+                <div class="client-select-card">
+                    <input type="text" id="clientSearchInput" class="client-search-input" placeholder="🔍 Quick search client name..." oninput="filterClientCheckboxes(this.value)">
+                    <div id="userTaskClientCheckboxes" style="max-height: 160px; overflow-y: auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px;">
+                        <!-- Checkboxes populated dynamically -->
+                    </div>
+                </div>
             </div>
+            
             <div class="field">
-                <label>Task Details / Description</label>
+                <label>Task Details / Description <small style="color:#718096; font-weight:normal;">(Press Ctrl+Enter to quick-submit)</small></label>
                 <textarea id="userTaskDetails" rows="3" placeholder="Enter task instructions or details..." required></textarea>
             </div>
             <div class="row">
@@ -987,7 +1042,7 @@
                 </div>
             </div>
 
-            <button type="button" class="action-submit" onclick="submitUserTask()">✓ Add Task to My List</button>
+            <button type="button" class="action-submit" onclick="submitUserTask()">✓ Add Task to My List (Ctrl+Enter)</button>
             <div id="userTaskSubmitStatus" class="status-msg"></div>
         </form>
     </div>
@@ -1215,6 +1270,32 @@
         if (WEB_APP_URL !== "PASTE_YOUR_WEB_APP_URL_HERE") {
             loadInitializationData();
         }
+
+        // KEYBOARD SHORTCUT LISTENERS
+        document.addEventListener('keydown', function(e) {
+            // Shortcut 1: Alt + N to open "Create Personal Task" modal
+            if (e.altKey && (e.key === 'n' || e.key === 'N')) {
+                e.preventDefault();
+                openAddOwnTaskModal();
+            }
+
+            // Shortcut 2: Ctrl + Enter or Cmd + Enter to quick-submit active forms/modals
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                const userModal = document.getElementById('userTaskModalOverlay');
+                const gstModal = document.getElementById('gstModalOverlay');
+                
+                if (userModal && userModal.style.display === 'flex') {
+                    e.preventDefault();
+                    submitUserTask();
+                } else if (gstModal && gstModal.style.display === 'flex') {
+                    e.preventDefault();
+                    submitGstFiling();
+                } else if (document.activeElement && (document.activeElement.id === 'description' || document.activeElement.form?.id === 'punchForm')) {
+                    e.preventDefault();
+                    submitPunch();
+                }
+            }
+        });
     };
 
     function updateClocks() {
@@ -1436,7 +1517,6 @@
     function loadInitializationData() {
         const empDropdown = document.getElementById('globalEmployeeName');
         const clientDropdown = document.getElementById('clientName');
-        const userClientDropdown = document.getElementById('userTaskClientSelect');
         const taskDropdown = document.getElementById('taskCategory');
 
         fetch(`${WEB_APP_URL}?action=fetchInitializationData`)
@@ -1455,15 +1535,10 @@
             });
 
             clientDropdown.innerHTML = '<option value="">-- Select Client --</option>';
-            userClientDropdown.innerHTML = '<option value="">-- Select Client --</option>';
             clients.forEach(client => {
                 const opt = document.createElement('option');
                 opt.value = client; opt.innerText = client;
                 clientDropdown.appendChild(opt);
-
-                const opt2 = document.createElement('option');
-                opt2.value = client; opt2.innerText = client;
-                userClientDropdown.appendChild(opt2);
             });
 
             taskDropdown.innerHTML = '<option value="">-- Select Task --</option>';
@@ -1475,6 +1550,65 @@
         }).catch(() => {});
     }
 
+    function populateBulkClientCheckboxes() {
+        const container = document.getElementById('userTaskClientCheckboxes');
+        if (!container) return;
+        container.innerHTML = "";
+        document.getElementById('selectAllClientsCb').checked = false;
+        if (document.getElementById('clientSearchInput')) document.getElementById('clientSearchInput').value = "";
+
+        const clientSelect = document.getElementById('clientName');
+        const options = Array.from(clientSelect.options).filter(opt => opt.value !== "");
+
+        if (options.length === 0) {
+            container.innerHTML = `<div style="color:gray; font-size:12px; text-align:center; padding:10px;">No clients loaded</div>`;
+            updateClientSelectedCount();
+            return;
+        }
+
+        options.forEach((opt, idx) => {
+            const div = document.createElement('div');
+            div.className = "client-item-row";
+            div.setAttribute("data-client-name", opt.value.toLowerCase());
+            div.innerHTML = `
+                <input type="checkbox" class="client-bulk-cb" id="bulk_cb_${idx}" value="${opt.value.replace(/"/g, '&quot;')}" onchange="updateClientSelectedCount()">
+                <label for="bulk_cb_${idx}" style="margin:0; font-weight:600; font-size:13px; color:#2d3748; cursor:pointer; flex:1;">${opt.value}</label>
+            `;
+            container.appendChild(div);
+        });
+        updateClientSelectedCount();
+    }
+
+    function filterClientCheckboxes(searchText) {
+        const query = searchText.toLowerCase().trim();
+        const rows = document.querySelectorAll('#userTaskClientCheckboxes .client-item-row');
+        rows.forEach(row => {
+            const name = row.getAttribute('data-client-name') || '';
+            if (name.includes(query)) {
+                row.style.display = "flex";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    function toggleSelectAllClients(isChecked) {
+        const visibleRows = document.querySelectorAll('#userTaskClientCheckboxes .client-item-row');
+        visibleRows.forEach(row => {
+            if (row.style.display !== 'none') {
+                const cb = row.querySelector('.client-bulk-cb');
+                if (cb) cb.checked = isChecked;
+            }
+        });
+        updateClientSelectedCount();
+    }
+
+    function updateClientSelectedCount() {
+        const count = document.querySelectorAll('.client-bulk-cb:checked').length;
+        const badge = document.getElementById('clientSelectedCountBadge');
+        if (badge) badge.innerText = `${count} Selected`;
+    }
+
     function openAddOwnTaskModal() {
         const creds = getCredentials();
         if (!creds.name || !creds.pin || creds.pin.length < 4) {
@@ -1483,7 +1617,12 @@
         }
         document.getElementById('userTaskDetails').value = "";
         document.getElementById('userTaskSubmitStatus').innerText = "";
+        populateBulkClientCheckboxes();
         document.getElementById('userTaskModalOverlay').style.display = "flex";
+        
+        setTimeout(() => {
+            document.getElementById('userTaskDetails').focus();
+        }, 100);
     }
 
     function closeAddOwnTaskModal() {
@@ -1492,48 +1631,52 @@
 
     function submitUserTask() {
         const creds = getCredentials();
-        const clientName = document.getElementById('userTaskClientSelect').value;
+        const checkedBoxes = Array.from(document.querySelectorAll('.client-bulk-cb:checked'));
+        const selectedClients = checkedBoxes.map(cb => cb.value);
         const taskDetails = document.getElementById('userTaskDetails').value.trim();
         const priority = document.getElementById('userTaskPriority').value;
         const deadline = document.getElementById('userTaskDeadline').value;
         const statusDiv = document.getElementById('userTaskSubmitStatus');
 
-        if (!clientName || !taskDetails || !deadline) {
+        if (selectedClients.length === 0) {
             statusDiv.style.color = "red";
-            statusDiv.innerText = "Please fill in all task details.";
+            statusDiv.innerText = "Please select at least one client.";
+            return;
+        }
+        if (!taskDetails || !deadline) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Please enter task details and target deadline.";
             return;
         }
 
         statusDiv.style.color = "orange";
-        statusDiv.innerText = "Creating personal task...";
+        statusDiv.innerText = `Creating tasks for ${selectedClients.length} client(s)...`;
 
-        const params = new URLSearchParams({
-            action: "addUserTask",
-            employeeName: creds.name,
-            pin: creds.pin,
-            clientName: clientName,
-            taskDetails: taskDetails,
-            priority: priority,
-            deadline: deadline
+        const requests = selectedClients.map(clientName => {
+            const params = new URLSearchParams({
+                action: "addUserTask",
+                employeeName: creds.name,
+                pin: creds.pin,
+                clientName: clientName,
+                taskDetails: taskDetails,
+                priority: priority,
+                deadline: deadline
+            });
+            return fetch(`${WEB_APP_URL}?${params.toString()}`).then(res => res.json());
         });
 
-        fetch(`${WEB_APP_URL}?${params.toString()}`)
-        .then(res => res.json())
-        .then(res => {
-            if (res.status === "SUCCESS" || res.success) {
-                statusDiv.style.color = "green";
-                statusDiv.innerText = "✓ Task created successfully!";
-                setTimeout(() => {
-                    closeAddOwnTaskModal();
-                    fetchAssignedTasks();
-                }, 800);
-            } else {
-                statusDiv.style.color = "red";
-                statusDiv.innerText = "Error: " + (res.message || "Failed to create task.");
-            }
-        }).catch(() => {
+        Promise.all(requests)
+        .then(results => {
+            statusDiv.style.color = "green";
+            statusDiv.innerText = `✓ Successfully created tasks for ${selectedClients.length} client(s)!`;
+            setTimeout(() => {
+                closeAddOwnTaskModal();
+                fetchAssignedTasks();
+            }, 800);
+        })
+        .catch(() => {
             statusDiv.style.color = "red";
-            statusDiv.innerText = "Network transmission error.";
+            statusDiv.innerText = "Transmission error while creating tasks.";
         });
     }
 
@@ -1586,7 +1729,6 @@
         updateTaskDetailsDropdownOptions();
     }
 
-    // CASCADING TASK DETAILS DROPDOWN OPTIONS UPDATER
     function updateTaskDetailsDropdownOptions() {
         const originFilter = document.getElementById('taskOriginFilter') ? document.getElementById('taskOriginFilter').value : "ALL";
         const clientFilter = document.getElementById('taskClientFilter') ? document.getElementById('taskClientFilter').value : "ALL";
@@ -3402,7 +3544,7 @@
                     let st = (item.status || "").toLowerCase();
                     return st.indexOf("n/a") === -1 && st.indexOf("not applicable") === -1;
                 });
-            } else if (filedFilter === "N/A") {
+            } else if (type === 'filed' && filedFilter === "N/A") {
                 filteredList = filteredList.filter(item => {
                     let st = (item.status || "").toLowerCase();
                     return st.indexOf("n/a") !== -1 || st.indexOf("not applicable") !== -1;
