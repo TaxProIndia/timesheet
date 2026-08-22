@@ -10,6 +10,11 @@
     <meta name="theme-color" content="#1a365d">
     <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlRheFBybyAmIEFzc29jaWF0ZXMgRW50ZXJwcmlzZSBTdWl0ZSIsCiAgInNob3J0X25hbWUiOiAiVGF4UHJvIiwKICAic3RhcnRfdXJsIjogIi4vIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMWEzNjVkIiwKICAidGhlbWVfY29sb3IiOiAiIzFhMzY1ZCIKZX0=">
     <title>TaxPro & Associates - Enterprise Suite</title>
+    
+    <!-- Tom Select Searchable Dropdown Engine -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
     <style>
         * {
             -webkit-tap-highlight-color: transparent;
@@ -29,6 +34,7 @@
             margin: 0; 
             padding: 20px 20px calc(90px + env(safe-area-inset-bottom)) 20px; 
             color: #333; 
+            font-size: 14px;
             min-height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
@@ -36,23 +42,23 @@
         }
 
         .container { 
-            max-width: 1000px; 
+            max-width: 1120px; 
             background: white; 
-            padding: 25px; 
+            padding: 26px; 
             margin: 0 auto 20px auto; 
             border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            box-shadow: 0 4px 18px rgba(0,0,0,0.12); 
         }
         
         .brand-header { 
             text-align: center; 
-            margin-bottom: 20px; 
+            margin-bottom: 22px; 
             background-color: #1a365d; 
             color: white; 
-            padding: calc(15px + env(safe-area-inset-top)) 20px 15px 20px; 
-            border-radius: 8px; 
+            padding: calc(16px + env(safe-area-inset-top)) 20px 16px 20px; 
+            border-radius: 10px; 
         }
-        .firm-logo { max-width: 130px; height: auto; margin-bottom: 8px; display: inline-block; }
+        .firm-logo { max-width: 135px; height: auto; margin-bottom: 8px; display: inline-block; }
         
         .brand-header h1 { 
             margin: 0; 
@@ -79,21 +85,21 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             flex-wrap: wrap;
             background-color: #0f2744;
             color: #e2e8f0;
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 9px 14px;
+            border-radius: 8px;
             font-size: 12px;
             font-weight: 600;
             border: 1px solid #2b4c7e;
         }
-        .clock-item { display: flex; align-items: center; gap: 4px; }
+        .clock-item { display: flex; align-items: center; gap: 5px; }
         .clock-label { color: #90cdf4; font-weight: bold; }
         .clock-time { color: #ffffff; letter-spacing: 0.5px; font-family: monospace; font-size: 12px; }
 
-        .module-nav { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 3px solid #cbd5e1; padding-bottom: 10px; }
+        .module-nav { display: flex; gap: 10px; margin-bottom: 22px; border-bottom: 3px solid #cbd5e1; padding-bottom: 10px; }
         .module-btn { 
             background-color: #edf2f7; 
             color: #1a365d; 
@@ -101,7 +107,7 @@
             padding: 12px 10px; 
             font-size: 13px; 
             font-weight: 700; 
-            border-radius: 6px; 
+            border-radius: 8px; 
             cursor: pointer; 
             flex: 1; 
             transition: all 0.2s; 
@@ -109,8 +115,8 @@
         }
         .module-btn.active { background-color: #1a365d; color: white; border-color: #1a365d; box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
 
-        .navigation-tabs { display: flex; gap: 6px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
-        .tab-btn { background-color: #e2e8f0; color: #4a5568; border: none; padding: 10px 12px; font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; flex: 1; transition: all 0.2s; min-height: 44px; }
+        .navigation-tabs { display: flex; gap: 8px; margin-bottom: 22px; justify-content: center; flex-wrap: wrap; }
+        .tab-btn { background-color: #e2e8f0; color: #4a5568; border: none; padding: 11px 14px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; flex: 1; transition: all 0.2s; min-height: 44px; }
         .tab-btn.active { background-color: #2c5282; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
 
         .portal-module { display: none; }
@@ -118,21 +124,37 @@
         .portal-page { display: none; }
         .portal-page.active { display: block; }
 
-        h2 { color: #1a365d; margin-top: 0; font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
-        label { display: block; margin: 12px 0 5px 0; font-weight: 600; font-size: 13px; color: #4a5568; }
+        h2 { color: #1a365d; margin-top: 0; font-size: 19px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+        label { display: block; margin: 10px 0 5px 0; font-weight: 600; font-size: 12px; color: #4a5568; }
         
         input, select, textarea { 
             width: 100%; 
-            padding: 12px 14px; 
+            padding: 10px 12px; 
             border: 1px solid #cbd5e1; 
             border-radius: 8px; 
             box-sizing: border-box; 
-            font-size: 16px !important;
+            font-size: 14px !important;
             background-color: #fff;
-            min-height: 44px;
+            min-height: 42px;
         }
 
-        /* CHECKBOX SPECIFIC OVERRIDE FIX */
+        /* Searchable Dropdown Overrides */
+        .ts-control {
+            border-radius: 8px !important;
+            padding: 10px 12px !important;
+            border: 1px solid #cbd5e1 !important;
+            font-size: 14px !important;
+            min-height: 42px !important;
+            box-shadow: none !important;
+        }
+        .ts-wrapper.single .ts-control {
+            background-color: #ffffff !important;
+        }
+        .ts-dropdown .active {
+            background-color: #1a365d !important;
+            color: #ffffff !important;
+        }
+
         input[type="checkbox"], input[type="radio"] {
             width: 18px !important;
             height: 18px !important;
@@ -143,15 +165,15 @@
             accent-color: #1a365d;
         }
 
-        .secure-auth-card { background-color: #edf2f7; border: 1px solid #cbd5e1; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .secure-auth-card { background-color: #edf2f7; border: 1px solid #cbd5e1; padding: 16px; border-radius: 10px; margin-bottom: 20px; }
         
-        button.action-submit { background-color: #1a365d; color: white; border: none; padding: 14px 20px; font-size: 15px; font-weight: 600; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 15px; min-height: 48px; }
+        button.action-submit { background-color: #1a365d; color: white; border: none; padding: 12px 20px; font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 14px; min-height: 46px; }
         button.action-submit:hover { background-color: #2c5282; }
-        button.print-btn { background-color: #4a5568; color: white; border: none; padding: 12px 15px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; flex: 1; min-height: 44px; }
-        button.download-btn { background-color: #107c41; color: white; border: none; padding: 12px 15px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; flex: 1; min-height: 44px; }
-        .button-group-row { display: flex; gap: 10px; margin-top: 15px; }
+        button.print-btn { background-color: #4a5568; color: white; border: none; padding: 11px 16px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; flex: 1; min-height: 44px; }
+        button.download-btn { background-color: #107c41; color: white; border: none; padding: 11px 16px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; flex: 1; min-height: 44px; }
+        .button-group-row { display: flex; gap: 12px; margin-top: 16px; }
         
-        .row { display: flex; gap: 15px; }
+        .row { display: flex; gap: 14px; }
         .row .field { flex: 1; }
         
         .filter-bar-single-line {
@@ -160,11 +182,11 @@
             gap: 10px;
             flex-wrap: nowrap;
             overflow-x: auto;
-            padding: 8px;
+            padding: 10px 12px;
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             -webkit-overflow-scrolling: touch;
         }
         .filter-bar-single-line label {
@@ -182,7 +204,7 @@
             white-space: nowrap;
             width: auto;
             min-width: 120px;
-            min-height: 40px;
+            min-height: 38px;
         }
 
         .table-responsive-wrapper {
@@ -190,14 +212,14 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             margin-top: 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 1px solid #cbd5e1;
         }
 
-        table { width: 100%; border-collapse: collapse; background: white; font-size: 12px; min-width: 600px; }
-        th, td { border: 1px solid #cbd5e1; padding: 10px 8px; text-align: left; }
-        th { background-color: #f7fafc; color: #2d3748; font-weight: 600; }
-        .status-msg { margin-top: 12px; font-weight: bold; text-align: center; font-size: 14px; }
+        table { width: 100%; border-collapse: collapse; background: white; font-size: 13px; min-width: 650px; }
+        th, td { border: 1px solid #cbd5e1; padding: 9px 11px; text-align: left; }
+        th { background-color: #f7fafc; color: #2d3748; font-weight: 700; font-size: 12px; }
+        .status-msg { margin-top: 10px; font-weight: bold; text-align: center; font-size: 13px; }
 
         .mobile-task-cards { display: none; flex-direction: column; gap: 12px; margin-top: 12px; }
         .task-card {
@@ -235,14 +257,14 @@
             cursor: pointer;
         }
 
-        .summary-table-box { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 15px; margin: 15px auto 0 auto; max-width: 520px; }
+        .summary-table-box { background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px 16px; margin: 16px auto 0 auto; max-width: 560px; }
         .summary-table-box table { margin-top: 0; font-size: 12px; min-width: 100%; }
-        .summary-table-box th { text-align: center; background-color: #edf2f7; padding: 6px 10px; }
-        .summary-table-box td { text-align: center; font-weight: 600; padding: 6px 10px; }
+        .summary-table-box th { text-align: center; background-color: #edf2f7; padding: 8px 10px; }
+        .summary-table-box td { text-align: center; font-weight: 600; padding: 8px 10px; }
 
-        .alphabet-filter-container { margin: 15px 0; }
-        .alphabet-bar { display: flex; flex-wrap: wrap; gap: 4px; min-height: 32px; }
-        .alpha-btn { background-color: #edf2f7; color: #2d3748; border: 1px solid #cbd5e1; padding: 8px 10px; font-size: 12px; font-weight: 700; border-radius: 4px; cursor: pointer; min-width: 36px; min-height: 36px; text-align: center; }
+        .alphabet-filter-container { margin: 16px 0; }
+        .alphabet-bar { display: flex; flex-wrap: wrap; gap: 5px; min-height: 34px; }
+        .alpha-btn { background-color: #edf2f7; color: #2d3748; border: 1px solid #cbd5e1; padding: 6px 10px; font-size: 11px; font-weight: 700; border-radius: 5px; cursor: pointer; min-width: 34px; min-height: 34px; text-align: center; }
         .alpha-btn.active { background-color: #1a365d; color: white; border-color: #1a365d; }
 
         .modal-overlay { 
@@ -252,30 +274,59 @@
             left: 0; 
             width: 100%; 
             height: 100%; 
-            background: rgba(0, 0, 0, 0.6); 
+            background: rgba(0, 0, 0, 0.65); 
             z-index: 10000; 
             justify-content: center; 
             align-items: center; 
-            padding: 12px;
+            padding: 16px;
             overflow-y: auto;
         }
-        .modal-content { background: white; border-radius: 12px; width: 100%; max-width: 620px; padding: 22px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px; }
-        .modal-header h3 { margin: 0; color: #1a365d; font-size: 18px; }
-        .modal-close { background: none; border: none; font-size: 28px; font-weight: bold; cursor: pointer; color: #a0aec0; }
+        .modal-content { background: white; border-radius: 12px; width: 100%; max-width: 650px; padding: 22px; box-shadow: 0 10px 28px rgba(0,0,0,0.3); max-height: 92vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 14px; }
+        .modal-header h3 { margin: 0; color: #1a365d; font-size: 17px; }
+        .modal-close { background: none; border: none; font-size: 26px; font-weight: bold; cursor: pointer; color: #a0aec0; }
 
-        /* BULK CLIENT SELECTOR UI ENHANCEMENTS */
+        #gstModalOverlay .modal-content {
+            max-width: 680px;
+            padding: 22px;
+        }
+        #gstModalOverlay .field { margin-bottom: 8px; }
+        #gstModalOverlay label { margin: 5px 0 3px 0; font-size: 12px; }
+        #gstModalOverlay input, #gstModalOverlay select { 
+            padding: 9px 12px !important; 
+            font-size: 13px !important; 
+            min-height: 40px !important; 
+        }
+
+        #bulkLogModalOverlay .modal-content {
+            max-width: 1080px;
+            width: 95%;
+            padding: 22px;
+        }
+        #bulkLogTable {
+            min-width: 980px;
+            margin: 0;
+        }
+        #bulkLogTable th, #bulkLogTable td {
+            padding: 8px 8px;
+        }
+        #bulkLogTable input, #bulkLogTable select {
+            padding: 7px 8px !important;
+            font-size: 13px !important;
+            min-height: 38px !important;
+        }
+
         .client-select-card {
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             background: #f8fafc;
-            padding: 10px;
+            padding: 8px;
         }
         .client-search-input {
             width: 100% !important;
-            padding: 8px 12px !important;
-            font-size: 13px !important;
-            min-height: 36px !important;
+            padding: 7px 10px !important;
+            font-size: 12px !important;
+            min-height: 34px !important;
             margin-bottom: 8px;
             border: 1px solid #cbd5e1 !important;
             border-radius: 6px !important;
@@ -285,16 +336,14 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 6px 8px;
-            border-radius: 6px;
+            padding: 5px 7px;
+            border-radius: 4px;
             transition: background 0.15s;
             cursor: pointer;
         }
-        .client-item-row:hover {
-            background-color: #edf2f7;
-        }
+        .client-item-row:hover { background-color: #edf2f7; }
 
-        .audit-group-title { font-size: 13px; font-weight: 700; color: #1a365d; background-color: #edf2f7; padding: 10px 12px; border-radius: 5px; margin: 14px 0 8px 0; border-left: 5px solid #2b6cb0; display: flex; justify-content: space-between; align-items: center; }
+        .audit-group-title { font-size: 13px; font-weight: 700; color: #1a365d; background-color: #edf2f7; padding: 10px 12px; border-radius: 6px; margin: 14px 0 8px 0; border-left: 5px solid #2b6cb0; display: flex; justify-content: space-between; align-items: center; }
         .audit-group-badge { font-size: 11px; font-weight: 700; color: #2b6cb0; background: #ebf8ff; border: 1px solid #bee3f8; padding: 3px 8px; border-radius: 12px; }
         .audit-task-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 8px; }
         .audit-task-desc { font-size: 13px; font-weight: 600; color: #2d3748; }
@@ -309,6 +358,7 @@
             body { 
                 padding: 10px 10px calc(80px + env(safe-area-inset-bottom)) 10px; 
                 background: #f4f6f9; 
+                font-size: 13px;
             }
             .container { 
                 padding: 14px; 
@@ -443,7 +493,7 @@
         </div>
 
         <div id="timecard-page" class="portal-page active">
-            <div id="dailyTrackerBox" style="background-color: #e6fffa; border: 1px solid #b2f5ea; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: none;">
+            <div id="dailyTrackerBox" style="background-color: #e6fffa; border: 1px solid #b2f5ea; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none;">
                 <h4 style="margin: 0 0 8px 0; color: #234e52; font-size: 14px;">📊 Daily Workload Progress (Target: 8 Hours)</h4>
                 <div style="display: flex; justify-content: space-between; font-size: 12px; color: #2d3748; flex-wrap: wrap; gap: 4px;">
                     <div><strong>Selected Date (<span id="trackerDateLabel">--</span>):</strong> <span id="trackerSelectedHours" style="font-weight: bold;">00:00 hrs</span> / 08:00 hrs</div>
@@ -454,7 +504,13 @@
                 </div>
             </div>
 
-            <h2>Activity Timesheet</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h2 style="margin:0; border:none; padding:0;">Activity Timesheet</h2>
+                <button type="button" style="background-color:#2b6cb0; color:white; border:none; padding:9px 16px; border-radius:8px; cursor:pointer; font-weight:700; font-size:12px; box-shadow:0 2px 4px rgba(0,0,0,0.1);" onclick="openBulkLogModal()">
+                    ⚡ Bulk Entry (Single Day)
+                </button>
+            </div>
+
             <form id="punchForm">
                 <div class="row">
                     <div class="field">
@@ -462,8 +518,10 @@
                         <input type="date" id="date" onchange="updateDailyTrackerUI();" required>
                     </div>
                     <div class="field">
-                        <label>Client</label>
-                        <select id="clientName" required><option value="">-- Loading Clients... --</option></select>
+                        <label>Client (Type or Select)</label>
+                        <select id="clientName" placeholder="Type or choose a client..." required>
+                            <option value="">-- Loading Clients... --</option>
+                        </select>
                     </div>
                 </div>
 
@@ -525,21 +583,21 @@
         <div id="assignments-page" class="portal-page">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h2 style="margin:0; border:none; padding:0;">🎯 Tasks Register</h2>
-                <button type="button" style="background-color:#16a34a; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-weight:700; font-size:13px; min-height:42px; box-shadow:0 2px 4px rgba(0,0,0,0.1);" onclick="openAddOwnTaskModal()" title="Shortcut: Alt + N">
+                <button type="button" style="background-color:#16a34a; color:white; border:none; padding:9px 16px; border-radius:8px; cursor:pointer; font-weight:700; font-size:13px; min-height:42px; box-shadow:0 2px 4px rgba(0,0,0,0.1);" onclick="openAddOwnTaskModal()" title="Shortcut: Alt + N">
                     <span style="color:#ffffff; font-weight:900; font-size:16px; margin-right:4px;">+</span> Add Own Task <span style="font-size:10px; opacity:0.85; margin-left:4px;">(Alt+N)</span>
                 </button>
             </div>
 
             <div class="filter-bar-single-line">
                 <label for="taskOriginFilter">Source:</label>
-                <select id="taskOriginFilter" onchange="updateTaskDetailsDropdownOptions(); renderAssignedTasksTable();">
+                <select id="taskOriginFilter" onchange="renderAssignedTasksTable();">
                     <option value="ALL">All Sources</option>
                     <option value="Assigned Task">Assigned</option>
                     <option value="Own Task">Own Tasks</option>
                 </select>
 
                 <label for="taskClientFilter">Client:</label>
-                <select id="taskClientFilter" onchange="updateTaskDetailsDropdownOptions(); renderAssignedTasksTable();">
+                <select id="taskClientFilter" onchange="renderAssignedTasksTable();">
                     <option value="ALL">All Clients</option>
                 </select>
 
@@ -549,7 +607,7 @@
                 </select>
 
                 <label for="taskDeadlineFilter">Deadline:</label>
-                <select id="taskDeadlineFilter" onchange="toggleCustomDateInputs(); updateTaskDetailsDropdownOptions(); renderAssignedTasksTable();">
+                <select id="taskDeadlineFilter" onchange="toggleCustomDateInputs(); renderAssignedTasksTable();">
                     <option value="ALL">All Deadlines</option>
                     <option value="TODAY">Today</option>
                     <option value="TOMORROW">Tomorrow</option>
@@ -559,13 +617,13 @@
                 </select>
 
                 <div id="customDateRangeContainer" style="display:none; align-items:center; gap:4px;">
-                    <input type="date" id="taskStartDateFilter" onchange="updateTaskDetailsDropdownOptions(); renderAssignedTasksTable();">
+                    <input type="date" id="taskStartDateFilter" onchange="renderAssignedTasksTable();">
                     <span style="font-size:11px; font-weight:600; color:#4a5568;">to</span>
-                    <input type="date" id="taskEndDateFilter" onchange="updateTaskDetailsDropdownOptions(); renderAssignedTasksTable();">
+                    <input type="date" id="taskEndDateFilter" onchange="renderAssignedTasksTable();">
                 </div>
 
                 <label for="taskStatusFilter">Status:</label>
-                <select id="taskStatusFilter" onchange="updateTaskDetailsDropdownOptions(); renderAssignedTasksTable();">
+                <select id="taskStatusFilter" onchange="renderAssignedTasksTable();">
                     <option value="ALL">All Status</option>
                     <option value="Pending">Pending Only</option>
                     <option value="Fulfilled">Fulfilled Only</option>
@@ -599,7 +657,6 @@
 
             <div id="taskStatus" class="status-msg"></div>
             
-            <!-- Desktop View Table -->
             <div class="table-responsive-wrapper">
                 <table id="tasksTable" style="display:none;">
                     <thead>
@@ -617,7 +674,6 @@
                 </table>
             </div>
 
-            <!-- Mobile View Stacked Cards Container -->
             <div id="mobileTasksCardContainer" class="mobile-task-cards"></div>
 
             <div class="button-group-row" id="taskActionRow" style="display:none;">
@@ -657,7 +713,7 @@
                 </select>
             </div>
 
-            <div id="historySummaryCard" style="display:none; background:#f7fafc; border:1px solid #cbd5e1; padding:15px; border-radius:6px; margin-bottom:20px;">
+            <div id="historySummaryCard" style="display:none; background:#f7fafc; border:1px solid #cbd5e1; padding:15px; border-radius:8px; margin-bottom:20px;">
                 <h4 style="margin: 0 0 10px 0; color: #1a365d; font-size: 14px; text-align: center;">📊 Logged Workload & Hours Summary</h4>
                 <div style="display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:10px; text-align:center;">
                     <div style="flex:1; min-width:100px; background:white; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
@@ -847,7 +903,7 @@
         
         <div id="auditAuthNotice" class="status-msg" style="margin-bottom: 15px;"></div>
 
-        <div id="auditSummaryBox" style="display:none; background:white; border:1px solid #cbd5e1; padding:15px; border-radius:8px; margin-bottom:20px;">
+        <div id="auditSummaryBox" style="display:none; background:white; border:1px solid #cbd5e1; padding:16px; border-radius:8px; margin-bottom:20px;">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #e2e8f0; padding-bottom:8px; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
                 <h3 style="margin:0; font-size:15px; color:#1a365d;">📊 My Assigned Audit Clients Overview</h3>
                 
@@ -991,12 +1047,52 @@
     </div>
 </div>
 
-<!-- Mobile FAB button for adding tasks -->
 <button class="mobile-fab-add" onclick="openAddOwnTaskModal()" title="Add Task">+</button>
 
 <div id="gstPrintArea"></div>
 
-<!-- ADD OWN TASK MODAL WINDOW (POLISHED UI WITH SEARCH & BULK SELECTION) -->
+<!-- BULK TIME LOG MODAL OVERLAY -->
+<div id="bulkLogModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeBulkLogModal();">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>⚡ Bulk Time Logging (Single Date)</h3>
+            <button type="button" class="modal-close" onclick="closeBulkLogModal()">&times;</button>
+        </div>
+        <div>
+            <div style="display:flex; gap:14px; align-items:center; background:#edf2f7; padding:10px 14px; border-radius:8px; margin-bottom:14px;">
+                <label style="margin:0; font-weight:700; font-size:13px; white-space:nowrap; color:#1a365d;">Select Log Date:</label>
+                <input type="date" id="bulkLogDate" style="max-width:200px; min-height:38px; padding:6px 10px;" required>
+                <span style="font-size:12px; color:#4a5568; flex:1;">All entries listed below will be logged for this date simultaneously.</span>
+            </div>
+
+            <div style="overflow-x:auto; max-height: 52vh; border:1px solid #cbd5e1; border-radius:8px;">
+                <table id="bulkLogTable">
+                    <thead>
+                        <tr>
+                            <th style="width:20%;">Client Account</th>
+                            <th style="width:17%;">Main Task</th>
+                            <th style="width:17%;">Sub-Task</th>
+                            <th style="width:18%;">Remarks / Details</th>
+                            <th style="width:11%;">Status</th>
+                            <th style="width:13%;">Duration (H : M)</th>
+                            <th style="width:4%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="bulkLogTbody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px;">
+                <button type="button" style="background-color:#2b6cb0; color:white; border:none; padding:9px 16px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:700;" onclick="addBulkLogRow()">+ Add Another Row</button>
+                <button type="button" class="action-submit" style="width:auto; padding:10px 24px; margin-top:0;" onclick="submitBulkPunches()">✓ Submit All Log Entries</button>
+            </div>
+            <div id="bulkLogStatus" class="status-msg"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ADD OWN TASK MODAL WINDOW -->
 <div id="userTaskModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeAddOwnTaskModal();">
     <div class="modal-content">
         <div class="modal-header">
@@ -1018,7 +1114,6 @@
                 <div class="client-select-card">
                     <input type="text" id="clientSearchInput" class="client-search-input" placeholder="🔍 Quick search client name..." oninput="filterClientCheckboxes(this.value)">
                     <div id="userTaskClientCheckboxes" style="max-height: 160px; overflow-y: auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px;">
-                        <!-- Checkboxes populated dynamically -->
                     </div>
                 </div>
             </div>
@@ -1048,6 +1143,56 @@
     </div>
 </div>
 
+<!-- COMPLETE TASK MODAL OVERLAY -->
+<div id="completeTaskModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeCompleteTaskModal();">
+    <div class="modal-content" style="max-width: 480px;">
+        <div class="modal-header">
+            <h3>✓ Complete Task & Log Timesheet</h3>
+            <button type="button" class="modal-close" onclick="closeCompleteTaskModal()">&times;</button>
+        </div>
+        <form id="completeTaskForm">
+            <input type="hidden" id="completeTaskRowIndex">
+            <input type="hidden" id="completeTaskOrigin">
+
+            <div class="field">
+                <label>Client</label>
+                <input type="text" id="completeTaskClient" readonly style="background-color:#e2e8f0; font-weight:bold;">
+            </div>
+
+            <div class="field">
+                <label>Task Description</label>
+                <textarea id="completeTaskDesc" rows="2" readonly style="background-color:#e2e8f0;"></textarea>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Main Task *</label>
+                    <select id="completeMainTask" onchange="handleCompleteMainTaskChange()" required>
+                        <option value="">-- Select Main Task --</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Sub-Task *</label>
+                    <select id="completeSubTask" required>
+                        <option value="">-- Select Main Task First --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Time Spent (Hours : Minutes) *</label>
+                <div style="display:flex; gap:10px;">
+                    <select id="completeTaskHours" style="flex:1;" required></select>
+                    <select id="completeTaskMins" style="flex:1;" required></select>
+                </div>
+            </div>
+
+            <button type="button" class="action-submit" onclick="submitTaskCompletionWithLog()">✓ Confirm & Save Timesheet Log</button>
+            <div id="completeTaskStatus" class="status-msg"></div>
+        </form>
+    </div>
+</div>
+
 <!-- GST FILING MODAL -->
 <div id="gstModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeGstModal();">
     <div class="modal-content">
@@ -1056,16 +1201,16 @@
             <button type="button" class="modal-close" onclick="closeGstModal()">&times;</button>
         </div>
 
-        <div style="background-color: #0f2744; border: 2px solid #3182ce; padding: 12px 16px; border-radius: 8px; text-align: center; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
-            <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div style="background-color: #0f2744; border: 1px solid #3182ce; padding: 10px 14px; border-radius: 8px; text-align: center; margin-bottom: 14px; box-shadow: 0 3px 6px rgba(0,0,0,0.12);">
+            <div style="display: flex; justify-content: space-around; align-items: center; gap: 10px;">
                 <div>
-                    <span style="font-size: 11px; text-transform: uppercase; color: #90cdf4; font-weight: 800; display: block; letter-spacing: 0.5px;">RETURN TYPE</span>
-                    <span id="modalDisplayReturnType" style="font-size: 22px; font-weight: 900; color: #f6ad55; text-shadow: 0 1px 3px rgba(0,0,0,0.6); display: inline-block; margin-top: 2px;">--</span>
+                    <span style="font-size: 10px; text-transform: uppercase; color: #90cdf4; font-weight: 800; display: block; letter-spacing: 0.5px;">RETURN TYPE</span>
+                    <span id="modalDisplayReturnType" style="font-size: 18px; font-weight: 900; color: #f6ad55; display: inline-block;">--</span>
                 </div>
-                <div style="border-left: 2px solid #2b4c7e; height: 32px; margin: 0 10px;"></div>
+                <div style="border-left: 1px solid #2b4c7e; height: 24px;"></div>
                 <div>
-                    <span style="font-size: 11px; text-transform: uppercase; color: #90cdf4; font-weight: 800; display: block; letter-spacing: 0.5px;">FILING PERIOD</span>
-                    <span id="modalDisplayPeriod" style="font-size: 22px; font-weight: 900; color: #38bdf8; text-shadow: 0 1px 3px rgba(0,0,0,0.6); display: inline-block; margin-top: 2px;">--</span>
+                    <span style="font-size: 10px; text-transform: uppercase; color: #90cdf4; font-weight: 800; display: block; letter-spacing: 0.5px;">FILING PERIOD</span>
+                    <span id="modalDisplayPeriod" style="font-size: 18px; font-weight: 900; color: #38bdf8; display: inline-block;">--</span>
                 </div>
             </div>
         </div>
@@ -1075,11 +1220,11 @@
             <div class="row">
                 <div class="field">
                     <label>GSTIN</label>
-                    <input type="text" id="gstinField" readonly style="background-color:#e2e8f0;">
+                    <input type="text" id="gstinField" readonly style="background-color:#e2e8f0; font-weight:bold; font-family:monospace;">
                 </div>
                 <div class="field">
                     <label>Client Name</label>
-                    <input type="text" id="gstClientNameField" readonly style="background-color:#e2e8f0;">
+                    <input type="text" id="gstClientNameField" readonly style="background-color:#e2e8f0; font-weight:bold;">
                 </div>
             </div>
 
@@ -1101,7 +1246,7 @@
             <div class="row" id="arnInputRow">
                 <div class="field">
                     <label>ARN Number (15-Digit Alphanumeric)</label>
-                    <input type="text" id="gstArnNumber" placeholder="e.g. AA270424000000X" maxlength="15" style="text-transform:uppercase;">
+                    <input type="text" id="gstArnNumber" placeholder="e.g. AA270424000000X" maxlength="15" style="text-transform:uppercase; font-family:monospace;">
                 </div>
             </div>
 
@@ -1123,15 +1268,46 @@
                             <option value="N/A">N/A</option>
                         </select>
                     </div>
-                </div>
-
-                <div class="row">
                     <div class="field">
                         <label>Tax Position / Status</label>
                         <select id="gstTaxType">
                             <option value="Payable">Payable</option>
                             <option value="Carry Forward">Carry Forward</option>
                         </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AUTO-LOG TO TIMESHEET OPTION IN GST MODAL -->
+            <div style="margin-top: 14px; padding: 12px; background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0; font-weight: 700; color: #1a365d;">
+                    <input type="checkbox" id="gstAutoLogCb" onchange="toggleGstAutoLogFields()" checked>
+                    ⏱️ Auto-Log this activity into Timesheet
+                </label>
+                
+                <div id="gstAutoLogFields" style="margin-top: 10px; display: block;">
+                    <div class="row">
+                        <div class="field">
+                            <label>Task Category</label>
+                            <input type="text" id="gstLogCategory" value="GST Compliance" placeholder="e.g. GST Compliance" style="background:#ffffff;">
+                        </div>
+                        <div class="field">
+                            <label>Time Spent (Hours : Minutes)</label>
+                            <div style="display: flex; gap: 8px;">
+                                <select id="gstLogHours" style="flex:1;">
+                                    <option value="00">00h</option>
+                                    <option value="01" selected>01h</option>
+                                    <option value="02">02h</option>
+                                    <option value="03">03h</option>
+                                </select>
+                                <select id="gstLogMins" style="flex:1;">
+                                    <option value="00">00m</option>
+                                    <option value="15">15m</option>
+                                    <option value="30" selected>30m</option>
+                                    <option value="45">45m</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1146,14 +1322,14 @@
 <div id="naConfirmModalOverlay" class="modal-overlay" style="z-index: 10001;">
     <div class="modal-content" style="max-width: 420px; text-align: center; border: 2px solid #ed8936;">
         <div style="font-size: 38px; margin-bottom: 8px;">⚠️</div>
-        <h3 style="margin: 0 0 10px 0; color: #c05621;">Confirm 'Not Applicable'</h3>
+        <h3 style="margin: 0 0 10px 0; color: #c05621; font-size: 17px;">Confirm 'Not Applicable'</h3>
         <p style="font-size: 13px; color: #4a5568; margin-bottom: 20px; line-height: 1.5;">
             Are you sure you want to mark this return as <strong>Not Applicable (N/A)</strong>?<br><br>
             This action will move the client out of the <strong>Pending Queue</strong> without requiring an ARN.
         </p>
         <div style="display: flex; gap: 10px;">
-            <button type="button" style="background-color: #cbd5e1; color: #2d3748; border: none; padding: 10px; border-radius: 6px; flex: 1; font-weight: bold; cursor: pointer;" onclick="closeNaConfirmModal()">Cancel</button>
-            <button type="button" style="background-color: #dd6b20; color: white; border: none; padding: 10px; border-radius: 6px; flex: 1; font-weight: bold; cursor: pointer;" onclick="proceedWithNaSubmission()">Yes, Mark as N/A</button>
+            <button type="button" style="background-color: #cbd5e1; color: #2d3748; border: none; padding: 10px; border-radius: 6px; flex: 1; font-weight: bold; cursor: pointer; font-size: 13px;" onclick="closeNaConfirmModal()">Cancel</button>
+            <button type="button" style="background-color: #dd6b20; color: white; border: none; padding: 10px; border-radius: 6px; flex: 1; font-weight: bold; cursor: pointer; font-size: 13px;" onclick="proceedWithNaSubmission()">Yes, Mark as N/A</button>
         </div>
     </div>
 </div>
@@ -1207,9 +1383,22 @@
     let cachedAuditTasks = [];
     let cachedAuditClientsSummary = [];
     let currentActiveAuditClient = "";
+    let clientSearchSelect = null; 
 
     const MONTHS = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
     const FY_LIST = ['FY 2023-24', 'FY 2024-25', 'FY 2025-26', 'FY 2026-27', 'FY 2027-28'];
+
+    let bulkHoursOptionsHtml = "";
+    for (let h = 0; h <= 23; h++) {
+        let val = h < 10 ? '0' + h : '' + h;
+        bulkHoursOptionsHtml += `<option value="${val}">${val}h</option>`;
+    }
+
+    let bulkMinutesOptionsHtml = "";
+    for (let m = 0; m <= 59; m++) {
+        let val = m < 10 ? '0' + m : '' + m;
+        bulkMinutesOptionsHtml += `<option value="${val}">${val}m</option>`;
+    }
 
     function getTodayIST() {
         const now = new Date();
@@ -1242,6 +1431,7 @@
     window.onload = function() {
         const todayIST = getTodayIST();
         document.getElementById('date').value = todayIST;
+        document.getElementById('bulkLogDate').value = todayIST;
         document.getElementById('gstFilingDate').value = todayIST;
         document.getElementById('udinFilingDate').value = todayIST;
         document.getElementById('userTaskDeadline').value = todayIST;
@@ -1271,25 +1461,26 @@
             loadInitializationData();
         }
 
-        // KEYBOARD SHORTCUT LISTENERS
         document.addEventListener('keydown', function(e) {
-            // Shortcut 1: Alt + N to open "Create Personal Task" modal
             if (e.altKey && (e.key === 'n' || e.key === 'N')) {
                 e.preventDefault();
                 openAddOwnTaskModal();
             }
 
-            // Shortcut 2: Ctrl + Enter or Cmd + Enter to quick-submit active forms/modals
             if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                 const userModal = document.getElementById('userTaskModalOverlay');
                 const gstModal = document.getElementById('gstModalOverlay');
-                
+                const completeModal = document.getElementById('completeTaskModalOverlay');
+
                 if (userModal && userModal.style.display === 'flex') {
                     e.preventDefault();
                     submitUserTask();
                 } else if (gstModal && gstModal.style.display === 'flex') {
                     e.preventDefault();
                     submitGstFiling();
+                } else if (completeModal && completeModal.style.display === 'flex') {
+                    e.preventDefault();
+                    submitTaskCompletionWithLog();
                 } else if (document.activeElement && (document.activeElement.id === 'description' || document.activeElement.form?.id === 'punchForm')) {
                     e.preventDefault();
                     submitPunch();
@@ -1534,11 +1725,20 @@
                 empDropdown.appendChild(opt);
             });
 
-            clientDropdown.innerHTML = '<option value="">-- Select Client --</option>';
+            clientDropdown.innerHTML = '<option value="">-- Type or Select Client --</option>';
             clients.forEach(client => {
                 const opt = document.createElement('option');
                 opt.value = client; opt.innerText = client;
                 clientDropdown.appendChild(opt);
+            });
+
+            if (clientSearchSelect) {
+                clientSearchSelect.destroy();
+            }
+            clientSearchSelect = new TomSelect('#clientName', {
+                create: false,
+                placeholder: "Type to search client...",
+                sortField: { field: "text", order: "asc" }
             });
 
             taskDropdown.innerHTML = '<option value="">-- Select Task --</option>';
@@ -1548,6 +1748,156 @@
                 taskDropdown.appendChild(opt);
             }
         }).catch(() => {});
+    }
+
+    function openBulkLogModal() {
+        const creds = getCredentials();
+        if (!creds.name || !creds.pin || creds.pin.length < 4) {
+            alert("🔒 Access Lock: Please select your Name and enter your PIN at the top first.");
+            return;
+        }
+        document.getElementById('bulkLogStatus').innerText = "";
+        const tbody = document.getElementById('bulkLogTbody');
+        tbody.innerHTML = "";
+        for (let i = 0; i < 3; i++) {
+            addBulkLogRow();
+        }
+        document.getElementById('bulkLogModalOverlay').style.display = "flex";
+    }
+
+    function closeBulkLogModal() {
+        document.getElementById('bulkLogModalOverlay').style.display = "none";
+    }
+
+    function addBulkLogRow() {
+        const tbody = document.getElementById('bulkLogTbody');
+        const rowId = "bulk_row_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+        const tr = document.createElement('tr');
+        tr.id = rowId;
+
+        const clientSelectHtml = document.getElementById('clientName').innerHTML;
+        const taskSelectHtml = document.getElementById('taskCategory').innerHTML;
+
+        tr.innerHTML = `
+            <td><select class="bulk-client" style="width:100%;">${clientSelectHtml}</select></td>
+            <td><select class="bulk-task" style="width:100%;" onchange="handleBulkTaskChange('${rowId}')">${taskSelectHtml}</select></td>
+            <td><select class="bulk-subtask" style="width:100%;"><option value="">-- Select Task First --</option></select></td>
+            <td><input type="text" class="bulk-remarks" placeholder="Work details..." style="width:100%;"></td>
+            <td>
+                <select class="bulk-status" style="width:100%;">
+                    <option value="In progress">In progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Data pending from Client">Data pending from Client</option>
+                </select>
+            </td>
+            <td>
+                <div style="display:flex; gap:6px; align-items:center;">
+                    <select class="bulk-hrs" style="flex:1; min-width:62px; text-align:center;">${bulkHoursOptionsHtml}</select>
+                    <select class="bulk-mins" style="flex:1; min-width:62px; text-align:center;">${bulkMinutesOptionsHtml}</select>
+                </div>
+            </td>
+            <td style="text-align:center;">
+                <button type="button" style="background:none; border:none; color:#c53030; font-weight:bold; cursor:pointer; font-size:18px; padding:2px 6px;" onclick="document.getElementById('${rowId}').remove()">&times;</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+
+        const hrsSelect = tr.querySelector('.bulk-hrs');
+        const minsSelect = tr.querySelector('.bulk-mins');
+        if (hrsSelect) hrsSelect.value = "00";
+        if (minsSelect) minsSelect.value = "00";
+    }
+
+    function handleBulkTaskChange(rowId) {
+        const row = document.getElementById(rowId);
+        const mainTask = row.querySelector('.bulk-task').value;
+        const subDropdown = row.querySelector('.bulk-subtask');
+        subDropdown.innerHTML = '<option value="">-- Select Sub-Task --</option>';
+        if (mainTask && globalTaskMap[mainTask]) {
+            globalTaskMap[mainTask].forEach(subTask => {
+                const opt = document.createElement('option');
+                opt.value = subTask; opt.innerText = subTask;
+                subDropdown.appendChild(opt);
+            });
+        }
+    }
+
+    function submitBulkPunches() {
+        const creds = getCredentials();
+        const logDate = document.getElementById('bulkLogDate').value;
+        const statusDiv = document.getElementById('bulkLogStatus');
+        const rows = Array.from(document.querySelectorAll('#bulkLogTbody tr'));
+
+        if (!creds.name || !creds.pin) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Validation Lock: Verify Name and PIN at top.";
+            return;
+        }
+
+        if (!logDate) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Please select a date for the log entries.";
+            return;
+        }
+
+        let validRowsData = [];
+        rows.forEach(r => {
+            const client = r.querySelector('.bulk-client').value;
+            const task = r.querySelector('.bulk-task').value;
+            const subtask = r.querySelector('.bulk-subtask').value;
+            const remarks = r.querySelector('.bulk-remarks').value.trim();
+            const status = r.querySelector('.bulk-status').value;
+            const hrs = r.querySelector('.bulk-hrs').value || "00";
+            const mins = r.querySelector('.bulk-mins').value || "00";
+            const timeSpent = `${hrs}:${mins}`;
+
+            if (client && task && subtask && remarks && timeSpent !== "00:00") {
+                validRowsData.push({
+                    client, task, subtask, remarks, status, timeSpent
+                });
+            }
+        });
+
+        if (validRowsData.length === 0) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Please fill out at least one complete row (Client, Task, Sub-Task & Remarks).";
+            return;
+        }
+
+        statusDiv.style.color = "orange";
+        statusDiv.innerText = `Submitting ${validRowsData.length} log entry(s)...`;
+
+        const requests = validRowsData.map(item => {
+            const params = new URLSearchParams({
+                action: "submitPunch",
+                date: logDate,
+                employeeName: creds.name,
+                pin: creds.pin,
+                clientName: item.client,
+                taskCategory: item.task,
+                subTask: item.subtask,
+                description: item.remarks,
+                status: item.status,
+                billingType: "Billable",
+                priority: "Medium",
+                timeSpent: item.timeSpent
+            });
+            return fetch(`${WEB_APP_URL}?${params.toString()}`).then(res => res.json());
+        });
+
+        Promise.all(requests)
+        .then(results => {
+            statusDiv.style.color = "green";
+            statusDiv.innerText = `✓ Successfully submitted ${validRowsData.length} entries!`;
+            setTimeout(() => {
+                closeBulkLogModal();
+                runBackgroundTracker();
+            }, 1000);
+        })
+        .catch(() => {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Transmission error while posting bulk entries.";
+        });
     }
 
     function populateBulkClientCheckboxes() {
@@ -1726,74 +2076,11 @@
     }
 
     function populateTaskDetailsFilter(taskList) {
-        updateTaskDetailsDropdownOptions();
-    }
-
-    function updateTaskDetailsDropdownOptions() {
-        const originFilter = document.getElementById('taskOriginFilter') ? document.getElementById('taskOriginFilter').value : "ALL";
-        const clientFilter = document.getElementById('taskClientFilter') ? document.getElementById('taskClientFilter').value : "ALL";
-        const deadlineFilter = document.getElementById('taskDeadlineFilter') ? document.getElementById('taskDeadlineFilter').value : "ALL";
-        const statusFilter = document.getElementById('taskStatusFilter') ? document.getElementById('taskStatusFilter').value : "ALL";
         const detailsSelect = document.getElementById('taskDetailsFilter');
-
-        if (!detailsSelect || !cachedAssignmentsData) return;
-
-        const currentSelectedVal = detailsSelect.value;
-
-        let subset = cachedAssignmentsData;
-
-        if (originFilter !== "ALL") {
-            subset = subset.filter(r => r.origin === originFilter);
-        }
-
-        if (clientFilter !== "ALL") {
-            subset = subset.filter(r => r.client === clientFilter);
-        }
-
-        if (deadlineFilter !== "ALL") {
-            const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
-            const dayOfWeek = today.getDay();
-            const diffToMon = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-            const thisWeekStart = new Date(today); thisWeekStart.setDate(today.getDate() + diffToMon);
-            const thisWeekEnd = new Date(thisWeekStart); thisWeekEnd.setDate(thisWeekStart.getDate() + 6);
-            const nextWeekStart = new Date(thisWeekStart); nextWeekStart.setDate(thisWeekStart.getDate() + 7);
-            const nextWeekEnd = new Date(nextWeekStart); nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
-
-            subset = subset.filter(row => {
-                const tDate = parseTaskDate(row.deadline);
-                if (!tDate) return false;
-                if (deadlineFilter === "TODAY") return tDate.getTime() === today.getTime();
-                if (deadlineFilter === "TOMORROW") return tDate.getTime() === tomorrow.getTime();
-                if (deadlineFilter === "THIS_WEEK") return tDate >= thisWeekStart && tDate <= thisWeekEnd;
-                if (deadlineFilter === "NEXT_WEEK") return tDate >= nextWeekStart && tDate <= nextWeekEnd;
-                if (deadlineFilter === "CUSTOM") {
-                    const startVal = document.getElementById('taskStartDateFilter').value;
-                    const endVal = document.getElementById('taskEndDateFilter').value;
-                    const sDate = startVal ? parseTaskDate(startVal) : null;
-                    const eDate = endVal ? parseTaskDate(endVal) : null;
-                    if (sDate && tDate < sDate) return false;
-                    if (eDate && tDate > eDate) return false;
-                    return true;
-                }
-                return true;
-            });
-        }
-
-        if (statusFilter === "Pending") {
-            subset = subset.filter(r => {
-                let st = (r.status || "").toLowerCase();
-                return !st.includes("fulfill") && !st.includes("done");
-            });
-        } else if (statusFilter === "Fulfilled") {
-            subset = subset.filter(r => {
-                let st = (r.status || "").toLowerCase();
-                return st.includes("fulfill") || st.includes("done");
-            });
-        }
-
-        const availableDetails = Array.from(new Set(subset.map(t => (t.description || "").trim()).filter(Boolean))).sort();
+        if (!detailsSelect || !taskList) return;
+        const currentVal = detailsSelect.value;
+        
+        const availableDetails = Array.from(new Set(taskList.map(t => (t.description || "").trim()).filter(Boolean))).sort();
 
         detailsSelect.innerHTML = '<option value="ALL">All Task Details</option>';
         availableDetails.forEach(d => {
@@ -1801,15 +2088,9 @@
             opt.value = d;
             opt.innerText = d.length > 45 ? d.substring(0, 42) + '...' : d;
             opt.title = d;
-            if (d === currentSelectedVal) {
-                opt.selected = true;
-            }
+            if (d === currentVal) opt.selected = true;
             detailsSelect.appendChild(opt);
         });
-
-        if (currentSelectedVal !== "ALL" && !availableDetails.includes(currentSelectedVal)) {
-            detailsSelect.value = "ALL";
-        }
     }
 
     function renderAssignedTasksTable() {
@@ -1855,21 +2136,13 @@
 
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
-        
+        const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
         const dayOfWeek = today.getDay();
         const diffToMon = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-        const thisWeekStart = new Date(today);
-        thisWeekStart.setDate(today.getDate() + diffToMon);
-        const thisWeekEnd = new Date(thisWeekStart);
-        thisWeekEnd.setDate(thisWeekStart.getDate() + 6);
-        
-        const nextWeekStart = new Date(thisWeekStart);
-        nextWeekStart.setDate(thisWeekStart.getDate() + 7);
-        const nextWeekEnd = new Date(nextWeekStart);
-        nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
+        const thisWeekStart = new Date(today); thisWeekStart.setDate(today.getDate() + diffToMon);
+        const thisWeekEnd = new Date(thisWeekStart); thisWeekEnd.setDate(thisWeekStart.getDate() + 6);
+        const nextWeekStart = new Date(thisWeekStart); nextWeekStart.setDate(thisWeekStart.getDate() + 7);
+        const nextWeekEnd = new Date(nextWeekStart); nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
 
         let step3 = stepDetails;
         if (deadlineFilter !== "ALL") {
@@ -1899,8 +2172,7 @@
         }
 
         const total = step3.length;
-        let pending = 0;
-        let done = 0;
+        let pending = 0, done = 0;
 
         step3.forEach(row => {
             let st = (row.status || "").toLowerCase();
@@ -1989,16 +2261,137 @@
 
     function markTaskFulfilled(rowIndex, origin, btnElement) {
         const creds = getCredentials();
-        if (!confirm("Are you sure you want to mark this task as fulfilled?")) return;
-        btnElement.disabled = true; btnElement.innerText = "Saving...";
+        if (!creds.name || !creds.pin) {
+            alert("🔒 Access Lock: Please verify your Name and PIN at top first.");
+            return;
+        }
+
+        const task = cachedAssignmentsData.find(t => t.rowIndex === rowIndex && t.origin === origin);
+        if (!task) {
+            alert("Task details not found.");
+            return;
+        }
+
+        document.getElementById('completeTaskRowIndex').value = rowIndex;
+        document.getElementById('completeTaskOrigin').value = origin;
+        document.getElementById('completeTaskClient').value = task.client;
+        document.getElementById('completeTaskDesc').value = task.description;
+        document.getElementById('completeTaskStatus').innerText = "";
+
+        const mainSelect = document.getElementById('completeMainTask');
+        mainSelect.innerHTML = '<option value="">-- Select Main Task --</option>';
+        for (let mainTask in globalTaskMap) {
+            const opt = document.createElement('option');
+            opt.value = mainTask; opt.innerText = mainTask;
+            mainSelect.appendChild(opt);
+        }
+
+        document.getElementById('completeSubTask').innerHTML = '<option value="">-- Select Main Task First --</option>';
+
+        const hrsSelect = document.getElementById('completeTaskHours');
+        const minsSelect = document.getElementById('completeTaskMins');
+        hrsSelect.innerHTML = ""; minsSelect.innerHTML = "";
+
+        for (let h = 0; h <= 23; h++) {
+            let val = h < 10 ? '0' + h : '' + h;
+            hrsSelect.innerHTML += `<option value="${val}" ${val === '01' ? 'selected' : ''}>${val} Hours</option>`;
+        }
+        for (let m = 0; m <= 59; m += 5) {
+            let val = m < 10 ? '0' + m : '' + m;
+            minsSelect.innerHTML += `<option value="${val}" ${val === '00' ? 'selected' : ''}>${val} Mins</option>`;
+        }
+
+        document.getElementById('completeTaskModalOverlay').style.display = "flex";
+    }
+
+    function handleCompleteMainTaskChange() {
+        const mainTask = document.getElementById('completeMainTask').value;
+        const subSelect = document.getElementById('completeSubTask');
+        subSelect.innerHTML = '<option value="">-- Select Sub-Task --</option>';
+
+        if (mainTask && globalTaskMap[mainTask]) {
+            globalTaskMap[mainTask].forEach(sub => {
+                const opt = document.createElement('option');
+                opt.value = sub; opt.innerText = sub;
+                subSelect.appendChild(opt);
+            });
+        }
+    }
+
+    function closeCompleteTaskModal() {
+        document.getElementById('completeTaskModalOverlay').style.display = "none";
+    }
+
+    function submitTaskCompletionWithLog() {
+        const creds = getCredentials();
+        const rowIndex = document.getElementById('completeTaskRowIndex').value;
+        const origin = document.getElementById('completeTaskOrigin').value;
+        const client = document.getElementById('completeTaskClient').value;
+        const taskDesc = document.getElementById('completeTaskDesc').value;
+        const mainTask = document.getElementById('completeMainTask').value;
+        const subTask = document.getElementById('completeSubTask').value;
+        const hrs = document.getElementById('completeTaskHours').value || "01";
+        const mins = document.getElementById('completeTaskMins').value || "00";
+        const statusDiv = document.getElementById('completeTaskStatus');
+
+        if (!mainTask || !subTask) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Please select both Main Task and Sub-Task.";
+            return;
+        }
+
+        const timeSpentStr = `${hrs}:${mins}`;
+        if (timeSpentStr === "00:00") {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Time spent cannot be 00:00.";
+            return;
+        }
+
+        statusDiv.style.color = "orange";
+        statusDiv.innerText = "Updating task status and creating log entry...";
 
         fetch(`${WEB_APP_URL}?action=markTaskCompleted&employeeName=${encodeURIComponent(creds.name)}&pin=${encodeURIComponent(creds.pin)}&rowIndex=${rowIndex}&origin=${encodeURIComponent(origin)}`)
         .then(res => res.json())
         .then(res => {
             if (res.status === "SUCCESS" || res.success) {
-                fetchAssignedTasks();
+                const logParams = new URLSearchParams({
+                    action: "submitPunch",
+                    date: getTodayIST(),
+                    employeeName: creds.name,
+                    pin: creds.pin,
+                    clientName: client,
+                    taskCategory: mainTask,
+                    subTask: subTask,
+                    description: `[Completed Task] ${taskDesc}`,
+                    status: "Completed",
+                    billingType: "Billable",
+                    priority: "Medium",
+                    timeSpent: timeSpentStr
+                });
+
+                return fetch(`${WEB_APP_URL}?${logParams.toString()}`).then(r => r.json());
+            } else {
+                throw new Error("Failed to update task status.");
             }
-        }).catch(() => { btnElement.disabled = false; btnElement.innerText = "✓ Mark Done"; });
+        })
+        .then(() => {
+            statusDiv.style.color = "green";
+            statusDiv.innerText = "✓ Task marked as Completed & Logged!";
+            setTimeout(() => {
+                closeCompleteTaskModal();
+                fetchAssignedTasks();
+                runBackgroundTracker();
+            }, 1000);
+        })
+        .catch(err => {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Error: " + err.message;
+        });
+    }
+
+    function toggleGstAutoLogFields() {
+        const isChecked = document.getElementById('gstAutoLogCb').checked;
+        document.getElementById('gstAutoLogFields').style.display = isChecked ? 'block' : 'none';
     }
 
     function fetchPendingGST() {
@@ -2184,7 +2577,7 @@
                 <td>${item.frequency || 'N/A'}</td>
                 <td><span style="color:#c53030; font-weight:bold;">${item.status}</span></td>
                 <td>
-                    <button type="button" style="background-color:#1a365d; color:white; border:none; padding:6px 14px; border-radius:6px; cursor:pointer;" 
+                    <button type="button" style="background-color:#1a365d; color:white; border:none; padding:7px 14px; border-radius:6px; cursor:pointer; font-weight:600;" 
                     onclick="openGstModal(${item.rowIndex || 0}, '${item.gstin || ''}', '${item.clientName.replace(/'/g, "\\'")}')">Select</button>
                 </td>`;
             tbody.appendChild(tr);
@@ -2352,7 +2745,28 @@
         document.getElementById('gstinField').value = gstin;
         document.getElementById('gstClientNameField').value = clientName;
         document.getElementById('gstArnNumber').value = "";
-        document.getElementById('gstFilingStatusSelect').value = "Filed";
+        
+        // Reset Auto-Log Checkbox & Fields
+        document.getElementById('gstAutoLogCb').checked = true;
+        document.getElementById('gstAutoLogFields').style.display = "block";
+        document.getElementById('gstLogCategory').value = "GST Compliance";
+        document.getElementById('gstLogHours').value = "00";
+        document.getElementById('gstLogMins').value = "30";
+
+        const statusSelect = document.getElementById('gstFilingStatusSelect');
+        statusSelect.value = "Filed";
+
+        const challanOption = statusSelect.querySelector('option[value="Challan Shared"]');
+        if (challanOption) {
+            if (returnType === "GSTR1") {
+                challanOption.style.display = "none";
+                challanOption.disabled = true;
+            } else {
+                challanOption.style.display = "block";
+                challanOption.disabled = false;
+            }
+        }
+
         document.getElementById('gstSubmitStatus').innerText = "";
         
         toggleArnRequirement();
@@ -2390,7 +2804,11 @@
         const filingStatus = document.getElementById('gstFilingStatusSelect').value;
         const filingDate = document.getElementById('gstFilingDate').value;
         const arnNumber = document.getElementById('gstArnNumber').value.trim().toUpperCase();
+        const clientName = document.getElementById('gstClientNameField').value;
         const statusDiv = document.getElementById('gstSubmitStatus');
+
+        const shouldAutoLog = document.getElementById('gstAutoLogCb').checked;
+        const creds = getCredentials();
 
         if (filingStatus === "Filed") {
             const arnRegex = /^[A-Z0-9]{15}$/;
@@ -2399,6 +2817,12 @@
                 statusDiv.innerText = "🛑 Return cannot be marked as Filed without a valid 15-digit alphanumeric ARN.";
                 return;
             }
+        }
+
+        if (shouldAutoLog && (!creds.name || !creds.pin || creds.pin.length < 4)) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "🔒 Verification Required: Enter Employee Name and PIN at top to enable Auto-Logging.";
+            return;
         }
 
         statusDiv.style.color = "orange";
@@ -2428,19 +2852,49 @@
         .then(res => res.json())
         .then(res => {
             if (res.status === "SUCCESS") {
-                statusDiv.style.color = "green";
-                statusDiv.innerText = "✓ Record updated successfully!";
-                setTimeout(() => {
-                    closeGstModal();
-                    fetchPendingGST();
-                }, 1000);
+                if (shouldAutoLog) {
+                    statusDiv.innerText = "GST Return Updated! Logging activity to Timesheet...";
+
+                    const logCategory = document.getElementById('gstLogCategory').value || "GST Compliance";
+                    const hrs = document.getElementById('gstLogHours').value || "00";
+                    const mins = document.getElementById('gstLogMins').value || "30";
+                    const timeSpentStr = `${hrs}:${mins}`;
+
+                    const logParams = new URLSearchParams({
+                        action: "submitPunch",
+                        date: filingDate || getTodayIST(),
+                        employeeName: creds.name,
+                        pin: creds.pin,
+                        clientName: clientName,
+                        taskCategory: logCategory,
+                        subTask: `${returnType} Return Filing`,
+                        description: `[Auto-Logged from GST Portal] Filed ${returnType} for ${periodVal}. Status: ${filingStatus}${arnNumber ? ' | ARN: ' + arnNumber : ''}`,
+                        status: "Completed",
+                        billingType: "Billable",
+                        priority: "Medium",
+                        timeSpent: timeSpentStr
+                    });
+
+                    return fetch(`${WEB_APP_URL}?${logParams.toString()}`).then(r => r.json());
+                } else {
+                    return { status: "SUCCESS" };
+                }
             } else {
-                statusDiv.style.color = "red";
-                statusDiv.innerText = "Error: " + res.message;
+                throw new Error(res.message || "Failed to submit GST filing.");
             }
-        }).catch(() => {
+        })
+        .then(() => {
+            statusDiv.style.color = "green";
+            statusDiv.innerText = "✓ Return Filed AND Timesheet Activity Logged!";
+            setTimeout(() => {
+                closeGstModal();
+                fetchPendingGST();
+                runBackgroundTracker();
+            }, 1200);
+        })
+        .catch(err => {
             statusDiv.style.color = "red";
-            statusDiv.innerText = "Network update error.";
+            statusDiv.innerText = "Error: " + err.message;
         });
     }
 
@@ -3078,6 +3532,7 @@
                 document.getElementById('description').value = "";
                 document.getElementById('durationHours').value = "00";
                 document.getElementById('durationMinutes').value = "00";
+                if (clientSearchSelect) clientSearchSelect.clear();
                 runBackgroundTracker();
             } else {
                 statusDiv.style.color = "red";
@@ -3180,19 +3635,12 @@
 
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1);
-
+        const yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
         const dayOfWeek = today.getDay();
         const diffToMon = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-        const thisWeekStart = new Date(today);
-        thisWeekStart.setDate(today.getDate() + diffToMon);
-
-        const lastWeekStart = new Date(thisWeekStart);
-        lastWeekStart.setDate(thisWeekStart.getDate() - 7);
-        const lastWeekEnd = new Date(thisWeekStart);
-        lastWeekEnd.setDate(thisWeekStart.getDate() - 1);
+        const thisWeekStart = new Date(today); thisWeekStart.setDate(today.getDate() + diffToMon);
+        const lastWeekStart = new Date(thisWeekStart); lastWeekStart.setDate(thisWeekStart.getDate() - 7);
+        const lastWeekEnd = new Date(thisWeekStart); lastWeekEnd.setDate(thisWeekStart.getDate() - 1);
 
         let filtered = cachedHistoryData;
 
@@ -3240,10 +3688,7 @@
         statusDiv.innerText = "";
 
         let totalEntries = filtered.length;
-        let totalHours = 0;
-        let completedHours = 0;
-        let inProgressHours = 0;
-        let pendingDataHours = 0;
+        let totalHours = 0, completedHours = 0, inProgressHours = 0, pendingDataHours = 0;
 
         filtered.forEach(row => {
             const hrs = parseFloat(row.hours) || 0;
