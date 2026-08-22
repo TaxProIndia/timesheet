@@ -99,7 +99,7 @@
         .clock-label { color: #90cdf4; font-weight: bold; }
         .clock-time { color: #ffffff; letter-spacing: 0.5px; font-family: monospace; font-size: 12px; }
 
-        .module-nav { display: flex; gap: 10px; margin-bottom: 22px; border-bottom: 3px solid #cbd5e1; padding-bottom: 10px; }
+        .module-nav { display: flex; gap: 10px; margin-bottom: 22px; border-bottom: 3px solid #cbd5e1; padding-bottom: 10px; overflow-x: auto; }
         .module-btn { 
             background-color: #edf2f7; 
             color: #1a365d; 
@@ -110,8 +110,10 @@
             border-radius: 8px; 
             cursor: pointer; 
             flex: 1; 
+            min-width: 120px;
             transition: all 0.2s; 
             text-align: center; 
+            white-space: nowrap;
         }
         .module-btn.active { background-color: #1a365d; color: white; border-color: #1a365d; box-shadow: 0 3px 6px rgba(0,0,0,0.2); }
 
@@ -286,16 +288,9 @@
         .modal-header h3 { margin: 0; color: #1a365d; font-size: 17px; }
         .modal-close { background: none; border: none; font-size: 26px; font-weight: bold; cursor: pointer; color: #a0aec0; }
 
-        #gstModalOverlay .modal-content {
+        #gstModalOverlay .modal-content, #itrUpdateModalOverlay .modal-content, #itrNewClientModalOverlay .modal-content {
             max-width: 680px;
             padding: 22px;
-        }
-        #gstModalOverlay .field { margin-bottom: 8px; }
-        #gstModalOverlay label { margin: 5px 0 3px 0; font-size: 12px; }
-        #gstModalOverlay input, #gstModalOverlay select { 
-            padding: 9px 12px !important; 
-            font-size: 13px !important; 
-            min-height: 40px !important; 
         }
 
         #bulkLogModalOverlay .modal-content {
@@ -410,6 +405,7 @@
                 justify-content: center;
                 align-items: center;
                 padding: 4px 2px;
+                min-width: auto;
             }
             .module-btn.active {
                 color: #ffffff;
@@ -481,6 +477,7 @@
         <button class="module-btn active" id="btn-mod-timesheet" onclick="switchModule('module-timesheet')">📊 Timesheet</button>
         <button class="module-btn" id="btn-mod-gst" onclick="switchModule('module-gst')">📑 GST</button>
         <button class="module-btn" id="btn-mod-audit" onclick="switchModule('module-audit')">📋 Tax Audit</button>
+        <button class="module-btn" id="btn-mod-itr" onclick="switchModule('module-itr')">📈 Income Tax</button>
         <button class="module-btn" id="btn-mod-udin" onclick="switchModule('module-udin')">🔑 UDIN</button>
     </div>
 
@@ -937,7 +934,82 @@
         </div>
     </div>
 
-    <!-- MODULE 4: UDIN TRACKER -->
+    <!-- MODULE 4: INCOME TAX RETURNS (ITR) PORTAL -->
+    <div id="module-itr" class="portal-module">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+            <h2 style="margin:0; border:none; padding:0;">📈 Income Tax Returns (ITR) Portal</h2>
+            <div style="display: flex; gap: 10px;">
+                <button type="button" onclick="openNewItrClientModal()" style="background-color:#2b6cb0; color:white; border:none; padding:9px 16px; border-radius:8px; cursor:pointer; font-weight:700; font-size:12px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">➕ Add New Record</button>
+                <button type="button" onclick="printItrReport()" style="background-color:#4a5568; color:white; border:none; padding:9px 16px; border-radius:8px; cursor:pointer; font-weight:700; font-size:12px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">🖨️ Print List</button>
+            </div>
+        </div>
+
+        <div class="secure-auth-card">
+            <div class="filter-bar-single-line" style="margin-bottom:0; background:transparent; border:none; padding:0;">
+                <label for="itrTaxYearFilter">Tax Year:</label>
+                <select id="itrTaxYearFilter" onchange="fetchPendingITR();">
+                    <option value="2026-27">2026-27</option>
+                    <option value="2025-26" selected>2025-26</option>
+                    <option value="2024-25">2024-25</option>
+                    <option value="2027-28">2027-28</option>
+                    <option value="2028-29">2028-29</option>
+                    <option value="ALL">All Tax Years</option>
+                </select>
+
+                <label for="itrSearchInput">Search:</label>
+                <input type="text" id="itrSearchInput" onkeyup="filterItrAlphabetically()" placeholder="🔍 Search Client Name or PAN..." style="min-width: 220px;">
+            </div>
+        </div>
+
+        <div class="navigation-tabs">
+            <button class="tab-btn active" id="btn-itr-sub-pending" onclick="switchItrSubView('pending')">⏳ Pending Queue (<span id="itrPendingCount">0</span>)</button>
+            <button class="tab-btn" id="btn-itr-sub-filed" onclick="switchItrSubView('filed')">✓ Filed Register (<span id="itrFiledCount">0</span>)</button>
+        </div>
+
+        <!-- PENDING VIEW -->
+        <div id="itr-view-pending">
+            <div id="itrPendingStatus" class="status-msg"></div>
+            <div class="table-responsive-wrapper" id="itrPrintablePendingArea">
+                <table id="itrPendingTable" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Client Name</th>
+                            <th>PAN Number</th>
+                            <th>Father Name</th>
+                            <th>Address</th>
+                            <th>Status</th>
+                            <th class="no-print">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- FILED VIEW -->
+        <div id="itr-view-filed" style="display:none;">
+            <div id="itrFiledStatus" class="status-msg"></div>
+            <div class="table-responsive-wrapper" id="itrPrintableFiledArea">
+                <table id="itrFiledTable" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Client Name</th>
+                            <th>PAN Number</th>
+                            <th>Tax Year</th>
+                            <th>Filing Date</th>
+                            <th>Ack Number</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODULE 5: UDIN TRACKER -->
     <div id="module-udin" class="portal-module">
         <h2>🔑 UDIN Registration & Compliance Tracker</h2>
         
@@ -1318,6 +1390,150 @@
     </div>
 </div>
 
+<!-- UPDATE ITR FILING STATUS MODAL -->
+<div id="itrUpdateModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeItrUpdateModal();">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>📈 Update ITR Filing Status</h3>
+            <button type="button" class="modal-close" onclick="closeItrUpdateModal()">&times;</button>
+        </div>
+        <form id="itrUpdateForm" onsubmit="event.preventDefault(); submitItrFiling();">
+            <input type="hidden" id="itrTargetRowIndex">
+            
+            <div class="row">
+                <div class="field">
+                    <label>Client Name</label>
+                    <input type="text" id="itrClientNameField" readonly style="background-color:#e2e8f0; font-weight:700;">
+                </div>
+                <div class="field">
+                    <label>PAN Number</label>
+                    <input type="text" id="itrPanField" readonly style="background-color:#e2e8f0; font-weight:700; font-family:monospace;">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Tax Year</label>
+                    <select id="itrModalTaxYear">
+                        <option value="2026-27">2026-27</option>
+                        <option value="2025-26" selected>2025-26</option>
+                        <option value="2024-25">2024-25</option>
+                        <option value="2027-28">2027-28</option>
+                        <option value="2028-29">2028-29</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Filing Status</label>
+                    <select id="itrFilingStatusSelect">
+                        <option value="Filed">Filed Return</option>
+                        <option value="Not Applicable">Not Applicable (N/A)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Filing Date</label>
+                    <input type="date" id="itrFilingDate" required>
+                </div>
+                <div class="field">
+                    <label>Acknowledgement Number <small style="color:#718096;">(Optional)</small></label>
+                    <input type="text" id="itrAckNumber" placeholder="Optional e.g. 123456789012345" maxlength="20" style="font-family:monospace;">
+                </div>
+            </div>
+
+            <!-- AUTO-LOG TO TIMESHEET -->
+            <div style="margin-top: 14px; padding: 12px; background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0; font-weight: 700; color: #1a365d;">
+                    <input type="checkbox" id="itrAutoLogCb" onchange="toggleItrAutoLogFields()" checked>
+                    ⏱️ Auto-Log this activity into Timesheet
+                </label>
+                
+                <div id="itrAutoLogFields" style="margin-top: 10px; display: block;">
+                    <div class="row">
+                        <div class="field">
+                            <label>Category / Sub-Task</label>
+                            <input type="text" value="Income Tax Compliance - Filing ITR" readonly style="background:#e2e8f0;">
+                        </div>
+                        <div class="field">
+                            <label>Time Spent</label>
+                            <div style="display: flex; gap: 8px;">
+                                <select id="itrLogHours" style="flex:1;"></select>
+                                <select id="itrLogMins" style="flex:1;"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="action-submit" onclick="submitItrFiling()">✓ Submit Filing Punch</button>
+            <div id="itrSubmitStatus" class="status-msg"></div>
+        </form>
+    </div>
+</div>
+
+<!-- ADD NEW ITR CLIENT RECORD MODAL -->
+<div id="itrNewClientModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeNewItrClientModal();">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>➕ Add New ITR Record</h3>
+            <button type="button" class="modal-close" onclick="closeNewItrClientModal()">&times;</button>
+        </div>
+        <form id="itrNewClientForm" onsubmit="event.preventDefault(); submitNewItrClient();">
+            <div class="row">
+                <div class="field">
+                    <label>Client Name *</label>
+                    <input type="text" id="newItrClientName" required placeholder="Full Assessee Name">
+                </div>
+                <div class="field">
+                    <label>PAN Number *</label>
+                    <input type="text" id="newItrPan" required placeholder="e.g. ABCDE1234F" maxlength="10" style="text-transform:uppercase; font-family:monospace;">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Father / Relative Name</label>
+                    <input type="text" id="newItrFatherName" placeholder="S/o or D/o Name">
+                </div>
+                <div class="field">
+                    <label>Tax Year</label>
+                    <select id="newItrTaxYear">
+                        <option value="2026-27">2026-27</option>
+                        <option value="2025-26" selected>2025-26</option>
+                        <option value="2024-25">2024-25</option>
+                        <option value="2027-28">2027-28</option>
+                        <option value="2028-29">2028-29</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field" style="margin-bottom:14px;">
+                <label>Address</label>
+                <input type="text" id="newItrAddress" placeholder="Full Address Details">
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label>Filing Status</label>
+                    <select id="newItrStatus">
+                        <option value="Pending" selected>Pending</option>
+                        <option value="Filed">Filed</option>
+                        <option value="Not Applicable">Not Applicable</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Ack Number <small style="color:#718096;">(Optional)</small></label>
+                    <input type="text" id="newItrAckNumber" placeholder="Optional" style="font-family:monospace;">
+                </div>
+            </div>
+
+            <button type="button" class="action-submit" onclick="submitNewItrClient()">➕ Save New ITR Record</button>
+            <div id="newItrStatusMsg" class="status-msg"></div>
+        </form>
+    </div>
+</div>
+
 <!-- NOT APPLICABLE CONFIRMATION MODAL -->
 <div id="naConfirmModalOverlay" class="modal-overlay" style="z-index: 10001;">
     <div class="modal-content" style="max-width: 420px; text-align: center; border: 2px solid #ed8936;">
@@ -1385,6 +1601,11 @@
     let currentActiveAuditClient = "";
     let clientSearchSelect = null; 
 
+    // ITR Module State Variables
+    let currentItrSubView = 'pending';
+    let rawPendingItrList = [];
+    let rawFiledItrList = [];
+
     const MONTHS = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
     const FY_LIST = ['FY 2023-24', 'FY 2024-25', 'FY 2025-26', 'FY 2026-27', 'FY 2027-28'];
 
@@ -1435,25 +1656,12 @@
         document.getElementById('gstFilingDate').value = todayIST;
         document.getElementById('udinFilingDate').value = todayIST;
         document.getElementById('userTaskDeadline').value = todayIST;
+        if(document.getElementById('itrFilingDate')) document.getElementById('itrFilingDate').value = todayIST;
 
         updateClocks();
         setInterval(updateClocks, 1000);
 
-        const hrsDropdown = document.getElementById('durationHours');
-        for (let h = 0; h <= 23; h++) {
-            let opt = document.createElement('option');
-            opt.value = h < 10 ? '0' + h : '' + h;
-            opt.innerText = h < 10 ? '0' + h : '' + h;
-            hrsDropdown.appendChild(opt);
-        }
-
-        const minsDropdown = document.getElementById('durationMinutes');
-        for (let m = 0; m <= 59; m++) {
-            let opt = document.createElement('option');
-            opt.value = m < 10 ? '0' + m : '' + m;
-            opt.innerText = m < 10 ? '0' + m : '' + m;
-            minsDropdown.appendChild(opt);
-        }
+        initTimeSelectors();
 
         toggleGstPeriodOptions();
 
@@ -1471,6 +1679,8 @@
                 const userModal = document.getElementById('userTaskModalOverlay');
                 const gstModal = document.getElementById('gstModalOverlay');
                 const completeModal = document.getElementById('completeTaskModalOverlay');
+                const itrUpdateModal = document.getElementById('itrUpdateModalOverlay');
+                const itrNewModal = document.getElementById('itrNewClientModalOverlay');
 
                 if (userModal && userModal.style.display === 'flex') {
                     e.preventDefault();
@@ -1481,6 +1691,12 @@
                 } else if (completeModal && completeModal.style.display === 'flex') {
                     e.preventDefault();
                     submitTaskCompletionWithLog();
+                } else if (itrUpdateModal && itrUpdateModal.style.display === 'flex') {
+                    e.preventDefault();
+                    submitItrFiling();
+                } else if (itrNewModal && itrNewModal.style.display === 'flex') {
+                    e.preventDefault();
+                    submitNewItrClient();
                 } else if (document.activeElement && (document.activeElement.id === 'description' || document.activeElement.form?.id === 'punchForm')) {
                     e.preventDefault();
                     submitPunch();
@@ -1488,6 +1704,52 @@
             }
         });
     };
+
+    function initTimeSelectors() {
+        const hrsDropdown = document.getElementById('durationHours');
+        if (hrsDropdown && hrsDropdown.options.length === 0) {
+            for (let h = 0; h <= 23; h++) {
+                let opt = document.createElement('option');
+                opt.value = h < 10 ? '0' + h : '' + h;
+                opt.innerText = h < 10 ? '0' + h : '' + h;
+                hrsDropdown.appendChild(opt);
+            }
+        }
+
+        const minsDropdown = document.getElementById('durationMinutes');
+        if (minsDropdown && minsDropdown.options.length === 0) {
+            for (let m = 0; m <= 59; m++) {
+                let opt = document.createElement('option');
+                opt.value = m < 10 ? '0' + m : '' + m;
+                opt.innerText = m < 10 ? '0' + m : '' + m;
+                minsDropdown.appendChild(opt);
+            }
+        }
+
+        const itrHrs = document.getElementById('itrLogHours');
+        if (itrHrs && itrHrs.options.length === 0) {
+            for (let h = 0; h <= 23; h++) {
+                let opt = document.createElement('option');
+                let val = h < 10 ? '0' + h : '' + h;
+                opt.value = val;
+                opt.innerText = val + 'h';
+                if (h === 0) opt.selected = true;
+                itrHrs.appendChild(opt);
+            }
+        }
+
+        const itrMins = document.getElementById('itrLogMins');
+        if (itrMins && itrMins.options.length === 0) {
+            for (let m = 0; m <= 59; m += 5) {
+                let opt = document.createElement('option');
+                let val = m < 10 ? '0' + m : '' + m;
+                opt.value = val;
+                opt.innerText = val + 'm';
+                if (m === 30) opt.selected = true;
+                itrMins.appendChild(opt);
+            }
+        }
+    }
 
     function updateClocks() {
         const now = new Date();
@@ -1589,6 +1851,10 @@
             document.getElementById('btn-mod-audit').classList.add('active');
             document.getElementById('globalAuthCard').style.display = "block";
             fetchAuditClientsForStaff();
+        } else if (moduleId === 'module-itr') {
+            document.getElementById('btn-mod-itr').classList.add('active');
+            document.getElementById('globalAuthCard').style.display = "none";
+            fetchPendingITR();
         } else if (moduleId === 'module-udin') {
             document.getElementById('btn-mod-udin').classList.add('active');
             document.getElementById('globalAuthCard').style.display = "none";
@@ -1613,6 +1879,288 @@
         document.getElementById('btn-gst-sub-challan').classList.toggle('active', viewType === 'challan');
     }
 
+    // --- INCOME TAX RETURNS (ITR) LOGIC ---
+    function switchItrSubView(viewType) {
+        currentItrSubView = viewType;
+        document.getElementById('itr-view-pending').style.display = (viewType === 'pending') ? 'block' : 'none';
+        document.getElementById('itr-view-filed').style.display = (viewType === 'filed') ? 'block' : 'none';
+        document.getElementById('btn-itr-sub-pending').classList.toggle('active', viewType === 'pending');
+        document.getElementById('btn-itr-sub-filed').classList.toggle('active', viewType === 'filed');
+    }
+
+    function fetchPendingITR() {
+        const taxYear = document.getElementById('itrTaxYearFilter').value;
+        const pendingStatusDiv = document.getElementById('itrPendingStatus');
+        pendingStatusDiv.style.color = "orange";
+        pendingStatusDiv.innerText = `Scanning records for Tax Year ${taxYear}...`;
+
+        fetch(`${WEB_APP_URL}?action=fetchPendingITR&taxYear=${encodeURIComponent(taxYear)}`)
+        .then(res => res.json())
+        .then(res => {
+            if (res.status === "SUCCESS" || Array.isArray(res.pending)) {
+                pendingStatusDiv.innerText = "";
+                rawPendingItrList = res.pending || [];
+                rawFiledItrList = res.filed || [];
+                
+                document.getElementById('itrPendingCount').innerText = rawPendingItrList.length;
+                document.getElementById('itrFiledCount').innerText = rawFiledItrList.length;
+
+                renderItrTables();
+            } else {
+                pendingStatusDiv.style.color = "red";
+                pendingStatusDiv.innerText = "Failed to load ITR records.";
+            }
+        })
+        .catch(() => {
+            pendingStatusDiv.style.color = "red";
+            pendingStatusDiv.innerText = "Error contacting server.";
+        });
+    }
+
+    function filterItrAlphabetically() {
+        renderItrTables();
+    }
+
+    function renderItrTables() {
+        const searchTerm = document.getElementById('itrSearchInput').value.toLowerCase().trim();
+
+        const filteredPending = rawPendingItrList.filter(item => 
+            (item.clientName || '').toLowerCase().includes(searchTerm) || 
+            (item.pan || '').toLowerCase().includes(searchTerm)
+        );
+
+        const filteredFiled = rawFiledItrList.filter(item => 
+            (item.clientName || '').toLowerCase().includes(searchTerm) || 
+            (item.pan || '').toLowerCase().includes(searchTerm)
+        );
+
+        renderPendingItrTable(filteredPending);
+        renderFiledItrTable(filteredFiled);
+    }
+
+    function renderPendingItrTable(items) {
+        const table = document.getElementById('itrPendingTable');
+        const tbody = table.querySelector('tbody');
+        tbody.innerHTML = "";
+
+        if (items.length === 0) {
+            document.getElementById('itrPendingStatus').innerText = "No pending ITR records match criteria.";
+            table.style.display = "none";
+            return;
+        }
+        document.getElementById('itrPendingStatus').innerText = "";
+
+        items.forEach((item, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td><strong>${item.clientName}</strong></td>
+                <td><code>${item.pan || '-'}</code></td>
+                <td>${item.fatherName || '-'}</td>
+                <td><small>${item.address || '-'}</small></td>
+                <td><span style="color:#c53030; font-weight:bold;">${item.status || 'Pending'}</span></td>
+                <td class="no-print">
+                    <button type="button" style="background-color:#1a365d; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-weight:600; font-size:12px;"
+                    onclick="openItrUpdateModal(${item.rowIndex}, '${item.clientName.replace(/'/g, "\\'")}', '${item.pan || ''}')">Update Filing</button>
+                </td>`;
+            tbody.appendChild(tr);
+        });
+        table.style.display = "table";
+    }
+
+    function renderFiledItrTable(items) {
+        const table = document.getElementById('itrFiledTable');
+        const tbody = table.querySelector('tbody');
+        tbody.innerHTML = "";
+
+        if (items.length === 0) {
+            document.getElementById('itrFiledStatus').innerText = "No filed ITR records match criteria.";
+            table.style.display = "none";
+            return;
+        }
+        document.getElementById('itrFiledStatus').innerText = "";
+
+        items.forEach((item, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td><strong>${item.clientName}</strong></td>
+                <td><code>${item.pan || '-'}</code></td>
+                <td>${item.taxYear || '-'}</td>
+                <td>${normalizeToDMY(item.filingDate) || '-'}</td>
+                <td><code>${item.ackNumber || 'N/A'}</code></td>
+                <td><span style="color:#276749; font-weight:bold;">${item.status}</span></td>`;
+            tbody.appendChild(tr);
+        });
+        table.style.display = "table";
+    }
+
+    function openItrUpdateModal(rowIndex, clientName, pan) {
+        initTimeSelectors();
+        document.getElementById('itrTargetRowIndex').value = rowIndex;
+        document.getElementById('itrClientNameField').value = clientName;
+        document.getElementById('itrPanField').value = pan;
+        document.getElementById('itrFilingDate').value = getTodayIST();
+        document.getElementById('itrAckNumber').value = ""; 
+        document.getElementById('itrSubmitStatus').innerText = "";
+        document.getElementById('itrUpdateModalOverlay').style.display = "flex";
+    }
+
+    function closeItrUpdateModal() {
+        document.getElementById('itrUpdateModalOverlay').style.display = "none";
+    }
+
+    function openNewItrClientModal() {
+        document.getElementById('itrNewClientForm').reset();
+        document.getElementById('newItrStatusMsg').innerText = "";
+        document.getElementById('itrNewClientModalOverlay').style.display = "flex";
+    }
+
+    function closeNewItrClientModal() {
+        document.getElementById('itrNewClientModalOverlay').style.display = "none";
+    }
+
+    function toggleItrAutoLogFields() {
+        const checked = document.getElementById('itrAutoLogCb').checked;
+        document.getElementById('itrAutoLogFields').style.display = checked ? 'block' : 'none';
+    }
+
+    function submitItrFiling() {
+        const rowIndex = document.getElementById('itrTargetRowIndex').value;
+        const clientName = document.getElementById('itrClientNameField').value;
+        const filingStatus = document.getElementById('itrFilingStatusSelect').value;
+        const filingDate = document.getElementById('itrFilingDate').value;
+        const ackNumber = document.getElementById('itrAckNumber').value.trim();
+        const taxYear = document.getElementById('itrModalTaxYear').value;
+        const shouldAutoLog = document.getElementById('itrAutoLogCb').checked;
+        const creds = getCredentials();
+        const statusDiv = document.getElementById('itrSubmitStatus');
+
+        if (shouldAutoLog && (!creds.name || !creds.pin || creds.pin.length < 4)) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "🔒 Verification Required: Enter Employee Name and PIN at top to enable Auto-Logging.";
+            return;
+        }
+
+        statusDiv.style.color = "orange";
+        statusDiv.innerText = "Submitting ITR status update...";
+
+        const params = new URLSearchParams({
+            action: "submitITRFilingData",
+            rowIndex: rowIndex,
+            filingStatus: filingStatus,
+            filingDate: filingDate,
+            ackNumber: ackNumber,
+            taxYear: taxYear
+        });
+
+        fetch(`${WEB_APP_URL}?${params.toString()}`)
+        .then(res => res.json())
+        .then(res => {
+            if (res.status === "SUCCESS") {
+                if (shouldAutoLog) {
+                    const hrs = document.getElementById('itrLogHours').value || "00";
+                    const mins = document.getElementById('itrLogMins').value || "30";
+                    const timeSpentStr = `${hrs}:${mins}`;
+                    const ackText = ackNumber ? ` | Ack No: ${ackNumber}` : '';
+                    
+                    const logParams = new URLSearchParams({
+                        action: "submitPunch",
+                        date: filingDate || getTodayIST(),
+                        employeeName: creds.name,
+                        pin: creds.pin,
+                        clientName: clientName,
+                        taskCategory: "Income Tax Compliance",
+                        subTask: "Filing ITR",
+                        description: `[Auto-Logged] Filed ITR for Tax Year ${taxYear}. Status: ${filingStatus}${ackText}`,
+                        status: "Completed",
+                        billingType: "Billable",
+                        priority: "Medium",
+                        timeSpent: timeSpentStr
+                    });
+                    return fetch(`${WEB_APP_URL}?${logParams.toString()}`).then(r => r.json());
+                }
+                return { status: "SUCCESS" };
+            } else {
+                throw new Error(res.message || "Failed to update ITR status.");
+            }
+        })
+        .then(() => {
+            statusDiv.style.color = "green";
+            statusDiv.innerText = "✓ Filing Status & Timesheet Activity Updated!";
+            setTimeout(() => {
+                closeItrUpdateModal();
+                fetchPendingITR();
+                runBackgroundTracker();
+            }, 1000);
+        })
+        .catch(err => {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Error: " + err.message;
+        });
+    }
+
+    function submitNewItrClient() {
+        const clientName = document.getElementById('newItrClientName').value.trim();
+        const pan = document.getElementById('newItrPan').value.trim().toUpperCase();
+        const fatherName = document.getElementById('newItrFatherName').value.trim();
+        const address = document.getElementById('newItrAddress').value.trim();
+        const taxYear = document.getElementById('newItrTaxYear').value;
+        const status = document.getElementById('newItrStatus').value;
+        const ackNumber = document.getElementById('newItrAckNumber').value.trim();
+        const statusDiv = document.getElementById('newItrStatusMsg');
+
+        statusDiv.style.color = "orange";
+        statusDiv.innerText = "Adding new record...";
+
+        const params = new URLSearchParams({
+            action: "addNewITRRecord",
+            clientName: clientName,
+            pan: pan,
+            fatherName: fatherName,
+            address: address,
+            taxYear: taxYear,
+            status: status,
+            filingDate: (status === 'Filed') ? getTodayIST() : '',
+            ackNumber: ackNumber
+        });
+
+        fetch(`${WEB_APP_URL}?${params.toString()}`)
+        .then(res => res.json())
+        .then(res => {
+            if (res.status === "SUCCESS") {
+                statusDiv.style.color = "green";
+                statusDiv.innerText = "✓ Client Record Added Successfully!";
+                setTimeout(() => {
+                    closeNewItrClientModal();
+                    fetchPendingITR();
+                }, 1000);
+            } else {
+                statusDiv.style.color = "red";
+                statusDiv.innerText = res.message || "Failed to add record.";
+            }
+        })
+        .catch(() => {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Server error while adding record.";
+        });
+    }
+
+    function printItrReport() {
+        const taxYear = document.getElementById('itrTaxYearFilter').value;
+        const activeTab = currentItrSubView === 'pending' ? 'Pending Queue' : 'Filed Register';
+        const contentToPrint = currentItrSubView === 'pending' ? 
+            document.getElementById('itrPrintablePendingArea').innerHTML : 
+            document.getElementById('itrPrintableFiledArea').innerHTML;
+
+        const printArea = document.getElementById('gstPrintArea');
+        const filterDesc = `Tax Year: ${taxYear} | Tab: ${activeTab}`;
+        const headerHtml = buildPdfHeaderHTML("Income Tax Returns (ITR) Compliance Report", filterDesc);
+
+        printArea.innerHTML = headerHtml + contentToPrint;
+        window.print();
+    }
+
     function toggleGstPeriodOptions() {
         const returnType = document.getElementById('gstReturnType').value;
         const periodSelect = document.getElementById('gstMonth');
@@ -1629,7 +2177,7 @@
             FY_LIST.forEach(fy => {
                 let opt = document.createElement('option');
                 opt.value = fy; opt.innerText = fy;
-                if (fy === prevSelectedVal || (fy === 'FY 2024-25' && !FY_LIST.includes(prevSelectedVal))) {
+                if (fy === prevSelectedVal || (fy === 'FY 2025-26' && !FY_LIST.includes(prevSelectedVal))) {
                     opt.selected = true;
                 }
                 periodSelect.appendChild(opt);
